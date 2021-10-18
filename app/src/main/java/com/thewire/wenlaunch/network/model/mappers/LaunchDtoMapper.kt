@@ -23,4 +23,10 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
             image = model.image
         )
     }
+
+    fun toDomainList(initial: List<LaunchDto>) : List<Launch> {
+        return initial.map {
+            mapToDomainModel(it)
+        }
+    }
 }
