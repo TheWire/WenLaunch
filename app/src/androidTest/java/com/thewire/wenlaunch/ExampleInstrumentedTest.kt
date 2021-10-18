@@ -1,4 +1,4 @@
-package com.TheWire.wenlaunch
+package com.thewire.wenlaunch
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

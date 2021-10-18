@@ -1,4 +1,4 @@
-package com.TheWire.wenlaunch
+package com.thewire.wenlaunch
 
 import org.junit.Test
 

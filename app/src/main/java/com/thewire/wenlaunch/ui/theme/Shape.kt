@@ -1,4 +1,4 @@
-package com.TheWire.wenlaunch.ui.theme
+package com.thewire.wenlaunch.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
