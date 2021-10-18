@@ -27,9 +27,10 @@ class LaunchListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return ComposeView(requireContext()).apply {
-
-            val launches = viewModel.launches.value
             setContent {
+
+                val launches = viewModel.launches.value
+
                 WenLaunchTheme(
 
                 ) {

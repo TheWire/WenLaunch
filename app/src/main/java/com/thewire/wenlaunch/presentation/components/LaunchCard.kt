@@ -8,5 +8,5 @@ import com.thewire.wenlaunch.domain.model.Launch
 fun LaunchCard(
     launch: Launch
 ) {
-    Text(text = launch.name ?: "")
+    Text(text = launch.name ?: "none")
 }

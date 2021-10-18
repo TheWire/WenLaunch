@@ -37,11 +37,7 @@ constructor(
     }
 
     private suspend fun getUpcoming() {
-        Log.d("upcoming", "getUpcoming")
         val result = repository.upcoming(10)
-        for(r in result) {
-            println(r.name)
-        }
         launches.value = result
     }
 }
