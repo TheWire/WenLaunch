@@ -8,7 +8,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.thewire.wenlaunch.BaseApplication
+import com.thewire.wenlaunch.presentation.BaseApplication
 import com.thewire.wenlaunch.presentation.components.LaunchList
 import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
 import dagger.hilt.android.AndroidEntryPoint

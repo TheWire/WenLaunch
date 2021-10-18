@@ -5,7 +5,6 @@ import com.thewire.wenlaunch.domain.util.DomainMapper
 import com.thewire.wenlaunch.network.model.RocketConfigurationDto
 
 class RocketConfigurationDtoMapper : DomainMapper<RocketConfigurationDto, RocketConfiguration> {
-    private val rocketMapper = RocketDtoMapper()
     override fun mapToDomainModel(model: RocketConfigurationDto): RocketConfiguration {
         return RocketConfiguration(
             id = model.id,
