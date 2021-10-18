@@ -1,4 +1,4 @@
-package com.thewire.wenlaunch.ui.theme
+package com.thewire.wenlaunch.presentation.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

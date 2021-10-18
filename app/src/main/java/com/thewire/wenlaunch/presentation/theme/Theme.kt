@@ -1,4 +1,4 @@
-package com.thewire.wenlaunch.ui.theme
+package com.thewire.wenlaunch.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
