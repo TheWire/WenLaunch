@@ -1,12 +1,61 @@
 package com.thewire.wenlaunch.presentation.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import com.thewire.wenlaunch.R
 import com.thewire.wenlaunch.domain.model.Launch
+import com.thewire.wenlaunch.util.loadPicture
+
+const val DEFAULT_LAUNCH_IMAGE = R.drawable.default_launch
 
 @Composable
 fun LaunchCard(
-    launch: Launch
+    launch: Launch,
+    onClick: () -> Unit,
 ) {
-    Text(text = launch.name ?: "none")
+    Card(
+        shape = MaterialTheme.shapes.small,
+        modifier = Modifier
+            .padding(
+                bottom = 7.dp,
+                top = 7.dp
+            )
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        elevation = 4.dp
+    ) {
+        Column(
+        ) {
+            launch.image?.let { uri ->
+                val image = loadPicture(
+                    uri = uri, defaultImage = DEFAULT_LAUNCH_IMAGE
+                ).value
+                image?.let { img ->
+                    Image(
+                        modifier = Modifier
+                            .height(380.dp),
+                        bitmap = img.asImageBitmap(),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = launch.name ?: "launch pic",
+                    )
+                }
+            }
+            Text(
+                text = launch.name ?: "unknown launch",
+                modifier = Modifier
+                    .padding(4.dp),
+                style = MaterialTheme.typography.h5,
+            )
+        }
+
+    }
 }

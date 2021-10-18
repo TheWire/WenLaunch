@@ -9,11 +9,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import com.thewire.wenlaunch.R
 import com.thewire.wenlaunch.domain.model.Launch
 
 @Composable
 fun LaunchList(
-    launches: List<Launch>
+    launches: List<Launch>,
+    navController: NavController
 ) {
     Box(
         modifier = Modifier
@@ -24,7 +27,12 @@ fun LaunchList(
             itemsIndexed(
                 items = launches
             ) { _, launch ->
-                LaunchCard(launch)
+                LaunchCard(
+                    launch,
+                    onClick = {
+                        navController.navigate(R.id.viewLaunch)
+                    }
+                )
             }
         }
     }
