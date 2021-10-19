@@ -13,6 +13,9 @@ data class LaunchDto(
     @SerializedName("name")
     var name: String? =  null,
 
+    @SerializedName("net")
+    var net: String? =  null,
+
     @SerializedName("rocket")
     var rocket: RocketDto? =  null,
 

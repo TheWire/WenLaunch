@@ -9,6 +9,9 @@ data class MissionDto(
     @SerializedName("name")
     var name: String? = null,
 
+    @SerializedName("description")
+    var description: String? = null,
+
     @SerializedName("orbit")
     var orbit: OrbitDto? = null,
 )

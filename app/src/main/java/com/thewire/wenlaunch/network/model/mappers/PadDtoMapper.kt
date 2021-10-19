@@ -11,6 +11,7 @@ class PadDtoMapper : DomainMapper<PadDto, Pad> {
     override fun mapToDomainModel(model: PadDto): Pad {
         return Pad(
             id = model.id,
+            name = model.name,
             location = locationMapper.mapToDomainModel(model.location ?: LocationDto()),
 
         )

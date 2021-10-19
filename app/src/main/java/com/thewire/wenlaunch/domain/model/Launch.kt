@@ -9,6 +9,7 @@ data class Launch(
     val id: String? = null,
     val url: Uri? = null,
     val name: String? = null,
+    val net: String? = null,
     val rocket: Rocket,
     val mission: Mission,
     val pad: Pad,

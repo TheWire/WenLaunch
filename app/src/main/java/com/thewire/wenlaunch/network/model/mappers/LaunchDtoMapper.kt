@@ -18,6 +18,7 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
             id = model.id,
             url =  Uri.parse(model.url),
             name = model.name,
+            net = model.net,
             rocket = rocketMapper.mapToDomainModel(model.rocket ?: RocketDto()),
             mission = missionMapper.mapToDomainModel(model.mission ?: MissionDto()),
             pad = padMapper.mapToDomainModel(model.pad ?: PadDto()),

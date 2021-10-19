@@ -6,6 +6,9 @@ data class PadDto(
     @SerializedName("id")
     var id: Int? = null,
 
+    @SerializedName("name")
+    var name: String? = null,
+
     @SerializedName("location")
     var location: LocationDto? = null,
 )

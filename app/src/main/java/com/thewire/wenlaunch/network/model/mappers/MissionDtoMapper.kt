@@ -12,6 +12,7 @@ class MissionDtoMapper : DomainMapper<MissionDto, Mission> {
         return Mission(
             id = model.id,
             name = model.name,
+            description = model.description,
             orbit = orbitMapper.mapToDomainModel(model.orbit ?: OrbitDto()),
         )
     }

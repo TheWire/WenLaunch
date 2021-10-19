@@ -7,5 +7,6 @@ import kotlinx.parcelize.Parcelize
 data class Mission(
     val id: Int?,
     val name: String?,
-    val orbit: Orbit
+    val description: String?,
+    val orbit: Orbit,
 ) : Parcelable
