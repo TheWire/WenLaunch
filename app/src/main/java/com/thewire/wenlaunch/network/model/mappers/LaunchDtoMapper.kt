@@ -7,6 +7,7 @@ import com.thewire.wenlaunch.network.model.LaunchDto
 import com.thewire.wenlaunch.network.model.MissionDto
 import com.thewire.wenlaunch.network.model.PadDto
 import com.thewire.wenlaunch.network.model.RocketDto
+import java.time.ZonedDateTime
 
 
 class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
@@ -14,11 +15,17 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
     private val missionMapper = MissionDtoMapper()
     private val padMapper = PadDtoMapper()
     override fun mapToDomainModel(model: LaunchDto): Launch {
+        var net : ZonedDateTime? = null
+        net = try {
+            ZonedDateTime.parse(model.net)
+        } catch (e: Exception) {
+            null
+        }
         return Launch(
             id = model.id,
             url =  Uri.parse(model.url),
             name = model.name,
-            net = model.net,
+            net = net,
             rocket = rocketMapper.mapToDomainModel(model.rocket ?: RocketDto()),
             mission = missionMapper.mapToDomainModel(model.mission ?: MissionDto()),
             pad = padMapper.mapToDomainModel(model.pad ?: PadDto()),

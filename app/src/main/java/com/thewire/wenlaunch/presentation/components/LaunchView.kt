@@ -23,7 +23,7 @@ fun LaunchView(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
     ) {
-        Text(launch.net?: "error")
+        Text(launch.net?.toString()?: "error")
         launch.image?.let { uri ->
             val image = loadPicture(
                 uri = uri, defaultImage = DEFAULT_LAUNCH_IMAGE

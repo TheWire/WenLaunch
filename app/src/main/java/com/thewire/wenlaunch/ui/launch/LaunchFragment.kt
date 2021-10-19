@@ -4,16 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.*
 import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
 import com.thewire.wenlaunch.R
 import com.thewire.wenlaunch.presentation.BaseApplication
 import com.thewire.wenlaunch.presentation.components.LaunchView
@@ -45,16 +45,22 @@ class LaunchFragment : Fragment() {
             setContent {
 
                 val launch = viewModel.launch.value
+
+                val navController = findNavController()
                 WenLaunchTheme() {
                     Scaffold(
                         topBar = {
                             TopAppBar(
                                 title = { Text(text = launch?.name?: "unknown") },
                                 navigationIcon = {
-                                    Icon(
-                                        imageVector = Icons.Filled.ArrowBack,
-                                        contentDescription = "back"
-                                    )
+                                    IconButton(
+                                        onClick = { navController.popBackStack()}
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.ArrowBack,
+                                            contentDescription = "back"
+                                        )
+                                    }
                                 }
                             )
                         }
