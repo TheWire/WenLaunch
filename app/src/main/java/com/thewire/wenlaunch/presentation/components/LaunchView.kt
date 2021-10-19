@@ -3,10 +3,13 @@ package com.thewire.wenlaunch.presentation.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import com.thewire.wenlaunch.domain.model.Launch
 
 @Composable
-fun LaunchView() {
+fun LaunchView(
+    launch: Launch
+) {
     Column() {
-        Text("this is launch view")
+        Text(launch.name ?: "error")
     }
 }

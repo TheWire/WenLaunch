@@ -1,5 +1,6 @@
 package com.thewire.wenlaunch.presentation.components
 
+import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +31,9 @@ fun LaunchList(
                 LaunchCard(
                     launch,
                     onClick = {
-                        navController.navigate(R.id.viewLaunch)
+                        val bundle = Bundle()
+                        bundle.putString("launchId", launch.id)
+                        navController.navigate(R.id.viewLaunch, bundle)
                     }
                 )
             }

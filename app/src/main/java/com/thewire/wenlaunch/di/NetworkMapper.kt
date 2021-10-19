@@ -26,7 +26,7 @@ object NetworkMapper {
     @Provides
     fun provideLaunchService(): LaunchService {
         return Retrofit.Builder()
-            .baseUrl("https://lldev.thespacedevs.com/2.2.0/launch/")
+            .baseUrl("https://lldev.thespacedevs.com/2.2.0/")
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
             .create(LaunchService::class.java)

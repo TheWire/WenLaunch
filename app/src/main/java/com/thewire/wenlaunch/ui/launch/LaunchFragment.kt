@@ -5,16 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.thewire.wenlaunch.presentation.BaseApplication
 import com.thewire.wenlaunch.presentation.components.LaunchView
 import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class LaunchFragment : Fragment() {
     @Inject
     lateinit var application : BaseApplication
+
+    private val viewModel: LaunchViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        arguments?.getString("launchId")?.let { launchId ->
+            viewModel.onEvent(LaunchEvent.GetLaunch(launchId))
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,9 +37,19 @@ class LaunchFragment : Fragment() {
     ): View? {
         return ComposeView(requireContext()).apply {
             setContent {
+
+                val launch = viewModel.launch.value
                 WenLaunchTheme() {
                     Scaffold() {
-                        LaunchView()
+                        if(launch == null) {
+                            Text("loading")
+                        } else {
+                            launch?.let {
+                                LaunchView(it)
+                            }
+
+                        }
+
                     }
                 }
             }

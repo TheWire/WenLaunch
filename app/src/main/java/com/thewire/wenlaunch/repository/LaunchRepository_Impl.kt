@@ -11,4 +11,8 @@ class LaunchRepository_Impl (
     override suspend fun upcoming(limit: Int): List<Launch> {
         return mapper.toDomainList(launchService.upcoming(limit).launches)
     }
+
+    override suspend fun launch(id: String): Launch {
+        return mapper.mapToDomainModel(launchService.launch(id))
+    }
 }
