@@ -16,17 +16,37 @@ import com.bumptech.glide.request.transition.Transition
 @Composable
 fun loadPicture(uri: Uri, @DrawableRes defaultImage: Int) : MutableState<Bitmap?> {
     val bitmapState: MutableState<Bitmap?> = remember { mutableStateOf(null)}
+    LoadDefault(defaultImage = defaultImage, image = bitmapState)
+    LoadRemoteImage(imageUri = uri, image = bitmapState)
+    return bitmapState
+}
+
+@Composable
+fun LoadDefault(@DrawableRes defaultImage: Int, image: MutableState<Bitmap?>) {
     Glide.with(LocalContext.current)
         .asBitmap()
-        .load(uri)
-        .into(object: CustomTarget<Bitmap>() {
+        .load(defaultImage)
+        .into(object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                bitmapState.value = resource
+                image.value = resource
             }
 
             override fun onLoadCleared(placeholder: Drawable?) {
             }
         })
+}
 
-    return bitmapState
+@Composable
+fun LoadRemoteImage(imageUri: Uri, image: MutableState<Bitmap?>) {
+    Glide.with(LocalContext.current)
+        .asBitmap()
+        .load(imageUri)
+        .into(object : CustomTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                image.value = resource
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {
+            }
+        })
 }
