@@ -8,4 +8,7 @@ data class LocationDto (
 
     @SerializedName("name")
     var name: String? = null,
+
+    @SerializedName("map_image")
+    var map_image: String? = null,
 )

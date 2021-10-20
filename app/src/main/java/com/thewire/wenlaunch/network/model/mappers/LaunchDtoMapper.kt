@@ -15,17 +15,12 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
     private val missionMapper = MissionDtoMapper()
     private val padMapper = PadDtoMapper()
     override fun mapToDomainModel(model: LaunchDto): Launch {
-        var net : ZonedDateTime? = null
-        net = try {
-            ZonedDateTime.parse(model.net)
-        } catch (e: Exception) {
-            null
-        }
+
         return Launch(
             id = model.id,
             url =  Uri.parse(model.url),
             name = model.name,
-            net = net,
+            net = getTimeObject(model.net),
             rocket = rocketMapper.mapToDomainModel(model.rocket ?: RocketDto()),
             mission = missionMapper.mapToDomainModel(model.mission ?: MissionDto()),
             pad = padMapper.mapToDomainModel(model.pad ?: PadDto()),
