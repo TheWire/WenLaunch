@@ -29,7 +29,7 @@ fun LaunchList(
                 items = launches
             ) { _, launch ->
                 LaunchCard(
-                    launch,
+                    launch = launch,
                     onClick = {
                         val bundle = Bundle()
                         bundle.putString("launchId", launch.id)

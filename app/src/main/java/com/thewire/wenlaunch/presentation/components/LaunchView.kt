@@ -3,7 +3,9 @@ package com.thewire.wenlaunch.presentation.components
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
@@ -22,14 +24,24 @@ fun LaunchView(
 ) {
     Column(
         modifier = Modifier
+            .fillMaxWidth()
             .verticalScroll(rememberScrollState())
+            .padding(6.dp)
     ) {
         Text(launch.net?.toString()?: "error")
+        val modifier = Modifier.padding(top = 6.dp, bottom = 6.dp)
         RocketInfo(
-            launch.rocket,
-            launch.image
+            modifier = modifier,
+            rocket = launch.rocket,
+            imageUri = launch.image
         )
-        MissionInfo(launch.mission)
-        LocationInfo(pad = launch.pad)
+        MissionInfo(
+            modifier = modifier,
+            mission = launch.mission
+        )
+        LocationInfo(
+            modifier = modifier,
+            pad = launch.pad
+        )
     }
 }

@@ -19,12 +19,13 @@ const val DEFAULT_LAUNCH_IMAGE = R.drawable.default_launch
 
 @Composable
 fun LaunchCard(
+    modifier: Modifier = Modifier,
     launch: Launch,
     onClick: () -> Unit,
 ) {
     Card(
         shape = MaterialTheme.shapes.small,
-        modifier = Modifier
+        modifier = modifier
             .padding(
                 bottom = 7.dp,
                 top = 7.dp
