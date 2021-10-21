@@ -24,9 +24,6 @@ fun LaunchList(
             .fillMaxSize()
             .background(color = MaterialTheme.colors.surface)
     ) {
-        if(launches.isEmpty()) {
-            Text("Loading...")
-        } else {
             LazyColumn() {
                 itemsIndexed(
                     items = launches
@@ -42,5 +39,4 @@ fun LaunchList(
                 }
             }
         }
-    }
 }

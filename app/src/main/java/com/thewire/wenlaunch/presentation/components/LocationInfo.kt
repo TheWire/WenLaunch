@@ -46,6 +46,7 @@ fun LocationInfo(
                 modifier = Modifier.padding(6.dp),
             )
             LaunchImage(
+                height = 300.dp,
                 imageUri = pad.location.map_image,
             )
         }

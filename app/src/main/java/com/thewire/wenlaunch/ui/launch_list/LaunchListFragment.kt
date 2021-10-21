@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.thewire.wenlaunch.presentation.BaseApplication
 import com.thewire.wenlaunch.presentation.components.LaunchList
+import com.thewire.wenlaunch.presentation.components.LoadingAnimation
 import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -52,10 +53,14 @@ class LaunchListFragment : Fragment() {
                                 "Upcoming Launches",
                                 style = MaterialTheme.typography.h4
                             )
-                            LaunchList(
-                                launches = launches,
-                                navController = findNavController()
-                            )
+                            if(launches.isEmpty()) {
+                                LoadingAnimation()
+                            } else {
+                                LaunchList(
+                                    launches = launches,
+                                    navController = findNavController()
+                                )
+                            }
                         }
 
                     }
