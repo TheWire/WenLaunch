@@ -24,18 +24,22 @@ fun LaunchList(
             .fillMaxSize()
             .background(color = MaterialTheme.colors.surface)
     ) {
-        LazyColumn() {
-            itemsIndexed(
-                items = launches
-            ) { _, launch ->
-                LaunchCard(
-                    launch = launch,
-                    onClick = {
-                        val bundle = Bundle()
-                        bundle.putString("launchId", launch.id)
-                        navController.navigate(R.id.viewLaunch, bundle)
-                    }
-                )
+        if(launches.isEmpty()) {
+            Text("Loading...")
+        } else {
+            LazyColumn() {
+                itemsIndexed(
+                    items = launches
+                ) { _, launch ->
+                    LaunchCard(
+                        launch = launch,
+                        onClick = {
+                            val bundle = Bundle()
+                            bundle.putString("launchId", launch.id)
+                            navController.navigate(R.id.viewLaunch, bundle)
+                        }
+                    )
+                }
             }
         }
     }

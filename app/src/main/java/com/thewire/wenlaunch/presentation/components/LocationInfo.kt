@@ -42,11 +42,6 @@ fun LocationInfo(
                 style = MaterialTheme.typography.h6
             )
             Text(
-                "Location",
-                modifier = Modifier.padding(6.dp),
-                style = MaterialTheme.typography.h6
-            )
-            Text(
                 pad.location.name ?: "Unknown Location",
                 modifier = Modifier.padding(6.dp),
             )

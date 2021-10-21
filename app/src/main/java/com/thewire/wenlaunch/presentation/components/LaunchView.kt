@@ -28,8 +28,11 @@ fun LaunchView(
             .verticalScroll(rememberScrollState())
             .padding(6.dp)
     ) {
-        Text(launch.net?.toString()?: "error")
         val modifier = Modifier.padding(top = 6.dp, bottom = 6.dp)
+        StatusInfo(
+            modifier = modifier,
+            launch = launch
+        )
         RocketInfo(
             modifier = modifier,
             rocket = launch.rocket,
