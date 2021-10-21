@@ -54,7 +54,7 @@ class LaunchFragment : Fragment() {
                 val launch = viewModel.launch.value
 
                 val navController = findNavController()
-                WenLaunchTheme() {
+                WenLaunchTheme(darkTheme = true) {
                     Scaffold(
                         topBar = {
                             TopAppBar(

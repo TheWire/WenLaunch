@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
@@ -48,6 +49,8 @@ fun StatusInfo(
                         .background(color = getStatusColor(launch.status?.abbrev), shape = CircleShape)
                         .padding(6.dp)
                         .align(Alignment.CenterEnd),
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
