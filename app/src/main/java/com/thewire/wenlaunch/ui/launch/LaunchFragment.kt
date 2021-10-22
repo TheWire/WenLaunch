@@ -12,6 +12,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -54,7 +55,7 @@ class LaunchFragment : Fragment() {
                 val launch = viewModel.launch.value
 
                 val navController = findNavController()
-                WenLaunchTheme(darkTheme = application.settingsModel.value.darkMode) {
+                WenLaunchTheme(darkTheme = application.darkMode.value) {
                     Scaffold(
                         topBar = {
                             TopAppBar(
@@ -68,6 +69,20 @@ class LaunchFragment : Fragment() {
                                             contentDescription = "back"
                                         )
                                     }
+                                },
+                                actions = {
+                                    Box() {
+                                        IconButton(
+                                            modifier = Modifier.align(Alignment.CenterEnd),
+                                            onClick = { application.toggleDarkTheme() }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Filled.MoreVert,
+                                                contentDescription = "menu"
+                                            )
+                                        }
+                                    }
+
                                 }
                             )
                         }

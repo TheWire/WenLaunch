@@ -22,6 +22,7 @@ class BaseApplication : Application() {
     @Inject
     lateinit var settingsStore : SettingsStore
     val settingsModel :MutableState<SettingsModel> = mutableStateOf(SettingsModel())
+    val darkMode = mutableStateOf(false)
     override fun onCreate() {
         super.onCreate()
         loadSettings()
@@ -33,17 +34,25 @@ class BaseApplication : Application() {
     private fun loadSettings() {
         CoroutineScope(Dispatchers.Main).launch {
             when (val res = settingsStore.getSettings()) {
-                is SettingsStoreResult.OnSuccess -> settingsModel.value = res.settings
+                is SettingsStoreResult.OnSuccess -> {
+                    settingsModel.value = res.settings
+                    applySettings()
+                }
                 is SettingsStoreResult.OnError -> Log.e(TAG, res.exception.toString())
                 else -> println("should not see")
             }
         }
     }
 
+    private fun applySettings() {
+        darkMode.value = settingsModel.value.darkMode
+    }
+
 
     fun toggleDarkTheme() {
         settingsModel.value.darkMode = !settingsModel.value.darkMode
-
+        setSettings()
+        applySettings()
     }
 
     private fun setSettings() {

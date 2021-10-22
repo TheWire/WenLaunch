@@ -40,7 +40,7 @@ class LaunchListFragment : Fragment() {
                 val launches = viewModel.launches.value
 
                 WenLaunchTheme(
-                    darkTheme = application.settingsModel.value.darkMode
+                    darkTheme = application.darkMode.value
                 ) {
                     Scaffold(
 
