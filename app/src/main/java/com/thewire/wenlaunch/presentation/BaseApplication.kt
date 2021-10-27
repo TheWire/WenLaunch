@@ -44,6 +44,7 @@ class BaseApplication : Application() {
         }
     }
 
+    //apply react settings that affect ui
     private fun applySettings() {
         darkMode.value = settingsModel.value.darkMode
     }
