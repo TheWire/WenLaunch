@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.thewire.wenlaunch.R
@@ -17,12 +18,15 @@ import com.thewire.wenlaunch.domain.model.Launch
 @Composable
 fun LaunchList(
     launches: List<Launch>,
-    navController: NavController
+    navController: NavController,
+    refreshCallback: (()-> Unit) -> Unit,
 ) {
-    Box(
+    RefreshContainer(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colors.surface)
+            .background(color = MaterialTheme.colors.surface),
+        refreshCallback = refreshCallback
+
     ) {
             LazyColumn() {
                 itemsIndexed(

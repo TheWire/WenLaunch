@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.repository.LaunchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
@@ -33,8 +34,20 @@ constructor(
     val launches: MutableState<List<Launch>> = mutableStateOf(listOf())
 
     fun onEvent(event: LaunchListEvent) {
-
+        viewModelScope.launch {
+            when (event) {
+                is LaunchListEvent.RefreshLaunches -> {
+                    getUpcoming()
+                    event.callback()
+                }
+            }
+        }
     }
+
+//    private suspend fun simulatedRefresh() {
+//        delay(2000)
+//        refreshing.value = false
+//    }
 
     private suspend fun getUpcoming() {
         val result = repository.upcoming(10)
