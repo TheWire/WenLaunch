@@ -18,8 +18,7 @@ fun MissionInfo(
     mission: Mission
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         elevation = 6.dp
     ) {
         Column() {

@@ -25,8 +25,7 @@ fun StatusInfo(
     launch: Launch
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         elevation = 6.dp
     ) {
         Column() {

@@ -31,7 +31,6 @@ fun LaunchCard(
                 bottom = 7.dp,
                 top = 7.dp
             )
-            .fillMaxWidth()
             .clickable(onClick = onClick),
         elevation = 4.dp
     ) {

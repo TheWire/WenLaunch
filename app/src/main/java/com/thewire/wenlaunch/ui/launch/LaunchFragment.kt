@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.Icon
@@ -48,7 +49,7 @@ class LaunchFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return ComposeView(requireContext()).apply {
             setContent {
 
@@ -90,12 +91,9 @@ class LaunchFragment : Fragment() {
 
                     ) {
                         if(launch == null) {
-                            LoadingAnimation()
+                            LoadingAnimation(modifier = Modifier.fillMaxSize())
                         } else {
-                            launch?.let {
-                                LaunchView(it)
-                            }
-
+                            LaunchView(modifier = Modifier.fillMaxWidth(), launch = launch)
                         }
                     }
                 }

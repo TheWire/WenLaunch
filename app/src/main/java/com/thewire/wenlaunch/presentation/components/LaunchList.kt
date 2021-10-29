@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
@@ -18,13 +19,14 @@ import com.thewire.wenlaunch.ui.launch_list.LaunchListEvent
 
 @Composable
 fun LaunchList(
+    modifier : Modifier = Modifier,
     launches: List<Launch>,
     navController: NavController,
     onMoreLaunches: (LaunchListEvent) -> Unit,
     refreshCallback: (()-> Unit) -> Unit,
 ) {
     RefreshContainer(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colors.surface),
         refreshCallback = refreshCallback
@@ -38,6 +40,7 @@ fun LaunchList(
                         onMoreLaunches(LaunchListEvent.MoreLaunches((index + 2) - launches.size))
                     }
                     LaunchCard(
+                        modifier = Modifier.fillMaxWidth(),
                         launch = launch,
                         onClick = {
                             val bundle = Bundle()

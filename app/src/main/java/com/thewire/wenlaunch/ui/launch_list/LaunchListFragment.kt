@@ -5,10 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -40,7 +37,7 @@ class LaunchListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return ComposeView(requireContext()).apply {
             setContent {
 
@@ -71,7 +68,7 @@ class LaunchListFragment : Fragment() {
                                 .padding(horizontal = MAIN_COLUMN_PADDING.dp)
                         ) {
                             if(launches.isEmpty()) {
-                                LoadingAnimation()
+                                LoadingAnimation(modifier = Modifier.fillMaxSize())
                             } else {
                                 LaunchList(
                                     launches = launches,

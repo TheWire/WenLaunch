@@ -3,17 +3,14 @@ package com.thewire.wenlaunch.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.thewire.wenlaunch.domain.model.Launch
-import com.thewire.wenlaunch.domain.model.Mission
 import com.thewire.wenlaunch.domain.model.Pad
 
 @Composable
@@ -22,8 +19,7 @@ fun LocationInfo(
     pad: Pad
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         elevation = 6.dp
     ) {
         Column() {
@@ -46,7 +42,7 @@ fun LocationInfo(
                 modifier = Modifier.padding(6.dp),
             )
             LaunchImage(
-                height = 300.dp,
+                modifier = Modifier.height(300.dp),
                 imageUri = pad.location.map_image,
             )
         }

@@ -16,7 +16,6 @@ import com.thewire.wenlaunch.util.loadPicture
 fun LaunchImage(
     modifier: Modifier = Modifier,
     imageUri: Uri?,
-    height: Dp = 200.dp,
     contentDescription: String = ""
 ) {
         val image = loadPicture(
@@ -24,8 +23,7 @@ fun LaunchImage(
         ).value
         image?.let { img ->
             Image(
-                modifier = modifier
-                    .height(height),
+                modifier = modifier,
                 bitmap = img.asImageBitmap(),
                 contentScale = ContentScale.Crop,
                 contentDescription = contentDescription,

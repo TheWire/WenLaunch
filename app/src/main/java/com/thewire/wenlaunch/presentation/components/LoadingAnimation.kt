@@ -18,9 +18,11 @@ import androidx.core.graphics.rotationMatrix
 import com.thewire.wenlaunch.R
 
 @Composable
-fun LoadingAnimation() {
+fun LoadingAnimation(
+    modifier: Modifier = Modifier,
+) {
         BoxWithConstraints(
-            modifier = Modifier.fillMaxSize()
+            modifier = modifier
         ) {
             Text(
                 modifier = Modifier
@@ -64,13 +66,13 @@ fun LoadingAnimation() {
                 painterResource(R.drawable.rocket2)
             }
 
-            val modifier = Modifier.offset(
+            val imageModifier = Modifier.offset(
                 x = (maxWidth - rocketWidth) / 2,
                 y = (maxHeight + rocketHeight) - ((maxHeight + (rocketHeight*2)) * yPos.value)
             )
 
             Image(
-                modifier = modifier
+                modifier = imageModifier
                     .rotate(-35.0f)
                     .width(rocketWidth)
                     .height(rocketHeight)

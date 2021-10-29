@@ -20,30 +20,30 @@ import com.thewire.wenlaunch.util.loadPicture
 
 @Composable
 fun LaunchView(
+    modifier: Modifier = Modifier,
     launch: Launch
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .verticalScroll(rememberScrollState())
             .padding(6.dp)
     ) {
-        val modifier = Modifier.padding(top = 6.dp, bottom = 6.dp)
+        val infoModifier = Modifier.padding(top = 6.dp, bottom = 6.dp)
         StatusInfo(
-            modifier = modifier,
+            modifier = infoModifier.fillMaxWidth(),
             launch = launch
         )
         RocketInfo(
-            modifier = modifier,
+            modifier = infoModifier.fillMaxWidth(),
             rocket = launch.rocket,
             imageUri = launch.image
         )
         MissionInfo(
-            modifier = modifier,
+            modifier = infoModifier.fillMaxWidth(),
             mission = launch.mission
         )
         LocationInfo(
-            modifier = modifier,
+            modifier = infoModifier.fillMaxWidth(),
             pad = launch.pad
         )
     }

@@ -27,8 +27,7 @@ fun RocketInfo(
     imageUri: Uri?
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         elevation = 6.dp
     ) {
         Column() {
@@ -47,9 +46,8 @@ fun RocketInfo(
                 style = MaterialTheme.typography.h6
             )
             LaunchImage(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(Alignment.CenterHorizontally).height(450.dp),
                 imageUri = imageUri,
-                height = 450.dp
             )
         }
     }
