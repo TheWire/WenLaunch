@@ -33,9 +33,7 @@ fun refreshAction(
 
                 //when continuing to scroll upwards at top
                 //set icon to be draggable
-                if(available.y > 0 && iOffset.value > 0) {
-                    iconState.value = true
-                }
+                iconState.value = available.y > 0 && iOffset.value > 0
                 return Offset.Zero
             }
 
