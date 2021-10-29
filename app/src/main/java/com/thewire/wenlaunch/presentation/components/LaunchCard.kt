@@ -37,9 +37,8 @@ fun LaunchCard(
     ) {
         Column(
         ) {
-            launch.image?.let { uri ->
                 val image = loadPicture(
-                    uri = uri, defaultImage = DEFAULT_LAUNCH_IMAGE
+                    uri = launch.image, defaultImage = DEFAULT_LAUNCH_IMAGE
                 ).value
                 image?.let { img ->
                     Image(
@@ -51,7 +50,6 @@ fun LaunchCard(
                         contentDescription = launch.name ?: "launch pic",
                     )
                 }
-            }
             Text(
                 text = launch.name ?: "unknown launch",
                 modifier = Modifier

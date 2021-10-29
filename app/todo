@@ -1,0 +1,5 @@
+make all composables expose their modifiers
+consider how app shows loading
+add loading indicator when more launches are loaded
+angara launch has lots of nulls
+consider if we are handling other null values

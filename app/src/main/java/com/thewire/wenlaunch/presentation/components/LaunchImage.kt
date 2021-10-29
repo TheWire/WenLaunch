@@ -19,9 +19,8 @@ fun LaunchImage(
     height: Dp = 200.dp,
     contentDescription: String = ""
 ) {
-    imageUri?.let { uri ->
         val image = loadPicture(
-            uri = uri, defaultImage = DEFAULT_LAUNCH_IMAGE
+            uri = imageUri, defaultImage = DEFAULT_LAUNCH_IMAGE
         ).value
         image?.let { img ->
             Image(
@@ -32,5 +31,4 @@ fun LaunchImage(
                 contentDescription = contentDescription,
             )
         }
-    }
 }
