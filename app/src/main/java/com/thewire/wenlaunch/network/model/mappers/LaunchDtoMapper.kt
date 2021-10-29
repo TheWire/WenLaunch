@@ -16,14 +16,14 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
 
         return Launch(
             id = model.id,
-            url =  Uri.parse(model.url),
+            url =  model.url?.let{ Uri.parse(model.url) },
             name = model.name,
             status = statusMapper.mapToDomainModel(model.status ?: StatusDto()),
             net = getTimeObject(model.net),
             rocket = rocketMapper.mapToDomainModel(model.rocket ?: RocketDto()),
             mission = missionMapper.mapToDomainModel(model.mission ?: MissionDto()),
             pad = padMapper.mapToDomainModel(model.pad ?: PadDto()),
-            image = Uri.parse(model.image),
+            image = model.image?.let{ Uri.parse(model.image) },
         )
     }
 

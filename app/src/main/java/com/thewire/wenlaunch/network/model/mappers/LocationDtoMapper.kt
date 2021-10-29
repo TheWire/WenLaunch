@@ -11,7 +11,7 @@ class LocationDtoMapper : DomainMapper<LocationDto, Location> {
         return Location(
             id = model.id,
             name = model.name,
-            map_image = Uri.parse(model.map_image)
+            map_image = model.map_image?.let { Uri.parse(model.map_image) }
             )
     }
 }

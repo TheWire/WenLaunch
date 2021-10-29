@@ -7,6 +7,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -43,7 +44,8 @@ fun LaunchCard(
                 image?.let { img ->
                     Image(
                         modifier = Modifier
-                            .height(380.dp),
+                            .height(380.dp)
+                            .align(Alignment.CenterHorizontally),
                         bitmap = img.asImageBitmap(),
                         contentScale = ContentScale.Crop,
                         contentDescription = launch.name ?: "launch pic",

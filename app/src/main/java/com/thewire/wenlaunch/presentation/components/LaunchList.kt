@@ -14,11 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.thewire.wenlaunch.R
 import com.thewire.wenlaunch.domain.model.Launch
+import com.thewire.wenlaunch.ui.launch_list.LaunchListEvent
 
 @Composable
 fun LaunchList(
     launches: List<Launch>,
     navController: NavController,
+    onMoreLaunches: (LaunchListEvent) -> Unit,
     refreshCallback: (()-> Unit) -> Unit,
 ) {
     RefreshContainer(
@@ -31,7 +33,10 @@ fun LaunchList(
             LazyColumn() {
                 itemsIndexed(
                     items = launches
-                ) { _, launch ->
+                ) { index, launch ->
+                    if((index + 1) >= (launches.size)) {
+                        onMoreLaunches(LaunchListEvent.MoreLaunches((index + 2) - launches.size))
+                    }
                     LaunchCard(
                         launch = launch,
                         onClick = {

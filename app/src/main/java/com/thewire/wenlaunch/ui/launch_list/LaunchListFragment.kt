@@ -76,14 +76,17 @@ class LaunchListFragment : Fragment() {
                                 LaunchList(
                                     launches = launches,
                                     navController = findNavController(),
-                                    refreshCallback = { callback ->
-                                                      viewModel.onEvent(LaunchListEvent.RefreshLaunches(callback))
+                                    onMoreLaunches = { event ->
+                                        viewModel.onEvent(event)
                                     },
+                                    refreshCallback = { callback ->
+                                        viewModel.onEvent(LaunchListEvent.RefreshLaunches(callback))
+                                                      },
                                 )
                             }
                         }
-
                     }
+
                 }
             }
         }

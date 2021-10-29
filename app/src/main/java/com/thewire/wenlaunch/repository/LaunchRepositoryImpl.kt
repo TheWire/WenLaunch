@@ -8,8 +8,8 @@ class LaunchRepositoryImpl (
     private val launchService: LaunchService,
     private val mapper: LaunchDtoMapper
 ) : LaunchRepository {
-    override suspend fun upcoming(limit: Int): List<Launch> {
-        return mapper.toDomainList(launchService.upcoming(limit).launches)
+    override suspend fun upcoming(limit: Int, offset: Int): List<Launch> {
+        return mapper.toDomainList(launchService.upcoming(limit, offset).launches)
     }
 
     override suspend fun launch(id: String): Launch {

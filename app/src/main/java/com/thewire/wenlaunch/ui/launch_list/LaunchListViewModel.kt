@@ -8,11 +8,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.repository.LaunchRepository
+import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
+
+const val INITIAL_LAUNCH_NUM = 5
 
 @HiltViewModel
 class LaunchListViewModel
@@ -25,7 +28,7 @@ constructor(
     init {
         viewModelScope.launch {
             try {
-                getUpcoming()
+                getUpcoming(INITIAL_LAUNCH_NUM)
             }catch(e: Exception) {
                 Log.e("fetch error", "Exception: $e, ${e.cause}")
             }
@@ -37,8 +40,11 @@ constructor(
         viewModelScope.launch {
             when (event) {
                 is LaunchListEvent.RefreshLaunches -> {
-                    getUpcoming()
+                    getUpcoming(launches.value.size)
                     event.callback()
+                }
+                is LaunchListEvent.MoreLaunches -> {
+                    getMoreLaunches(event.numLaunches)
                 }
             }
         }
@@ -49,8 +55,15 @@ constructor(
 //        refreshing.value = false
 //    }
 
-    private suspend fun getUpcoming() {
-        val result = repository.upcoming(10)
+    private suspend fun getUpcoming(limit: Int) {
+        val result = repository.upcoming(limit, 0)
         launches.value = result
+    }
+
+    private suspend fun getMoreLaunches(numLaunches: Int) {
+        val result = repository.upcoming(numLaunches, launches.value.size)
+        val currentList = ArrayList(launches.value)
+        currentList.addAll(result)
+        launches.value = currentList
     }
 }
