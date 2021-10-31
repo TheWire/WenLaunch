@@ -34,6 +34,16 @@ val Typography = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp
     ),
+    subtitle1 = TextStyle(
+        fontFamily = Jura,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp
+    ),
+    subtitle2 = TextStyle(
+        fontFamily = Jura,
+        fontWeight = FontWeight.Thin,
+        fontSize = 12.sp
+    ),
     h4 = TextStyle(
         fontFamily = Orbitron,
         fontWeight = FontWeight.ExtraBold,

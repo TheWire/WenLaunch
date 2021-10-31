@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.domain.model.LaunchStatus.*
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun StatusInfo(
@@ -52,9 +54,21 @@ fun StatusInfo(
                     fontWeight = FontWeight.Bold
                 )
             }
+            if(launch.status?.abbrev == TBC ||
+                launch.status?.abbrev == TBD ||
+                launch.status?.abbrev == OTHER) {
 
-            Text(
-                launch.net?.toString() ?: "Unknown Time",
+                Text(
+                    "No Earlier Than",
+                    modifier = Modifier.padding(6.dp),
+                    style = MaterialTheme.typography.subtitle2
+                )
+            }
+            val formatter = DateTimeFormatter.ofPattern("H:mm:ss EEEE MMMM yyyy z")
+            val time = launch.net?.withZoneSameInstant(
+                ZoneId.systemDefault())?.format(formatter).toString()
+            launch.net
+            Text(time ?: "Unknown Time",
                 modifier = Modifier.padding(6.dp),
                 style = MaterialTheme.typography.h6
             )
