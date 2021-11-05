@@ -2,19 +2,16 @@ package com.thewire.wenlaunch.presentation.components
 
 import android.os.Bundle
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.thewire.wenlaunch.R
 import com.thewire.wenlaunch.domain.model.Launch
+import com.thewire.wenlaunch.presentation.navigation.Screen
 import com.thewire.wenlaunch.ui.launch_list.LaunchListEvent
 
 @Composable
@@ -45,7 +42,8 @@ fun LaunchList(
                         onClick = {
                             val bundle = Bundle()
                             bundle.putString("launchId", launch.id)
-                            navController.navigate(R.id.viewLaunch, bundle)
+                            val route = Screen.LaunchView.route + "/${launch.id}"
+                            navController.navigate(route)
                         }
                     )
                 }
