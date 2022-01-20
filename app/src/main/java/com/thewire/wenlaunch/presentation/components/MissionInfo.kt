@@ -37,11 +37,6 @@ fun MissionInfo(
                 style = MaterialTheme.typography.h6
             )
             Text(
-                "Orbit",
-                modifier = Modifier.padding(6.dp),
-                style = MaterialTheme.typography.h6
-            )
-            Text(
                 mission.orbit.name ?: "Unknown Orbit",
                 modifier = Modifier.padding(6.dp),
             )

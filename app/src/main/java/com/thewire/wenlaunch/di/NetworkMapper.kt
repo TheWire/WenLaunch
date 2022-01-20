@@ -1,6 +1,7 @@
 package com.thewire.wenlaunch.di
 
 import com.google.gson.GsonBuilder
+import com.thewire.wenlaunch.BuildConfig
 import com.thewire.wenlaunch.network.LaunchService
 import com.thewire.wenlaunch.network.model.mappers.LaunchDtoMapper
 import dagger.Module
@@ -26,7 +27,7 @@ object NetworkMapper {
     @Provides
     fun provideLaunchService(): LaunchService {
         return Retrofit.Builder()
-            .baseUrl("https://lldev.thespacedevs.com/2.2.0/")
+            .baseUrl(BuildConfig.SERVER_URL)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
             .create(LaunchService::class.java)

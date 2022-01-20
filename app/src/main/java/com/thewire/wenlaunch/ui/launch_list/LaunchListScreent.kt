@@ -2,11 +2,14 @@ package com.thewire.wenlaunch.ui.launch_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
@@ -22,6 +25,7 @@ fun LaunchListScreen(
     darkTheme: Boolean,
     navController: NavController,
     viewModel: LaunchListViewModel,
+    toggleDarkMode: () -> Unit,
 ) {
     val launches = viewModel.launches.value
 
@@ -30,19 +34,30 @@ fun LaunchListScreen(
     ) {
         Scaffold(
             topBar = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .zIndex(10f)
-                        .background(color = MaterialTheme.colors.background)
-                ) {
-                    Text(
-                        "Upcoming Launches",
-                        style = MaterialTheme.typography.h4,
-                        modifier = Modifier
-                            .padding(MAIN_COLUMN_PADDING.dp)
-                    )
-                }
+                TopAppBar(
+                    title = {
+                        Text(
+                            "Upcoming Launches",
+                            style = MaterialTheme.typography.h5,
+                            modifier = Modifier
+                                .padding(MAIN_COLUMN_PADDING.dp)
+                        )
+                    },
+                    actions = {
+                        Box() {
+                            IconButton(
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                onClick = toggleDarkMode
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.MoreVert,
+                                    contentDescription = "menu"
+                                )
+                            }
+                        }
+
+                    }
+                )
             }
         ) {
             Column(

@@ -64,11 +64,11 @@ fun StatusInfo(
                     style = MaterialTheme.typography.subtitle2
                 )
             }
-            val formatter = DateTimeFormatter.ofPattern("H:mm:ss EEEE MMMM yyyy z")
+            val formatter = DateTimeFormatter.ofPattern("H:mm:ss EEEE D MMMM yyyy z")
             val time = launch.net?.withZoneSameInstant(
                 ZoneId.systemDefault())?.format(formatter).toString()
             launch.net
-            Text(time ?: "Unknown Time",
+            Text(text = time,
                 modifier = Modifier.padding(6.dp),
                 style = MaterialTheme.typography.h6
             )
