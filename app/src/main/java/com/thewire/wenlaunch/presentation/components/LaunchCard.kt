@@ -34,8 +34,7 @@ fun LaunchCard(
             .clickable(onClick = onClick),
         elevation = 4.dp
     ) {
-        Column(
-        ) {
+        Column() {
                 val image = loadPicture(
                     uri = launch.image, defaultImage = DEFAULT_LAUNCH_IMAGE
                 ).value

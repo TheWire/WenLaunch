@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalDrawer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -24,28 +25,32 @@ fun LaunchList(
 ) {
     RefreshContainer(
         modifier = modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colors.surface),
+            .fillMaxSize(),
         refreshCallback = refreshCallback
 
     ) {
-            LazyColumn() {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colors.background),
+            ) {
                 itemsIndexed(
                     items = launches
                 ) { index, launch ->
-                    if((index + 1) >= (launches.size)) {
-                        onMoreLaunches(LaunchListEvent.MoreLaunches((index + 2) - launches.size))
-                    }
-                    LaunchCard(
-                        modifier = Modifier.fillMaxWidth(),
-                        launch = launch,
-                        onClick = {
-                            val bundle = Bundle()
-                            bundle.putString("launchId", launch.id)
-                            val route = Screen.LaunchView.route + "/${launch.id}"
-                            navController.navigate(route)
+                        if((index + 1) >= (launches.size)) {
+                            onMoreLaunches(LaunchListEvent.MoreLaunches((index + 2) - launches.size))
                         }
-                    )
+                        LaunchCard(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            launch = launch,
+                            onClick = {
+                                val bundle = Bundle()
+                                bundle.putString("launchId", launch.id)
+                                val route = Screen.LaunchView.route + "/${launch.id}"
+                                navController.navigate(route)
+                            }
+                        )
                 }
             }
         }
