@@ -45,8 +45,6 @@ fun LaunchList(
                                 .fillMaxWidth(),
                             launch = launch,
                             onClick = {
-                                val bundle = Bundle()
-                                bundle.putString("launchId", launch.id)
                                 val route = Screen.LaunchView.route + "/${launch.id}"
                                 navController.navigate(route)
                             }

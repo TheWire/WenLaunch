@@ -8,7 +8,10 @@ class RocketConfigurationDtoMapper : DomainMapper<RocketConfigurationDto, Rocket
     override fun mapToDomainModel(model: RocketConfigurationDto): RocketConfiguration {
         return RocketConfiguration(
             id = model.id,
-            name = model.name
+            name = model.name,
+            family = model.family,
+            variant = model.variant,
+            fullName = model.fullName,
         )
     }
 }

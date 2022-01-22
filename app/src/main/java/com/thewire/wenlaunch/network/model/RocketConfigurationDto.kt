@@ -9,4 +9,13 @@ data class RocketConfigurationDto(
     @SerializedName("name")
     var name: String? = null,
 
+    @SerializedName("family")
+    var family: String? = null,
+
+    @SerializedName("full_name")
+    var fullName: String? = null,
+
+    @SerializedName("variant")
+    var variant: String? = null,
+
 )

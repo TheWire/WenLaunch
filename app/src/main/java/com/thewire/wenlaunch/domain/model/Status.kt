@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class Status(
     val id: Int? = null,
     val name: String? = null,
-    val abbrev: LaunchStatus? = null,
+    val abbrev: LaunchStatus,
     val description: String? = null,
 
     ) : Parcelable
