@@ -43,6 +43,7 @@ fun LaunchListScreen(
                                 .padding(MAIN_COLUMN_PADDING.dp)
                         )
                     },
+                    backgroundColor = MaterialTheme.colors.primary,
                     actions = {
                         Box() {
                             IconButton(

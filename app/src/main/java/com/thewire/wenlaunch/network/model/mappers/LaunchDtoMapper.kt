@@ -13,7 +13,6 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
     private val padMapper = PadDtoMapper()
     private val statusMapper = StatusDtoMapper()
     override fun mapToDomainModel(model: LaunchDto): Launch {
-
         return Launch(
             id = model.id,
             url =  model.url?.let{ Uri.parse(model.url) },
@@ -24,6 +23,7 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
             mission = missionMapper.mapToDomainModel(model.mission ?: MissionDto()),
             pad = padMapper.mapToDomainModel(model.pad ?: PadDto()),
             image = model.image?.let{ Uri.parse(model.image) },
+            webcastLive = model.webcastLive ?: false
         )
     }
 

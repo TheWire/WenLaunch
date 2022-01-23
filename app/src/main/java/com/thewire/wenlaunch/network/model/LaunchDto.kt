@@ -31,6 +31,10 @@ data class LaunchDto(
     @SerializedName("image")
     var image: String? =  null,
 
+    @SerializedName(" webcast_live")
+    var webcastLive: Boolean? =  null,
+
+
 
 
 )

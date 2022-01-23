@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.thewire.wenlaunch.R
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
@@ -40,14 +41,25 @@ fun LaunchCard(
     elevation = 4.dp
     ) {
         Column () {
-            Text(
-                text = launch.mission.name ?: "unknown mission",
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colors.primary)
-                    .padding(4.dp),
-                style = MaterialTheme.typography.h5,
-            )
+                    .padding(4.dp)
+            ) {
+                Text(
+                    text = launch.mission.name ?: "Unknown Mission",
+                    style = MaterialTheme.typography.h5,
+                )
+                LaunchStatusIndicator(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd),
+                    launchStatus = launch.status?.abbrev,
+                    padding = 3.dp,
+                    fontSize = 11.sp,
+                )
+
+            }
             Row() {
                 LaunchListInfo(
                     modifier = Modifier
@@ -87,18 +99,29 @@ fun LaunchListInfo(
             launch.rocket.configuration.fullName ?: "Unknown Rocket",
             style = MaterialTheme.typography.h6
         )
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
             launch.pad.location.name ?: "Unknown Location",
         )
         val timeString: String = when(launch.status?.abbrev) {
-            LaunchStatus.GO -> getTimeString(launch.net, "H:mm:ss EE D MM yyyy")
-            LaunchStatus.TBC -> "NET " + getTimeString(launch.net,"H:mm EE D MM yyyy")
-            LaunchStatus.TBD -> "NET " + getTimeString(launch.net,"EE D MM yyyy")
+            LaunchStatus.GO -> getTimeString(launch.net, "H:mm EE d MMM yyyy")
+            LaunchStatus.TBC -> "NET " + getTimeString(launch.net,"H:mm EE d MMM yyyy")
+            LaunchStatus.TBD -> "NET " + getTimeString(launch.net,"d MMM yyyy")
             else -> getTimeString(launch.net,"")
         }
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
             timeString
         )
+        if(launch.webcastLive) {
+            Spacer(modifier = Modifier.height(10.dp))
+            WebcastLiveIndicator(
+                modifier = Modifier
+                    .padding(4.dp, 2.dp),
+                text = "LIVE",
+                uri = null
+            )
+        }
     }
 }
 

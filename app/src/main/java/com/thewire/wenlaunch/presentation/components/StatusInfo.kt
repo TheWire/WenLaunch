@@ -43,15 +43,10 @@ fun StatusInfo(
                     style = MaterialTheme.typography.h5,
                     color = MaterialTheme.colors.onPrimary
                 )
-
-                Text(
-                    text = getStatusText(launch.status?.abbrev),
+                LaunchStatusIndicator(
                     modifier = Modifier
-                        .background(color = getStatusColor(launch.status?.abbrev), shape = CircleShape)
-                        .padding(6.dp)
                         .align(Alignment.CenterEnd),
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
+                    launchStatus = launch.status?.abbrev
                 )
             }
             if(launch.status?.abbrev == TBC ||
@@ -64,7 +59,7 @@ fun StatusInfo(
                     style = MaterialTheme.typography.subtitle2
                 )
             }
-            val formatter = DateTimeFormatter.ofPattern("H:mm:ss EEEE D MMMM yyyy z")
+            val formatter = DateTimeFormatter.ofPattern("H:mm:ss EEEE d MMMM yyyy z")
             val time = launch.net?.withZoneSameInstant(
                 ZoneId.systemDefault())?.format(formatter).toString()
             launch.net
@@ -74,25 +69,5 @@ fun StatusInfo(
             )
 
         }
-    }
-}
-
-fun getStatusColor(launchStatus: LaunchStatus?): Color {
-    return when(launchStatus) {
-        GO -> Color.Green
-        TBD -> Color.Yellow
-        TBC -> Color(0xffa9fca7)
-        OTHER -> Color(0xffeb7434)
-        else -> Color(0xffeb7434)
-    }
-}
-
-fun getStatusText(launchStatus: LaunchStatus?): String {
-    return when(launchStatus) {
-        GO -> GO.toString()
-        TBD -> TBD.toString()
-        TBC -> TBC.toString()
-        OTHER -> "?"
-        else -> "?"
     }
 }

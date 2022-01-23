@@ -57,6 +57,7 @@ fun LaunchScreen(
                             overflow = TextOverflow.Ellipsis,
                         )
                     },
+                    backgroundColor = MaterialTheme.colors.primary,
                     navigationIcon = {
                         IconButton(
                             onClick = { navController.popBackStack() }

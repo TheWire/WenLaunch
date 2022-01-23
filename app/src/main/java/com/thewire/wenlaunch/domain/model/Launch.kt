@@ -16,6 +16,6 @@ data class Launch(
     val mission: Mission,
     val pad: Pad,
     val image: Uri? = null,
-
+    val webcastLive: Boolean,
     ) : Parcelable
 
