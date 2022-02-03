@@ -24,6 +24,7 @@ class StatusDtoMapper : DomainMapper<StatusDto, Status> {
                 "Go" -> GO
                 "TBD" -> TBD
                 "TBC" -> TBC
+                "Success" -> SUCCESS
                 else -> OTHER
             } else {
                 OTHER

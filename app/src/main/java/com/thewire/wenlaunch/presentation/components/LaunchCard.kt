@@ -93,13 +93,13 @@ fun LaunchListInfo(
     launch: Launch,
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Text(
             launch.rocket.configuration.fullName ?: "Unknown Rocket",
             style = MaterialTheme.typography.h6
         )
-        Spacer(modifier = Modifier.height(6.dp))
         Text(
             launch.pad.location.name ?: "Unknown Location",
         )
@@ -109,7 +109,6 @@ fun LaunchListInfo(
             LaunchStatus.TBD -> "NET " + getTimeString(launch.net,"d MMM yyyy")
             else -> getTimeString(launch.net,"")
         }
-        Spacer(modifier = Modifier.height(6.dp))
         Text(
             timeString
         )

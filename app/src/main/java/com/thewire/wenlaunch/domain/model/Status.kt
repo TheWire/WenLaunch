@@ -16,5 +16,6 @@ enum class LaunchStatus(status: String) {
     GO("Go"),
     TBD("TBD"),
     TBC("TBC"),
+    SUCCESS("SUCCESS"),
     OTHER("Unknown")
 }

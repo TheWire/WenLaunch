@@ -30,7 +30,7 @@ constructor(
             try {
                 getUpcoming(INITIAL_LAUNCH_NUM)
             }catch(e: Exception) {
-                Log.e("fetch error", "Exception: $e, ${e.cause}")
+                Log.e(TAG, "Exception: $e, ${e.cause}")
             }
         }
     }
@@ -56,14 +56,22 @@ constructor(
 //    }
 
     private suspend fun getUpcoming(limit: Int) {
-        val result = repository.upcoming(limit, 0)
-        launches.value = result
+        try {
+            val result = repository.upcoming(limit, 0)
+            launches.value = result
+        } catch(e: Exception) {
+            Log.e(TAG, "Exception: $e, ${e.cause}")
+        }
     }
 
     private suspend fun getMoreLaunches(numLaunches: Int) {
-        val result = repository.upcoming(numLaunches, launches.value.size)
-        val currentList = ArrayList(launches.value)
-        currentList.addAll(result)
-        launches.value = currentList
+        try {
+            val result = repository.upcoming(numLaunches, launches.value.size)
+            val currentList = ArrayList(launches.value)
+            currentList.addAll(result)
+            launches.value = currentList
+        } catch(e: Exception) {
+            Log.e(TAG, "Exception: $e, ${e.cause}")
+        }
     }
 }

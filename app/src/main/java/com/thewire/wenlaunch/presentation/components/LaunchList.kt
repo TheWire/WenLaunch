@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.thewire.wenlaunch.domain.model.Launch
+import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.presentation.navigation.Screen
 import com.thewire.wenlaunch.ui.launch_list.LaunchListEvent
 
@@ -40,6 +41,7 @@ fun LaunchList(
                         if((index + 1) >= (launches.size)) {
                             onMoreLaunches(LaunchListEvent.MoreLaunches((index + 2) - launches.size))
                         }
+                    if(launch.status?.abbrev != LaunchStatus.SUCCESS) {
                         LaunchCard(
                             modifier = Modifier
                                 .fillMaxWidth(),
@@ -49,6 +51,7 @@ fun LaunchList(
                                 navController.navigate(route)
                             }
                         )
+                    }
                 }
             }
         }

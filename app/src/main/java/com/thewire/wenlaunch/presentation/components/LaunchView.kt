@@ -11,17 +11,23 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
 import com.thewire.wenlaunch.domain.model.Launch
+import com.thewire.wenlaunch.ui.launch.DateTimePeriod
+import com.thewire.wenlaunch.ui.launch.LaunchCountdown
+import com.thewire.wenlaunch.ui.launch.TimePeriod
 import com.thewire.wenlaunch.util.loadPicture
 
 @Composable
 fun LaunchView(
     modifier: Modifier = Modifier,
-    launch: Launch
+    launch: Launch,
+    countdown: State<DateTimePeriod?>?,
 ) {
     Column(
         modifier = modifier
@@ -31,7 +37,8 @@ fun LaunchView(
         val infoModifier = Modifier.padding(top = 6.dp, bottom = 6.dp)
         StatusInfo(
             modifier = infoModifier.fillMaxWidth(),
-            launch = launch
+            launch = launch,
+            countdown = countdown,
         )
         RocketInfo(
             modifier = infoModifier.fillMaxWidth(),

@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -90,7 +91,11 @@ fun LaunchScreen(
             if (launch == null) {
                 LoadingAnimation(modifier = Modifier.fillMaxSize())
             } else {
-                LaunchView(modifier = Modifier.fillMaxWidth(), launch = launch)
+                LaunchView(
+                    modifier = Modifier.fillMaxWidth(),
+                    launch = launch,
+                    countdown = viewModel.countdown?.observeAsState()
+                )
             }
         }
     }
