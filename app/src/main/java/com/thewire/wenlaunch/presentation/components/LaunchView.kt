@@ -27,7 +27,7 @@ import com.thewire.wenlaunch.util.loadPicture
 fun LaunchView(
     modifier: Modifier = Modifier,
     launch: Launch,
-    countdown: State<DateTimePeriod?>?,
+    countdown: DateTimePeriod?,
 ) {
     Column(
         modifier = modifier

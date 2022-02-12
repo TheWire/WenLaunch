@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.thewire.wenlaunch.di.IDispatcherProvider
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.time.Period
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -15,19 +17,23 @@ class LaunchCountdown(
     private val dispatcherProvider: IDispatcherProvider,
 ) {
 
-    suspend fun start(): LiveData<DateTimePeriod> {
-        val countdown = MutableLiveData<DateTimePeriod>()
+    private val scope = CoroutineScope(dispatcherProvider.getIOContext())
+    fun start(): StateFlow<DateTimePeriod> {
+        val countdown = MutableStateFlow(DateTimePeriod.ZERO)
         var secondDifference = ChronoUnit.SECONDS.between(timeNow(), launchTime)
-        countdown.postValue(DateTimePeriod(timeNow(), launchTime))
-        withContext(dispatcherProvider.getIOContext()) {
+        scope.launch(dispatcherProvider.getIOContext()) {
             while(secondDifference > 0) {
-                delay(1000)
                 val now = timeNow()
-                countdown.postValue(DateTimePeriod(now, launchTime))
+                countdown.value = DateTimePeriod(now, launchTime)
                 secondDifference = ChronoUnit.SECONDS.between(now,launchTime)
+                delay(1000)
             }
         }
         return countdown
+    }
+
+    fun stop() {
+        scope.coroutineContext.cancelChildren()
     }
 }
 

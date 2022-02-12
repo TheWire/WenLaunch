@@ -6,4 +6,7 @@ sealed class LaunchEvent {
     data class GetLaunch(
         val id: String
     ): LaunchEvent()
+    data class StartCountdown(
+        val launchTime: ZonedDateTime
+    ): LaunchEvent()
 }

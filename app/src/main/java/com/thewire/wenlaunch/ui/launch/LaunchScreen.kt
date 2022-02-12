@@ -94,7 +94,7 @@ fun LaunchScreen(
                 LaunchView(
                     modifier = Modifier.fillMaxWidth(),
                     launch = launch,
-                    countdown = viewModel.countdown?.observeAsState()
+                    countdown = viewModel.countdown.value
                 )
             }
         }

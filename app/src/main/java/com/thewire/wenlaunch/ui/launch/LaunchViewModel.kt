@@ -16,6 +16,8 @@ import com.thewire.wenlaunch.repository.LaunchRepository
 import com.thewire.wenlaunch.ui.launch.LaunchEvent.*
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.time.ZonedDateTime
@@ -30,7 +32,7 @@ constructor(
         private val dispatcherProvider: IDispatcherProvider,
 ): ViewModel() {
     val launch: MutableState<Launch?> = mutableStateOf(null)
-    var countdown: LiveData<DateTimePeriod>? = null
+    val countdown = mutableStateOf<DateTimePeriod?>(null)
 
     fun onEvent(event: LaunchEvent) {
         viewModelScope.launch {
@@ -40,6 +42,9 @@ constructor(
                     is GetLaunch -> {
                         getLaunch(event.id)
                     }
+                    is StartCountdown -> {
+                        startCountdown(event.launchTime)
+                    }
                 }
             } catch(e: Exception) {
                 Log.e(TAG, "onEvent: Error $e ${e.cause}")
@@ -48,14 +53,12 @@ constructor(
 
     }
 
-    private fun startCountdown() {
-        if (countdown != null) {
-               return
-        }
-        launch.value?.net?.let { net ->
-            viewModelScope.launch() {
-                val launchCountdown = LaunchCountdown(net, dispatcherProvider = dispatcherProvider)
-                countdown = launchCountdown.start()
+    private suspend fun startCountdown(launchTime: ZonedDateTime) {
+        val launchCountdown = LaunchCountdown(launchTime, dispatcherProvider = dispatcherProvider).apply {
+            viewModelScope.launch {
+                start().collect { dateTimePeriod ->
+                    countdown.value = dateTimePeriod
+                }
             }
         }
     }
@@ -65,7 +68,9 @@ constructor(
             val newLaunch = launchRepository.launch(id)
             launch.value = newLaunch
             if(newLaunch.status?.abbrev == LaunchStatus.GO) {
-                startCountdown()
+                newLaunch.net?.let { net ->
+                    startCountdown(net)
+                }
             }
         } catch(e: Exception) {
             Log.e(TAG, "Exception: $e, ${e.cause}")

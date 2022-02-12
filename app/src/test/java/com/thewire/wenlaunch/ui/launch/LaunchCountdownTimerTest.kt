@@ -1,9 +1,9 @@
 package com.thewire.wenlaunch.ui.launch
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import app.cash.turbine.test
 import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.di.ProductionDispatcherProviderImpl
-import com.thewire.wenlaunch.getOrAwaitValue
 import kotlinx.coroutines.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -27,60 +27,52 @@ class LaunchCountdownTimerTest {
 
     @Test
     fun `CountdownTime should return expected time difference 1`() {
+        val launchTime = ZonedDateTime.parse("2022-03-02T06:06:06Z")
+        val mockTimeNow = ZonedDateTime.parse("2022-03-01T00:00:00Z")
+        val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
         runBlocking {
-            val launchTime = ZonedDateTime.parse("2022-03-02T06:06:06Z")
-            val mockTimeNow = ZonedDateTime.parse("2022-03-01T00:00:00Z")
-            val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
-            scope.launch {
-                val timer = launchCountdown.start()
-                val ret = timer.getOrAwaitValue(1)
-                compareTimePeriod(ret, 0, 0, 1, 6L, 6L, 6L)
-                scope.coroutineContext.cancelChildren()
+            val timer = launchCountdown.start()
+            timer.test {
+                compareTimePeriod(this.awaitItem(), 0, 0, 1, 6L, 6L, 6L)
             }
         }
     }
 
     @Test
     fun `CountdownTime should return expected time difference 2`() {
+        val launchTime = ZonedDateTime.parse("2022-03-01T00:00:30Z")
+        val mockTimeNow = ZonedDateTime.parse("2022-03-01T00:00:00Z")
+        val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
         runBlocking {
-            val launchTime = ZonedDateTime.parse("2022-03-01T00:00:30Z")
-            val mockTimeNow = ZonedDateTime.parse("2022-03-01T00:00:00Z")
-            val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
-            scope.launch {
-                val timer = launchCountdown.start()
-                val ret = timer.getOrAwaitValue(1)
-                compareTimePeriod(ret, 0, 0, 0, 0L, 0L, 30L)
-                scope.coroutineContext.cancelChildren()
+            val timer = launchCountdown.start()
+            timer.test {
+                compareTimePeriod(this.awaitItem(), 0, 0, 0, 0L, 0L, 30L)
             }
         }
     }
 
     @Test
     fun `CountdownTime should return expected time difference 3`() {
+        val launchTime = ZonedDateTime.parse("2023-09-23T23:23:23Z")
+        val mockTimeNow = ZonedDateTime.parse("2022-03-01T00:00:00Z")
+        val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
         runBlocking {
-            val launchTime = ZonedDateTime.parse("2023-09-23T23:23:23Z")
-            val mockTimeNow = ZonedDateTime.parse("2022-03-01T00:00:00Z")
-            val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
-            scope.launch {
-                val timer = launchCountdown.start()
-                val ret = timer.getOrAwaitValue(1)
-                compareTimePeriod(ret, 1, 6, 22, 23L, 23L, 23L)
-                scope.coroutineContext.cancelChildren()
+            val timer = launchCountdown.start()
+            timer.test {
+                compareTimePeriod(this.awaitItem(), 1, 6, 22, 23L, 23L, 23L)
             }
         }
     }
 
     @Test
     fun `CountdownTime should return 0 for time in past`() {
+        val launchTime = ZonedDateTime.parse("2022-03-01T00:00:00Z")
+        val mockTimeNow = ZonedDateTime.parse("2022-03-01T06:06:06Z")
+        val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
         runBlocking {
-            val launchTime = ZonedDateTime.parse("2022-03-01T00:00:00Z")
-            val mockTimeNow = ZonedDateTime.parse("2022-03-01T06:06:06Z")
-            val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
-            scope.launch {
-                val timer = launchCountdown.start()
-                val ret = timer.getOrAwaitValue(1)
-                compareTimePeriod(ret, 0, 0, 0, 0L, 0L, 0L)
-                scope.coroutineContext.cancelChildren()
+            val timer = launchCountdown.start()
+            timer.test {
+                compareTimePeriod(this.awaitItem(), 0, 0, 0, 0L, 0L, 0L)
             }
         }
     }
