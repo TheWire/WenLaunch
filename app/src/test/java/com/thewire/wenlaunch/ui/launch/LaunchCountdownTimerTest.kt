@@ -65,6 +65,19 @@ class LaunchCountdownTimerTest {
     }
 
     @Test
+    fun `CountdownTime should return expected time difference 4`() {
+        val launchTime = ZonedDateTime.parse("2022-02-14T00:55:00Z")
+        val mockTimeNow = ZonedDateTime.parse("2022-02-12T16:52:23Z")
+        val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
+        runBlocking {
+            val timer = launchCountdown.start()
+            timer.test {
+                compareTimePeriod(this.awaitItem(), 0, 0, 1, 8L, 2L, 37L)
+            }
+        }
+    }
+
+    @Test
     fun `CountdownTime should return 0 for time in past`() {
         val launchTime = ZonedDateTime.parse("2022-03-01T00:00:00Z")
         val mockTimeNow = ZonedDateTime.parse("2022-03-01T06:06:06Z")

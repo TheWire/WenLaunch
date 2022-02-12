@@ -6,6 +6,7 @@ import com.thewire.wenlaunch.di.IDispatcherProvider
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.time.LocalTime
 import java.time.Period
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -24,7 +25,7 @@ class LaunchCountdown(
         scope.launch(dispatcherProvider.getIOContext()) {
             while(secondDifference > 0) {
                 val now = timeNow()
-                countdown.value = DateTimePeriod(now, launchTime)
+                countdown.value = DateTimePeriod.between(now, launchTime)
                 secondDifference = ChronoUnit.SECONDS.between(now,launchTime)
                 delay(1000)
             }
@@ -46,6 +47,15 @@ data class TimePeriod(val totalSeconds: Long) {
 
     companion object {
         val ZERO = TimePeriod(0)
+        fun fromLocalTimes(earlier: LocalTime, later: LocalTime): TimePeriod {
+            val differenceSeconds = later.toSecondOfDay() - earlier.toSecondOfDay()
+            val finalDifference = if(differenceSeconds < 0) {
+                (later.toSecondOfDay() + 24*60*60) - earlier.toSecondOfDay()
+            } else {
+                differenceSeconds
+            }
+            return TimePeriod(finalDifference.toLong())
+        }
     }
 
     operator fun compareTo(timePeriod: TimePeriod): Int {
@@ -57,11 +67,20 @@ data class DateTimePeriod(
     val period: Period,
     val timePeriod: TimePeriod,
 ) {
-    constructor(earlier: ZonedDateTime, later: ZonedDateTime) : this(
-        period = Period.between(earlier.toLocalDate(), later.toLocalDate()),
-        timePeriod = TimePeriod(earlier.toLocalTime().until(later.toLocalTime(), ChronoUnit.SECONDS))
-    )
     companion object {
         val ZERO = DateTimePeriod(Period.ZERO, TimePeriod.ZERO)
+        fun between(earlier: ZonedDateTime, later: ZonedDateTime): DateTimePeriod {
+            val timePeriod = earlier.toLocalTime().until(later.toLocalTime(), ChronoUnit.SECONDS)
+            val adjustedPeriod = if (timePeriod < 0) {
+                later.plusSeconds(timePeriod)
+            } else {
+                later
+            }
+
+            return DateTimePeriod(
+                Period.between(earlier.toLocalDate(), adjustedPeriod.toLocalDate()),
+                TimePeriod.fromLocalTimes(earlier.toLocalTime(), later.toLocalTime())
+            )
+        }
     }
 }
