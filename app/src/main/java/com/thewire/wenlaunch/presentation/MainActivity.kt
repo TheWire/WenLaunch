@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
                     val factory = HiltViewModelFactory(LocalContext.current, navBackStackEntry)
                     val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current)
                     val viewModel: LaunchViewModel = viewModel(viewModelStoreOwner, "LaunchViewModel", factory)
+                    lifecycle.addObserver(viewModel)
                     LaunchScreen(
                         launchId = navBackStackEntry.arguments?.getString("launchId"),
                         darkMode = (application as BaseApplication).darkMode.value,

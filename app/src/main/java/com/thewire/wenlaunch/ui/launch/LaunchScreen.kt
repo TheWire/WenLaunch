@@ -1,31 +1,23 @@
 package com.thewire.wenlaunch.ui.launch
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.compose.foundation.layout.*
+import android.widget.Toast
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import com.thewire.wenlaunch.presentation.BaseApplication
 import com.thewire.wenlaunch.presentation.components.LaunchView
 import com.thewire.wenlaunch.presentation.components.LoadingAnimation
 import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @Composable
 fun LaunchScreen(
@@ -35,15 +27,24 @@ fun LaunchScreen(
     viewModel: LaunchViewModel,
     navController: NavController,
 ) {
+    val context = LocalContext.current
+    DisposableEffect(key1 = viewModel) {
 
-    if (launchId == null) {
-        TODO("invalid launch")
-    } else {
-        if (viewModel.launch.value == null) {
-            viewModel.onEvent(LaunchEvent.GetLaunch(launchId))
+        if (launchId == null) {
+            navController.popBackStack()
+            Toast.makeText(context, "Error launch not found", Toast.LENGTH_SHORT).show()
+        } else {
+            if (viewModel.launch.value == null) {
+                viewModel.onEvent(LaunchEvent.GetLaunch(launchId))
+            }
+        }
+
+        viewModel.onEvent(LaunchEvent.Start)
+
+        onDispose {
+            viewModel.onEvent(LaunchEvent.Stop)
         }
     }
-
 
     val launch = viewModel.launch.value
 
@@ -94,7 +95,7 @@ fun LaunchScreen(
                 LaunchView(
                     modifier = Modifier.fillMaxWidth(),
                     launch = launch,
-                    countdown = viewModel.countdown.value
+                    countdown = viewModel.countdownState.value
                 )
             }
         }
