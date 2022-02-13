@@ -45,6 +45,7 @@ fun StatusInfo(
             ) {
                 Text(
                     "Status",
+                    modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.h5,
                     color = MaterialTheme.colors.onPrimary
                 )

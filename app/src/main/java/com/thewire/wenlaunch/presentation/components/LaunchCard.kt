@@ -50,6 +50,7 @@ fun LaunchCard(
             ) {
                 Text(
                     text = launch.mission.name ?: "Unknown Mission",
+                    modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.h5,
                 )
                 LaunchStatusIndicator(
