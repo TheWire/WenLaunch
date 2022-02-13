@@ -31,29 +31,28 @@ fun LaunchCard(
     onClick: () -> Unit,
 ) {
     Card(
-    shape = MaterialTheme.shapes.small,
-    modifier = modifier
-    .padding(
-    bottom = 7.dp,
-    top = 7.dp
-    )
-    .clickable(onClick = onClick),
-    elevation = 4.dp
+        shape = MaterialTheme.shapes.small,
+        modifier = modifier
+            .padding(
+                bottom = 7.dp,
+                top = 7.dp
+            )
+            .clickable(onClick = onClick),
+        elevation = 4.dp
     ) {
-        Column () {
-            Box(
+        Column() {
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colors.primary)
-                    .padding(4.dp)
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = launch.mission.name ?: "Unknown Mission",
                     style = MaterialTheme.typography.h5,
                 )
                 LaunchStatusIndicator(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd),
                     launchStatus = launch.status?.abbrev,
                     padding = 3.dp,
                     fontSize = 11.sp,
@@ -103,16 +102,16 @@ fun LaunchListInfo(
         Text(
             launch.pad.location.name ?: "Unknown Location",
         )
-        val timeString: String = when(launch.status?.abbrev) {
+        val timeString: String = when (launch.status?.abbrev) {
             LaunchStatus.GO -> getTimeString(launch.net, "H:mm EE d MMM yyyy")
-            LaunchStatus.TBC -> "NET " + getTimeString(launch.net,"H:mm EE d MMM yyyy")
-            LaunchStatus.TBD -> "NET " + getTimeString(launch.net,"d MMM yyyy")
-            else -> getTimeString(launch.net,"")
+            LaunchStatus.TBC -> "NET " + getTimeString(launch.net, "H:mm EE d MMM yyyy")
+            LaunchStatus.TBD -> "NET " + getTimeString(launch.net, "d MMM yyyy")
+            else -> getTimeString(launch.net, "")
         }
         Text(
             timeString
         )
-        if(launch.webcastLive) {
+        if (launch.webcastLive) {
             Spacer(modifier = Modifier.height(10.dp))
             WebcastLiveIndicator(
                 modifier = Modifier
@@ -125,10 +124,10 @@ fun LaunchListInfo(
 }
 
 fun getTimeString(time: ZonedDateTime?, pattern: String): String {
-    if(time == null) {
+    if (time == null) {
         return "Unknown Time"
     }
-    return if(pattern.isNotEmpty()) {
+    return if (pattern.isNotEmpty()) {
         val formatter = DateTimeFormatter.ofPattern(pattern)
         time.withZoneSameInstant(
             ZoneId.systemDefault()

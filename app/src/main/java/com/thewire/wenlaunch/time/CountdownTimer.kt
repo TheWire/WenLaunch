@@ -68,7 +68,9 @@ data class DateTimePeriod(
     val timePeriod: TimePeriod,
 ) {
     companion object {
+
         val ZERO = DateTimePeriod(Period.ZERO, TimePeriod.ZERO)
+
         fun between(earlier: ZonedDateTime, later: ZonedDateTime): DateTimePeriod {
             val timePeriod = earlier.toLocalTime().until(later.toLocalTime(), ChronoUnit.SECONDS)
             val adjustedPeriod = if (timePeriod < 0) {

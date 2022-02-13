@@ -36,47 +36,48 @@ fun StatusInfo(
         elevation = 6.dp
     ) {
         Column() {
-            Box(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = MaterialTheme.colors.primary)
                     .padding(6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     "Status",
-                    modifier = Modifier.align(Alignment.CenterStart),
                     style = MaterialTheme.typography.h5,
                     color = MaterialTheme.colors.onPrimary
                 )
                 if(launch.status?.abbrev != SUCCESS) {
                     LaunchStatusIndicator(
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd),
                         launchStatus = launch.status?.abbrev
                     )
                 }
             }
-            if(launch.status?.abbrev == TBC ||
-                launch.status?.abbrev == TBD ||
-                launch.status?.abbrev == OTHER) {
+            Column(
+                modifier = Modifier
+                    .padding(6.dp)
+            ) {
+                if(launch.status?.abbrev == TBC ||
+                    launch.status?.abbrev == TBD ||
+                    launch.status?.abbrev == OTHER) {
 
-                Text(
-                    "No Earlier Than",
-                    modifier = Modifier.padding(6.dp),
-                    style = MaterialTheme.typography.subtitle2
+                    Text(
+                        "No Earlier Than",
+                        style = MaterialTheme.typography.subtitle2
+                    )
+                }
+                val formatter = DateTimeFormatter.ofPattern("H:mm:ss EEEE d MMMM yyyy z")
+                val time = launch.net?.withZoneSameInstant(
+                    ZoneId.systemDefault())?.format(formatter).toString()
+                launch.net
+                Text(text = time,
+                    style = MaterialTheme.typography.h6
                 )
-            }
-            val formatter = DateTimeFormatter.ofPattern("H:mm:ss EEEE d MMMM yyyy z")
-            val time = launch.net?.withZoneSameInstant(
-                ZoneId.systemDefault())?.format(formatter).toString()
-            launch.net
-            Text(text = time,
-                modifier = Modifier.padding(6.dp),
-                style = MaterialTheme.typography.h6
-            )
-
-            countdown?.let { countdown ->
-                Countdown(countdown = countdown)
+                countdown?.let { countdown ->
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Countdown(countdown = countdown)
+                }
             }
         }
     }
@@ -86,18 +87,26 @@ fun StatusInfo(
 fun Countdown(modifier: Modifier = Modifier, countdown: DateTimePeriod) {
     val timePeriod = countdown.timePeriod
     val period = countdown.period
-    val periodText = "${period.years} Years ${period.months} months ${period.days} days"
     Text("T minus")
     Column(modifier = modifier) {
+        val yearString = if(period.years > 0) "${period.years} Years " else ""
+        val monthString = if(period.months > 0 || period.years > 0) "${period.months} Months " else ""
+        val dayString = if(period.days > 0 || period.months > 0 || period.years > 0) "${period.days} Days" else ""
+        val periodString = "$yearString$monthString$dayString"
+        if(periodString.isNotEmpty()) {
+            Text(
+                text = periodString,
+                modifier = Modifier.padding(vertical = 4.dp),
+                style = MaterialTheme.typography.h6
+            )
+        }
+        val hourString = if(timePeriod.hours > 0) "${timePeriod.hours} Hours " else ""
+        val minuteString = if(timePeriod.minutes > 0 || timePeriod.hours > 0) "${timePeriod.minutes } Mins " else ""
+        val secondString = "${timePeriod.seconds} Secs"
+        val timeString = "$hourString$minuteString$secondString"
         Text(
-            text = periodText,
-            modifier = Modifier.padding(6.dp),
-            style = MaterialTheme.typography.h6
-        )
-        val timeText = "${timePeriod.hours} Hours ${timePeriod.minutes} Mins ${timePeriod.seconds}"
-        Text(
-            text = timeText,
-            modifier = Modifier.padding(6.dp),
+            text = timeString,
+            modifier = Modifier.padding(vertical = 4.dp),
             style = MaterialTheme.typography.h6
         )
     }
