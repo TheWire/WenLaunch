@@ -2,6 +2,7 @@ package com.thewire.wenlaunch.network.model.mappers
 
 import android.net.Uri
 import com.thewire.wenlaunch.domain.model.Launch
+import com.thewire.wenlaunch.domain.model.VidUri
 import com.thewire.wenlaunch.domain.util.DomainMapper
 import com.thewire.wenlaunch.network.model.*
 import java.time.ZonedDateTime
@@ -12,6 +13,7 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
     private val missionMapper = MissionDtoMapper()
     private val padMapper = PadDtoMapper()
     private val statusMapper = StatusDtoMapper()
+    private val vidUrlDtoMapper = VidUrlDtoMapper()
     override fun mapToDomainModel(model: LaunchDto): Launch {
         return Launch(
             id = model.id,
@@ -23,7 +25,8 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
             mission = missionMapper.mapToDomainModel(model.mission ?: MissionDto()),
             pad = padMapper.mapToDomainModel(model.pad ?: PadDto()),
             image = model.image?.let{ Uri.parse(model.image) },
-            webcastLive = model.webcastLive ?: false
+            webcastLive = model.webcastLive ?: false,
+            vidUris = vidUrlDtoMapper.toDomainList(model.vidURLs ?: listOf())
         )
     }
 

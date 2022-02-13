@@ -70,7 +70,6 @@ fun StatusInfo(
                 val formatter = DateTimeFormatter.ofPattern("H:mm:ss EEEE d MMMM yyyy z")
                 val time = launch.net?.withZoneSameInstant(
                     ZoneId.systemDefault())?.format(formatter).toString()
-                launch.net
                 Text(text = time,
                     style = MaterialTheme.typography.h6
                 )
@@ -78,6 +77,9 @@ fun StatusInfo(
                     Spacer(modifier = Modifier.padding(4.dp))
                     Countdown(countdown = countdown)
                 }
+//                if(launch.vidUris.isNotEmpty()) {
+//                    Text(launch.vidUris[0].uri.toString())
+//                }
             }
         }
     }

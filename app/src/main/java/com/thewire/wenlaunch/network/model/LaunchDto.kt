@@ -34,11 +34,7 @@ data class LaunchDto(
     @SerializedName("webcast_live")
     var webcastLive: Boolean? =  null,
 
-//    @SerializedName("vidURLs")
-//    var webcast: String? =  null,
+    @SerializedName("vidURLs")
+    var vidURLs: List<VidURLDto>? = null,
 
-
-
-
-
-)
+    )

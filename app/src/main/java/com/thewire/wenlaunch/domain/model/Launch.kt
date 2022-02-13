@@ -17,5 +17,6 @@ data class Launch(
     val pad: Pad,
     val image: Uri? = null,
     val webcastLive: Boolean,
+    val vidUris: List<VidUri>
     ) : Parcelable
 
