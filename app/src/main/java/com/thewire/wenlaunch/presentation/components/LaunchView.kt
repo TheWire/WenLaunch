@@ -35,6 +35,12 @@ fun LaunchView(
             .padding(6.dp)
     ) {
         val infoModifier = Modifier.padding(top = 6.dp, bottom = 6.dp)
+        if(launch.webcastLive && launch.vidUris.isNotEmpty()) {
+            Webcast(
+                modifier = infoModifier.fillMaxWidth(),
+                uri = launch.vidUris[0].uri ?: Uri.EMPTY
+            )
+        }
         StatusInfo(
             modifier = infoModifier.fillMaxWidth(),
             launch = launch,
