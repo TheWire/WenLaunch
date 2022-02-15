@@ -17,33 +17,22 @@ fun MissionInfo(
     modifier: Modifier = Modifier,
     mission: Mission
 ) {
-    Card(
+    InfoCard(
         modifier = modifier,
-        elevation = 6.dp
+        headingText = "Mission",
     ) {
-        Column() {
-            Text(
-                "Mission",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.colors.primary)
-                    .padding(6.dp),
-                style = MaterialTheme.typography.h5,
-                color = MaterialTheme.colors.onPrimary
-            )
-            Text(
-                mission.name ?: "Unknown Mission",
-                modifier = Modifier.padding(6.dp),
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                mission.orbit.name ?: "Unknown Orbit",
-                modifier = Modifier.padding(6.dp),
-            )
-            Text(
-                mission.description ?: "No Description",
-                modifier = Modifier.padding(6.dp),
-            )
-        }
+        Text(
+            mission.name ?: "Unknown Mission",
+            modifier = Modifier.padding(vertical = 6.dp),
+            style = MaterialTheme.typography.h6
+        )
+        Text(
+            mission.orbit.name ?: "Unknown Orbit",
+            modifier = Modifier.padding(vertical = 6.dp),
+        )
+        Text(
+            mission.description ?: "No Description",
+            modifier = Modifier.padding(vertical = 6.dp),
+        )
     }
 }

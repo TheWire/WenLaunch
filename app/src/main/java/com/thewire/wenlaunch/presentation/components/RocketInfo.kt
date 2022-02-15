@@ -3,10 +3,7 @@ package com.thewire.wenlaunch.presentation.components
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -26,29 +23,19 @@ fun RocketInfo(
     rocket: Rocket,
     imageUri: Uri?
 ) {
-    Card(
+    InfoCard(
         modifier = modifier,
-        elevation = 6.dp
+        headingText = "Rocket",
+        bodyPadding = PaddingValues(0.dp)
     ) {
-        Column() {
-            Text(
-                "Rocket",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.colors.primary)
-                    .padding(6.dp),
-                style = MaterialTheme.typography.h5,
-                color = MaterialTheme.colors.onPrimary
-            )
-            Text(
-                rocket.configuration.name ?: "Unknown Rocket",
-                modifier = Modifier.padding(6.dp),
-                style = MaterialTheme.typography.h6
-            )
-            LaunchImage(
-                modifier = Modifier.align(Alignment.CenterHorizontally).height(450.dp),
-                imageUri = imageUri,
-            )
-        }
+        Text(
+            rocket.configuration.name ?: "Unknown Rocket",
+            modifier = Modifier.padding(6.dp),
+            style = MaterialTheme.typography.h6
+        )
+        LaunchImage(
+            modifier = Modifier.align(Alignment.CenterHorizontally).height(450.dp),
+            imageUri = imageUri,
+        )
     }
 }

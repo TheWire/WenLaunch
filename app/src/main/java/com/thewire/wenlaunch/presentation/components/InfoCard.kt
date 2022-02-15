@@ -18,12 +18,13 @@ import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
 fun InfoCard(
     modifier: Modifier = Modifier,
     elevation: Dp = 6.dp,
-    padding: PaddingValues = PaddingValues(6.dp),
+    headingPadding: PaddingValues = PaddingValues(6.dp),
     headingText: String,
     headingStyle: TextStyle = MaterialTheme.typography.h5,
     headingColor: Color = MaterialTheme.colors.onPrimary,
     headingExtraContent: @Composable RowScope.() -> Unit = {},
     headingSectionColor: Color = MaterialTheme.colors.primary,
+    bodyPadding: PaddingValues = PaddingValues(6.dp),
     bodyColor: Color = MaterialTheme.colors.surface,
     bodyContent: @Composable ColumnScope.() -> Unit
     ) {
@@ -40,7 +41,7 @@ fun InfoCard(
             Row(
                 modifier = Modifier
                     .background(color = headingSectionColor)
-                    .padding(padding)
+                    .padding(headingPadding)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -54,7 +55,7 @@ fun InfoCard(
                 headingExtraContent()
             }
             Column(modifier = Modifier
-                .padding(padding)
+                .padding(bodyPadding)
                 .fillMaxWidth()) {
 
                 bodyContent()
