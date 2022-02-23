@@ -2,31 +2,33 @@ package com.thewire.wenlaunch.presentation.components
 
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import com.thewire.wenlaunch.util.loadPicture
+import coil.compose.rememberImagePainter
+import com.thewire.wenlaunch.R
 
+
+const val DEFAULT_LAUNCH_IMAGE = R.drawable.default_launch
+const val DEFAULT_LOCATION_IMAGE = R.drawable.default_location
 
 @Composable
 fun LaunchImage(
     modifier: Modifier = Modifier,
     imageUri: Uri?,
+    defaultImage: Int = DEFAULT_LAUNCH_IMAGE,
     contentDescription: String = ""
 ) {
-        val image = loadPicture(
-            uri = imageUri, defaultImage = DEFAULT_LAUNCH_IMAGE
-        ).value
-        image?.let { img ->
-            Image(
-                modifier = modifier,
-                bitmap = img.asImageBitmap(),
-                contentScale = ContentScale.Crop,
-                contentDescription = contentDescription,
-            )
-        }
+    Image(
+        modifier = modifier,
+        painter = rememberImagePainter(
+            data = imageUri ?: "error",
+            builder = {
+                placeholder(defaultImage)
+                error(defaultImage)
+            }
+        ),
+        contentScale = ContentScale.Crop,
+        contentDescription = contentDescription,
+    )
 }

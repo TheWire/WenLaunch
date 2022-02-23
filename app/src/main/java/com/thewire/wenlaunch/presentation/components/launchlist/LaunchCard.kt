@@ -8,19 +8,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import com.thewire.wenlaunch.R
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.presentation.components.layout.LaunchCardLayout
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-
-const val DEFAULT_LAUNCH_IMAGE = R.drawable.default_launch
 
 @Composable
 fun LaunchCard(
@@ -40,8 +36,8 @@ fun LaunchCard(
             modifier = modifier,
             image = rememberImagePainter(data = launch.image ?: "error",
                 builder = {
-                    placeholder(R.drawable.default_launch)
-                    error(R.drawable.default_launch)
+                    placeholder(DEFAULT_LAUNCH_IMAGE)
+                    error(DEFAULT_LAUNCH_IMAGE)
                 }
             ),
             imageDescription = "launch image",

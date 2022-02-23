@@ -1,8 +1,8 @@
 package com.thewire.wenlaunch.presentation.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +32,7 @@ fun LocationInfo(
         LaunchImage(
             modifier = Modifier.height(300.dp),
             imageUri = pad.location.map_image,
+            defaultImage = DEFAULT_LOCATION_IMAGE
         )
     }
 }
