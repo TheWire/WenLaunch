@@ -1,6 +1,5 @@
 package com.thewire.wenlaunch.presentation.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,16 +7,15 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.thewire.wenlaunch.R
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
-import com.thewire.wenlaunch.util.loadPicture
+import com.thewire.wenlaunch.presentation.components.layout.LaunchCardLayout
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -33,57 +31,48 @@ fun LaunchCard(
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = modifier
-            .padding(
-                bottom = 7.dp,
-                top = 7.dp
-            )
+            .padding(6.dp)
             .clickable(onClick = onClick),
         elevation = 4.dp
     ) {
-        Column() {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colors.primary)
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = launch.mission.name ?: "Unknown Mission",
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.h5,
-                )
-                LaunchStatusIndicator(
-                    launchStatus = launch.status?.abbrev,
-                    padding = 3.dp,
-                    fontSize = 11.sp,
-                )
 
-            }
-            Row() {
-                LaunchListInfo(
+        LaunchCardLayout(
+            modifier = modifier,
+            image = rememberImagePainter(data = launch.image,
+                builder = {
+                    placeholder(R.drawable.default_launch)
+                }
+            ),
+            imageDescription = "launch image",
+            header = {
+                Row(
                     modifier = Modifier
-                        .weight(6f)
+                        .background(MaterialTheme.colors.primary)
                         .padding(4.dp),
-                    launch = launch,
-                )
-                val image = loadPicture(
-                    uri = launch.image, defaultImage = DEFAULT_LAUNCH_IMAGE
-                ).value
-                image?.let { img ->
-                    Image(
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = launch.mission.name ?: "Unknown Mission",
                         modifier = Modifier
-                            .height(200.dp)
-                            .weight(4f)
-                            .align(Alignment.CenterVertically),
-                        bitmap = img.asImageBitmap(),
-                        contentScale = ContentScale.Crop,
-                        contentDescription = launch.name ?: "launch pic",
+                            .weight(1f),
+                        style = MaterialTheme.typography.h5,
                     )
+                    LaunchStatusIndicator(
+                        launchStatus = launch.status?.abbrev,
+                        padding = 3.dp,
+                        fontSize = 11.sp,
+                    )
+
                 }
             }
+        ) {
+            LaunchListInfo(
+                modifier = Modifier
+                    .width(200.dp)
+                    .padding(4.dp),
+                launch = launch,
+            )
         }
-
     }
 }
 

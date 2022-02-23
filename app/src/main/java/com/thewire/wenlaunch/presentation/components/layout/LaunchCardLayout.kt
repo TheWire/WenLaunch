@@ -15,7 +15,7 @@ fun LaunchCardLayout(
     image: Painter,
     imageDescription: String,
     imageScale: ContentScale = ContentScale.Crop,
-    imageModifier: Modifier,
+    imageModifier: Modifier = Modifier,
     header: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -48,7 +48,12 @@ fun LaunchCardLayout(
             maxHeight = constraints.maxHeight - topConstraints.minHeight,
         )
 
-        val aspectRatio = image.intrinsicSize.height / image.intrinsicSize.width
+
+        val aspectRatio = try  {
+            image.intrinsicSize.height / image.intrinsicSize.width
+        } catch(e: Exception) {
+            0.667f
+        }
         val imageConstraints = lowerConstraints.copy(
             minWidth = minOf(
                 (lowerConstraints.minHeight / aspectRatio).toInt(),

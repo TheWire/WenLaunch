@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.Dp
 import kotlinx.coroutines.flow.collect
 
 @Composable
-fun LazListOrientationLayout(
+fun LazyListOrientationLayout(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
     portraitMaxHeight: Dp,

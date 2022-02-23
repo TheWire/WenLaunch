@@ -1,17 +1,15 @@
 package com.thewire.wenlaunch.ui.launch_list
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.thewire.wenlaunch.presentation.components.LaunchList
 import com.thewire.wenlaunch.presentation.components.LoadingAnimation
@@ -56,29 +54,23 @@ fun LaunchListScreen(
                                 )
                             }
                         }
-
                     }
                 )
             }
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = MAIN_COLUMN_PADDING.dp)
-            ) {
-                if (launches.isEmpty()) {
-                    LoadingAnimation(modifier = Modifier.fillMaxSize())
-                } else {
-                    LaunchList(
-                        launches = launches,
-                        navController = navController,
-                        onMoreLaunches = { event ->
-                            viewModel.onEvent(event)
-                        },
-                        refreshCallback = { callback ->
-                            viewModel.onEvent(LaunchListEvent.RefreshLaunches(callback))
-                        },
-                    )
-                }
+            if (launches.isEmpty()) {
+                LoadingAnimation(modifier = Modifier.fillMaxSize())
+            } else {
+                LaunchList(
+                    launches = launches,
+                    navController = navController,
+                    onMoreLaunches = { event ->
+                        viewModel.onEvent(event)
+                    },
+                    refreshCallback = { callback ->
+                        viewModel.onEvent(LaunchListEvent.RefreshLaunches(callback))
+                    },
+                )
             }
         }
 
