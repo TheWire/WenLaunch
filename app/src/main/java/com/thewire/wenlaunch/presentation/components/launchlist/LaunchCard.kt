@@ -38,9 +38,10 @@ fun LaunchCard(
 
         LaunchCardLayout(
             modifier = modifier,
-            image = rememberImagePainter(data = launch.image,
+            image = rememberImagePainter(data = launch.image ?: "error",
                 builder = {
                     placeholder(R.drawable.default_launch)
+                    error(R.drawable.default_launch)
                 }
             ),
             imageDescription = "launch image",
