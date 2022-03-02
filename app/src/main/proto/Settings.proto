@@ -5,4 +5,10 @@ option java_multiple_files = true;
 
 message Settings {
   bool darkMode = 1;
+  bool notification24Hours = 2;
+  bool notification1Hour = 3;
+  bool notificationWebcast = 4;
+  bool notification10Minutes = 5;
+  bool notification1Minute = 6;
+  bool notificationLaunch = 7;
 }

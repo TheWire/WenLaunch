@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
                         darkTheme = (application as BaseApplication).darkMode.value,
                         navController = navController,
                         viewModel = viewModel,
-                        toggleDarkMode = (application as BaseApplication)::toggleDarkTheme,
                     )
 
                 }

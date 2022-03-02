@@ -26,7 +26,9 @@ class SettingsStore_Impl(
         withContext(Dispatchers.IO) {
             try {
                 dataStore.updateData {
-                    it.toBuilder().setDarkMode(settingsModel.darkMode).build()
+                    it.toBuilder()
+                        .setDarkMode(settingsModel.darkMode)
+                        .build()
                 }
                 SettingsStoreResult.OnComplete
             } catch (e: Exception) {

@@ -8,11 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.repository.LaunchRepository
+import com.thewire.wenlaunch.ui.settings.SettingsViewModel
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 const val INITIAL_LAUNCH_NUM = 5
@@ -22,18 +21,20 @@ class LaunchListViewModel
 @Inject
 constructor(
     private val repository: LaunchRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    val settingsViewModel: SettingsViewModel,
 ) : ViewModel() {
 
     init {
         viewModelScope.launch {
             try {
                 getUpcoming(INITIAL_LAUNCH_NUM)
-            }catch(e: Exception) {
+            } catch (e: Exception) {
                 Log.e(TAG, "Exception: $e, ${e.cause}")
             }
         }
     }
+
     val launches: MutableState<List<Launch>> = mutableStateOf(listOf())
 
     fun onEvent(event: LaunchListEvent) {
@@ -50,16 +51,11 @@ constructor(
         }
     }
 
-//    private suspend fun simulatedRefresh() {
-//        delay(2000)
-//        refreshing.value = false
-//    }
-
     private suspend fun getUpcoming(limit: Int) {
         try {
             val result = repository.upcoming(limit, 0)
             launches.value = result
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             Log.e(TAG, "Exception: $e, ${e.cause}")
         }
     }
@@ -70,7 +66,7 @@ constructor(
             val currentList = ArrayList(launches.value)
             currentList.addAll(result)
             launches.value = currentList
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             Log.e(TAG, "Exception: $e, ${e.cause}")
         }
     }
