@@ -20,12 +20,11 @@ class BaseApplication : Application() {
     @Inject
     lateinit var settingsStore: SettingsStore
     val settingsModel: MutableState<SettingsModel> = mutableStateOf(SettingsModel())
+    val notifications: MutableState<Map<NotificationLevel, Boolean>> = mutableStateOf(HashMap())
     val darkMode = mutableStateOf(false)
     override fun onCreate() {
         super.onCreate()
         loadSettings()
-
-
     }
 
     private fun loadSettings() {
@@ -44,6 +43,7 @@ class BaseApplication : Application() {
     //apply react settings that affect ui
     private fun applySettings() {
         darkMode.value = settingsModel.value.darkMode
+        notifications.value = settingsModel.value.notifications
     }
 
 
@@ -54,7 +54,9 @@ class BaseApplication : Application() {
     }
 
     fun setNotifications(notifications: Map<NotificationLevel, Boolean>) {
-
+        settingsModel.value.notifications = notifications
+        setSettings()
+        applySettings()
     }
 
     private fun setSettings() {

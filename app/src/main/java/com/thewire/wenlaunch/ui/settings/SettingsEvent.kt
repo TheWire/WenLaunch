@@ -6,5 +6,5 @@ sealed class SettingsEvent {
     data class NotificationsChange(val level: NotificationLevel): SettingsEvent()
     object NotificationsAllOn: SettingsEvent()
     object NotificationsAllOff: SettingsEvent()
-    data class DarkMode(val on: Boolean): SettingsEvent()
+    object DarkMode: SettingsEvent()
 }

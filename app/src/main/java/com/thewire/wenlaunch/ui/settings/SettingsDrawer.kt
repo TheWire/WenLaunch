@@ -17,6 +17,11 @@ fun SettingsDrawer(
     Column() {
         Text("Settings")
         SwitchButton(
+            text = "Dark Mode",
+            checked = viewModel.darkMode.value,
+            onCheckedChanged = { viewModel.onEvent(SettingsEvent.DarkMode) }
+        )
+        SwitchButton(
             text = "Notifications",
             checked = false,
             onCheckedChanged = { state -> viewModel.onEvent(SettingsEvent.NotificationsAllOn) }
