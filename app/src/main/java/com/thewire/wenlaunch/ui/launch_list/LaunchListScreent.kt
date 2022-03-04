@@ -32,7 +32,6 @@ fun LaunchListScreen(
     val launches = viewModel.launches.value
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val drawerGestureEnabled = remember{ mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     WenLaunchTheme(
@@ -56,7 +55,6 @@ fun LaunchListScreen(
                                 modifier = Modifier.align(Alignment.CenterEnd),
                                 onClick = {
                                     scope.launch {
-                                        drawerGestureEnabled.value = true
                                         drawerState.open()
                                     }
                                 }
@@ -75,10 +73,11 @@ fun LaunchListScreen(
             ),
             drawerContent = {
                 SettingsDrawer(
+                    modifier = Modifier.padding(6.dp),
                    viewModel = viewModel.settingsViewModel
                 )
             },
-            drawerGesturesEnabled = drawerGestureEnabled.value,
+            drawerGesturesEnabled = drawerState.isOpen,
         ) {
             if (launches.isEmpty()) {
                 LoadingAnimation(modifier = Modifier.fillMaxSize())
