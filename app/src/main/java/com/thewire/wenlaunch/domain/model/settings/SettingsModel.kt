@@ -5,11 +5,11 @@ data class SettingsModel (
     var notifications: Map<NotificationLevel, Boolean> = mapOf()
 )
 
-enum class NotificationLevel {
-    HOURS24,
-    HOURS1,
-    WEBCAST,
-    MINUTES10,
-    MINUTES1,
-    LAUNCH,
+enum class NotificationLevel(val time: Long) {
+    HOURS24(1440),
+    HOURS1(60),
+    WEBCAST(240),
+    MINUTES10(10),
+    MINUTES1(1),
+    LAUNCH(0),
 }

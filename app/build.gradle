@@ -71,6 +71,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     implementation 'androidx.activity:activity-compose:1.4.0'
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
 
     def turbine_version = "0.7.0"
     testImplementation "app.cash.turbine:turbine:$turbine_version"

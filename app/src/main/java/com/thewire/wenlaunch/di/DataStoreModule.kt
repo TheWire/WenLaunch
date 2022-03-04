@@ -1,6 +1,5 @@
 package com.thewire.wenlaunch.di
 
-import android.app.Application
 import androidx.datastore.core.DataStore
 import com.thewire.wenlaunch.Settings
 import com.thewire.wenlaunch.presentation.BaseApplication
@@ -17,7 +16,7 @@ object DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideDataStore(app: BaseApplication) : DataStore<Settings> {
+    fun provideDataStore(app: BaseApplication): DataStore<Settings> {
         return app.applicationContext.settingsDataStore
     }
 }
