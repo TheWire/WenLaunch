@@ -117,7 +117,12 @@ fun SwitchButton(
         )
         Switch(
             checked = checked,
-            onCheckedChange = onCheckedChanged
+            onCheckedChange = onCheckedChanged,
+            colors = SwitchDefaults.colors(
+                uncheckedThumbColor = MaterialTheme.colors.primaryVariant,
+                uncheckedTrackColor = MaterialTheme.colors.primaryVariant,
+                checkedThumbColor = MaterialTheme.colors.primary
+            )
         )
     }
 }
@@ -125,7 +130,7 @@ fun SwitchButton(
 @Preview
 @Composable
 fun SettingsDrawPreview() {
-    WenLaunchTheme(darkTheme = true) {
+    WenLaunchTheme(darkTheme = false) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
