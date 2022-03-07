@@ -76,22 +76,14 @@ class BaseApplication : Application() {
             workManager.cancelAllWorkByTag(WORKER_TAG)
             return
         }
-        var notificationPeriod = Long.MAX_VALUE
-        notifications.value.forEach {
-           if(it.value) {
-               notificationPeriod = minOf(notificationPeriod, it.key.time)
-           }
-        }
-        notificationPeriod -= 5
-        if(notificationPeriod < 15) notificationPeriod = 15
         val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-            repeatInterval = notificationPeriod, repeatIntervalTimeUnit = TimeUnit.MINUTES)
+            repeatInterval = 1, repeatIntervalTimeUnit = TimeUnit.DAYS)
             .addTag(WORKER_TAG)
             .build()
 
         workManager.enqueueUniquePeriodicWork(
             UNIQUE_WORK_TAG,
-            ExistingPeriodicWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.KEEP,
             workRequest
         )
     }
