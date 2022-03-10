@@ -35,18 +35,24 @@ fun LaunchView(
             launch = launch,
             countdown = countdown,
         )
-        RocketInfo(
-            modifier = infoModifier.fillMaxWidth(),
-            rocket = launch.rocket,
-            imageUri = launch.image
-        )
-        MissionInfo(
-            modifier = infoModifier.fillMaxWidth(),
-            mission = launch.mission
-        )
-        LocationInfo(
-            modifier = infoModifier.fillMaxWidth(),
-            pad = launch.pad
-        )
+        launch.rocket?.let { rocket ->
+            RocketInfo(
+                modifier = infoModifier.fillMaxWidth(),
+                rocket = rocket,
+                imageUri = launch.image
+            )
+        }
+        launch.mission?.let { mission ->
+            MissionInfo(
+                modifier = infoModifier.fillMaxWidth(),
+                mission = mission
+            )
+        }
+        launch.pad?.let { pad ->
+            LocationInfo(
+                modifier = infoModifier.fillMaxWidth(),
+                pad = pad
+            )
+        }
     }
 }

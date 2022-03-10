@@ -24,7 +24,7 @@ fun RocketInfo(
         bodyPadding = PaddingValues(0.dp)
     ) {
         Text(
-            rocket.configuration.name ?: "Unknown Rocket",
+            rocket.configuration?.name ?: "Unknown Rocket",
             modifier = Modifier.padding(6.dp),
             style = MaterialTheme.typography.h6
         )

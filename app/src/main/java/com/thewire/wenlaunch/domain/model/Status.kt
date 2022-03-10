@@ -6,16 +6,31 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Status(
     val id: Int? = null,
-    val name: String? = null,
+    val name: String,
     val abbrev: LaunchStatus,
-    val description: String? = null,
+    val description: String,
+) : Parcelable
 
-    ) : Parcelable
-
-enum class LaunchStatus(status: String) {
+enum class LaunchStatus(val status: String) {
     GO("Go"),
     TBD("TBD"),
     TBC("TBC"),
-    SUCCESS("SUCCESS"),
-    OTHER("Unknown")
+    SUCCESS("Success"),
+    OTHER("Unknown");
+
+    companion object {
+        fun getLaunchStatus(status: String?) : LaunchStatus {
+            val ret = if(status != null)
+                when(status) {
+                    "Go" -> GO
+                    "TBD" -> TBD
+                    "TBC" -> TBC
+                    "Success" -> SUCCESS
+                    else -> OTHER
+                } else {
+                OTHER
+            }
+            return ret
+        }
+    }
 }

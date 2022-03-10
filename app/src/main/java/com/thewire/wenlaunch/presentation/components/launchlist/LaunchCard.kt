@@ -14,6 +14,7 @@ import coil.compose.rememberImagePainter
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.presentation.components.layout.LaunchCardLayout
+import com.thewire.wenlaunch.util.ifEmptyNull
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -49,7 +50,7 @@ fun LaunchCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = launch.mission.name ?: "Unknown Mission",
+                        text = launch.mission?.name?.ifEmptyNull() ?: "Unknown Mission",
                         modifier = Modifier
                             .weight(1f),
                         style = MaterialTheme.typography.h5,
@@ -83,11 +84,11 @@ fun LaunchListInfo(
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Text(
-            launch.rocket.configuration.fullName ?: "Unknown Rocket",
+            text = launch.rocket?.configuration?.fullName?.ifEmptyNull() ?: "Unknown Rocket",
             style = MaterialTheme.typography.h6
         )
         Text(
-            launch.pad.location.name ?: "Unknown Location",
+            text = launch.pad?.location?.name?.ifEmptyNull() ?: "Unknown Location",
         )
         val timeString: String = when (launch.status?.abbrev) {
             LaunchStatus.GO -> getTimeString(launch.net, "H:mm EE d MMM yyyy")

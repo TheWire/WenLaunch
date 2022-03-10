@@ -12,23 +12,10 @@ class StatusDtoMapper : DomainMapper<StatusDto, Status> {
 
         return Status(
             id = model.id,
-            name = model.name,
-            abbrev = getLaunchStatus(model.abbrev),
-            description = model.description,
+            name = model.name ?: "",
+            abbrev = LaunchStatus.getLaunchStatus(model.abbrev),
+            description = model.description ?: "",
         )
     }
 
-    private fun getLaunchStatus(status: String?) : LaunchStatus {
-         val ret = if(status != null)
-            when(status) {
-                "Go" -> GO
-                "TBD" -> TBD
-                "TBC" -> TBC
-                "Success" -> SUCCESS
-                else -> OTHER
-            } else {
-                OTHER
-         }
-        return ret
-    }
 }

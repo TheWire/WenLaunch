@@ -16,9 +16,9 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
     private val vidUrlDtoMapper = VidUrlDtoMapper()
     override fun mapToDomainModel(model: LaunchDto): Launch {
         return Launch(
-            id = model.id,
+            id = model.id ?: "",
             url =  model.url?.let{ Uri.parse(model.url) },
-            name = model.name,
+            name = model.name ?: "",
             status = statusMapper.mapToDomainModel(model.status ?: StatusDto()),
             net = getTimeObject(model.net),
             rocket = rocketMapper.mapToDomainModel(model.rocket ?: RocketDto()),

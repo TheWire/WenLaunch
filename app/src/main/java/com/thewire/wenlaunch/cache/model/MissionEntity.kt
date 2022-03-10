@@ -14,5 +14,7 @@ data class MissionEntity(
     @ColumnInfo(name = "description")
     val description: String,
     @ColumnInfo(name = "orbit_id")
-    val orbit: Int,
+    val orbit: Int?,
+    @ColumnInfo(name = "modified_at")
+    val ModifiedAt: Long,
 )

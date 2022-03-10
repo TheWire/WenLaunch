@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.thewire.wenlaunch.domain.model.Mission
+import com.thewire.wenlaunch.util.ifEmptyNull
 
 @Composable
 fun MissionInfo(
@@ -22,16 +23,16 @@ fun MissionInfo(
         headingText = "Mission",
     ) {
         Text(
-            mission.name ?: "Unknown Mission",
+            mission.name.ifEmpty { "Unknown Mission" },
             modifier = Modifier.padding(vertical = 6.dp),
             style = MaterialTheme.typography.h6
         )
         Text(
-            mission.orbit.name ?: "Unknown Orbit",
+            mission.orbit?.name?.ifEmptyNull() ?: "Unknown Orbit",
             modifier = Modifier.padding(vertical = 6.dp),
         )
         Text(
-            mission.description ?: "No Description",
+            mission.description.ifEmpty { "No Description" },
             modifier = Modifier.padding(vertical = 6.dp),
         )
     }

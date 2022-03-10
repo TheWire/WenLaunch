@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.thewire.wenlaunch.domain.model.Pad
+import com.thewire.wenlaunch.util.ifEmptyNull
 
 @Composable
 fun LocationInfo(
@@ -21,17 +22,17 @@ fun LocationInfo(
         bodyPadding = PaddingValues(0.dp)
     ) {
         Text(
-            pad.name ?: "Unknown Pad",
+            text = pad.name.ifEmpty { "Unknown Pad" },
             modifier = Modifier.padding(6.dp),
             style = MaterialTheme.typography.h6
         )
         Text(
-            pad.location.name ?: "Unknown Location",
+            text = pad.location?.name?.ifEmptyNull() ?: "Unknown Location",
             modifier = Modifier.padding(6.dp),
         )
         LaunchImage(
             modifier = Modifier.height(300.dp),
-            imageUri = pad.location.map_image,
+            imageUri = pad.location?.mapImage,
             defaultImage = DEFAULT_LOCATION_IMAGE
         )
     }

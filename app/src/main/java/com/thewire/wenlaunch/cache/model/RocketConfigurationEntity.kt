@@ -3,6 +3,7 @@ package com.thewire.wenlaunch.cache.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.thewire.wenlaunch.domain.model.RocketConfiguration
 
 @Entity(tableName = "rocket_configuration")
 data class RocketConfigurationEntity(
@@ -17,4 +18,16 @@ data class RocketConfigurationEntity(
     val variant: String,
     @ColumnInfo(name = "full_name")
     val fullName: String,
-)
+    @ColumnInfo(name = "modified_at")
+    val ModifiedAt: Long,
+) : IEntityToDomain<RocketConfiguration> {
+    override fun mapToDomain(): RocketConfiguration {
+        return RocketConfiguration(
+            id = this.id,
+            name = this.name,
+            family = this.family,
+            variant = this.variant,
+            fullName = this.fullName,
+        )
+    }
+}

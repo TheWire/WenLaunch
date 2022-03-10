@@ -6,5 +6,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Rocket(
     val id: Int?,
-    val configuration: RocketConfiguration
+    val configuration: RocketConfiguration?
 ) : Parcelable

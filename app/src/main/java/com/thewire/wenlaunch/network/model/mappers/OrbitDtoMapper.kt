@@ -8,8 +8,8 @@ class OrbitDtoMapper : DomainMapper<OrbitDto, Orbit> {
     override fun mapToDomainModel(model: OrbitDto): Orbit {
         return Orbit(
             id = model.id,
-            name = model.name,
-            abbrev = model.abbrev
+            name = model.name ?: "",
+            abbrev = model.abbrev ?: ""
         )
     }
 }

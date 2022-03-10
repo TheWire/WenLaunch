@@ -11,8 +11,8 @@ class MissionDtoMapper : DomainMapper<MissionDto, Mission> {
     override fun mapToDomainModel(model: MissionDto): Mission {
         return Mission(
             id = model.id,
-            name = model.name,
-            description = model.description,
+            name = model.name ?: "",
+            description = model.description ?: "",
             orbit = orbitMapper.mapToDomainModel(model.orbit ?: OrbitDto()),
         )
     }

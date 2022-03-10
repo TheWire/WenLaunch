@@ -10,8 +10,8 @@ class LocationDtoMapper : DomainMapper<LocationDto, Location> {
     override fun mapToDomainModel(model: LocationDto): Location {
         return Location(
             id = model.id,
-            name = model.name,
-            map_image = model.map_image?.let { Uri.parse(model.map_image) }
+            name = model.name ?: "",
+            mapImage = model.map_image?.let { Uri.parse(model.map_image) }
             )
     }
 }

@@ -12,5 +12,7 @@ data class PadEntity(
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "location_id")
-    val location: Int,
+    val location: Int?,
+    @ColumnInfo(name = "modified_at")
+    val ModifiedAt: Long,
 )

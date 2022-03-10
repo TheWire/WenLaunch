@@ -7,7 +7,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.thewire.wenlaunch.R
 
-const val CHANNEL_ID: String = TODO()
+const val CHANNEL_ID: String = "MYCHANNEL" //ToDo
 const val TITLE_STRING = "LAUNCH_ALARM_TITLE_STRING"
 const val TEXT_STRING = "LAUNCH_ALARM_TEXT_STRING"
 
@@ -24,7 +24,8 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
                     .setContentText(text)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .build()
-
+                //ToDo
+                val notificationId = 1
                 with(NotificationManagerCompat.from(context)) {
                     notify(notificationId, notification)
                 }

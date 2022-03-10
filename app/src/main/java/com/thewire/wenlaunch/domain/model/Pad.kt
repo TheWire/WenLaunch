@@ -6,6 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Pad(
     val id: Int?,
-    val name: String?,
-    val location: Location
+    val name: String,
+    val location: Location?
 ) : Parcelable

@@ -10,6 +10,8 @@ data class RocketEntity(
     @ColumnInfo(name = "id")
     val id: Int,
     @ColumnInfo(name = "configuration_id")
-    val configuration: Int
+    val configuration: Int?,
+    @ColumnInfo(name = "modified_at")
+    val ModifiedAt: Long,
 )
 
