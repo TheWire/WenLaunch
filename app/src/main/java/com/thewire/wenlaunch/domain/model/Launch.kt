@@ -11,7 +11,7 @@ data class Launch(
     val url: Uri? = null,
     val name: String,
     val status: Status? = null,
-    val net: ZonedDateTime? = null,
+    val net: () -> ZonedDateTime,
     val rocket: Rocket? = null,
     val mission: Mission? = null,
     val pad: Pad? = null,

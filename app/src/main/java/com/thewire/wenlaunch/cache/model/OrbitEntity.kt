@@ -9,19 +9,27 @@ import com.thewire.wenlaunch.domain.model.Orbit
 data class OrbitEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "abbrev")
     val abbrev: String,
     @ColumnInfo(name = "modified_at")
-    val ModifiedAt: Long,
-) : IEntityToDomain<Orbit> {
-    override fun mapToDomain(): Orbit {
+    val modifiedAt: Long,
+) : IRepoToDomain<Orbit> {
+    override fun mapToDomainModel(): Orbit {
         return Orbit(
             id = this.id,
             name = this.name,
             abbrev = this.abbrev
         )
     }
+}
+
+fun Orbit.mapToEntity(): OrbitEntity {
+    return OrbitEntity(
+        name = this.name,
+        abbrev = this.abbrev,
+        modifiedAt = System.currentTimeMillis(),
+    )
 }

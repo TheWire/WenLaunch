@@ -1,9 +1,6 @@
 package com.thewire.wenlaunch.cache
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Transaction
+import androidx.room.*
 import com.thewire.wenlaunch.cache.model.*
 import com.thewire.wenlaunch.cache.model.relations.LaunchRelationship
 import com.thewire.wenlaunch.cache.model.relations.MissionRelationship
@@ -82,4 +79,25 @@ interface LaunchDao {
         }
         return insertLaunchEntity(launch.launch)
     }
+
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLaunches(launches: List<LaunchRelationship>): List<String> {
+        val ret = arrayListOf<String>()
+        launches.forEach { launch ->
+            ret.add(insertLaunch(launch))
+        }
+        return ret
+    }
+
+    @Query("SELECT * FROM launch WHERE id=:launchId")
+    suspend fun getLaunch(launchId: String): LaunchRelationship
+
+    @Query(
+        """
+        SELECT * FROM launch
+        ORDER BY net ASC LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getUpcoming(limit: Int, offset: Int): List<LaunchRelationship>
 }

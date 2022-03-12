@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey
 data class RocketEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "configuration_id")
-    val configuration: Int?,
+    val configuration: Int? = null,
     @ColumnInfo(name = "modified_at")
-    val ModifiedAt: Long,
+    val modifiedAt: Long,
 )
 

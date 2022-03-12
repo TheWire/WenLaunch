@@ -1,6 +1,8 @@
 package com.thewire.wenlaunch.network.model
 
 import com.google.gson.annotations.SerializedName
+import com.thewire.wenlaunch.cache.model.IRepoToDomain
+import com.thewire.wenlaunch.domain.model.Orbit
 
 data class OrbitDto(
     @SerializedName("id")
@@ -11,4 +13,12 @@ data class OrbitDto(
 
     @SerializedName("abbrev")
     var abbrev: String? = null,
-)
+) : IRepoToDomain<Orbit> {
+    override fun mapToDomainModel(): Orbit {
+        return Orbit(
+            id = this.id,
+            name = this.name ?: "",
+            abbrev = this.abbrev ?: ""
+        )
+    }
+}

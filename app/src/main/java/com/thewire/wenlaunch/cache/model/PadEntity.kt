@@ -8,11 +8,11 @@ import androidx.room.PrimaryKey
 data class PadEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "location_id")
-    val location: Int?,
+    val location: Int? = null,
     @ColumnInfo(name = "modified_at")
-    val ModifiedAt: Long,
+    val modifiedAt: Long,
 )

@@ -2,7 +2,6 @@ package com.thewire.wenlaunch.network.model.mappers
 
 import android.net.Uri
 import com.thewire.wenlaunch.domain.model.Launch
-import com.thewire.wenlaunch.domain.model.VidUri
 import com.thewire.wenlaunch.domain.util.DomainMapper
 import com.thewire.wenlaunch.network.model.*
 import java.time.ZonedDateTime
@@ -20,7 +19,7 @@ class LaunchDtoMapper : DomainMapper<LaunchDto, Launch> {
             url =  model.url?.let{ Uri.parse(model.url) },
             name = model.name ?: "",
             status = statusMapper.mapToDomainModel(model.status ?: StatusDto()),
-            net = getTimeObject(model.net),
+            net = { getTimeObject(model.net) },
             rocket = rocketMapper.mapToDomainModel(model.rocket ?: RocketDto()),
             mission = missionMapper.mapToDomainModel(model.mission ?: MissionDto()),
             pad = padMapper.mapToDomainModel(model.pad ?: PadDto()),

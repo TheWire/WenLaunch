@@ -1,6 +1,8 @@
 package com.thewire.wenlaunch.network.model
 
 import com.google.gson.annotations.SerializedName
+import com.thewire.wenlaunch.cache.model.IRepoToDomain
+import com.thewire.wenlaunch.domain.model.RocketConfiguration
 
 data class RocketConfigurationDto(
     @SerializedName("id")
@@ -18,4 +20,14 @@ data class RocketConfigurationDto(
     @SerializedName("variant")
     var variant: String? = null,
 
-)
+) : IRepoToDomain<RocketConfiguration> {
+    override fun mapToDomainModel(): RocketConfiguration {
+        return RocketConfiguration(
+            id = this.id,
+            name = this.name ?: "",
+            family = this.family ?: "",
+            variant = this.variant ?: "",
+            fullName = this.fullName ?: "",
+        )
+    }
+}

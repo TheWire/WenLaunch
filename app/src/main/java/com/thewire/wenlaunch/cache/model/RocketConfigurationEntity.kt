@@ -9,7 +9,7 @@ import com.thewire.wenlaunch.domain.model.RocketConfiguration
 data class RocketConfigurationEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "family")
@@ -19,9 +19,9 @@ data class RocketConfigurationEntity(
     @ColumnInfo(name = "full_name")
     val fullName: String,
     @ColumnInfo(name = "modified_at")
-    val ModifiedAt: Long,
-) : IEntityToDomain<RocketConfiguration> {
-    override fun mapToDomain(): RocketConfiguration {
+    val modifiedAt: Long,
+) : IRepoToDomain<RocketConfiguration> {
+    override fun mapToDomainModel(): RocketConfiguration {
         return RocketConfiguration(
             id = this.id,
             name = this.name,
@@ -30,4 +30,14 @@ data class RocketConfigurationEntity(
             fullName = this.fullName,
         )
     }
+}
+
+fun RocketConfiguration.mapToEntity(): RocketConfigurationEntity {
+    return RocketConfigurationEntity(
+        name = this.name,
+        family = this.family,
+        variant = this.variant,
+        fullName = this.fullName,
+        modifiedAt = System.currentTimeMillis()
+    )
 }

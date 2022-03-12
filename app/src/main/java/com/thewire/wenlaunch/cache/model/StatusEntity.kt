@@ -10,7 +10,7 @@ import com.thewire.wenlaunch.domain.model.Status
 data class StatusEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "abbrev")
@@ -18,9 +18,9 @@ data class StatusEntity(
     @ColumnInfo(name = "description")
     val description: String,
     @ColumnInfo(name = "modified_at")
-    val ModifiedAt: Long,
-) : IEntityToDomain<Status> {
-    override fun mapToDomain(): Status {
+    val modifiedAt: Long,
+) : IRepoToDomain<Status> {
+    override fun mapToDomainModel(): Status {
         return Status(
             id = this.id,
             name = this.name,
@@ -28,4 +28,13 @@ data class StatusEntity(
             description = this.description
         )
     }
+}
+
+fun Status.mapToEntity(): StatusEntity {
+    return StatusEntity(
+        name = this.name,
+        abbrev = this.abbrev.status,
+        description = this.description,
+        modifiedAt = System.currentTimeMillis(),
+    )
 }

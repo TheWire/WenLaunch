@@ -1,6 +1,7 @@
 package com.thewire.wenlaunch.di
 
 import androidx.room.Room
+import com.thewire.wenlaunch.cache.LaunchDao
 import com.thewire.wenlaunch.cache.database.LaunchDatabase
 import com.thewire.wenlaunch.presentation.BaseApplication
 import dagger.Module
@@ -18,6 +19,9 @@ object DatabaseModule {
         return Room
             .databaseBuilder(app, LaunchDatabase::class.java, LaunchDatabase.DATABASE_NAME)
             .build()
+    }
 
+    fun providesLaunchDao(database: LaunchDatabase): LaunchDao {
+        return database.launchDao()
     }
 }

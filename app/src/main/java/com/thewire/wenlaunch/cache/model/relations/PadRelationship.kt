@@ -2,10 +2,11 @@ package com.thewire.wenlaunch.cache.model.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.thewire.wenlaunch.cache.model.IEntityToDomain
+import com.thewire.wenlaunch.cache.model.IRepoToDomain
 import com.thewire.wenlaunch.cache.model.LocationEntity
 import com.thewire.wenlaunch.cache.model.PadEntity
-import com.thewire.wenlaunch.domain.model.*
+import com.thewire.wenlaunch.cache.model.mapToEntity
+import com.thewire.wenlaunch.domain.model.Pad
 
 data class PadRelationship(
     @Embedded
@@ -16,13 +17,23 @@ data class PadRelationship(
     )
     val location: LocationEntity?
 
-    ) : IEntityToDomain<Pad> {
-    override fun mapToDomain(): Pad {
+) : IRepoToDomain<Pad> {
+    override fun mapToDomainModel(): Pad {
         return Pad(
             id = this.pad.id,
             name = this.pad.name,
-            location = this.location?.mapToDomain()
+            location = this.location?.mapToDomainModel()
         )
     }
+}
+
+fun Pad.mapToEntity(): PadRelationship {
+    return PadRelationship(
+        pad = PadEntity(
+            name = this.name,
+            modifiedAt = System.currentTimeMillis()
+        ),
+        location = this.location?.mapToEntity()
+    )
 }
 

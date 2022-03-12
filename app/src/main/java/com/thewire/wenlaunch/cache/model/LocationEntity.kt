@@ -10,19 +10,27 @@ import com.thewire.wenlaunch.domain.model.Location
 data class LocationEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "map_image")
-    val mapImage: String,
+    val mapImage: String?,
     @ColumnInfo(name = "modified_at")
-    val ModifiedAt: Long,
-) : IEntityToDomain<Location> {
-    override fun mapToDomain(): Location {
+    val modifiedAt: Long,
+) : IRepoToDomain<Location> {
+    override fun mapToDomainModel(): Location {
         return Location(
             id = this.id,
             name = this.name,
             mapImage = Uri.parse(this.mapImage)
         )
     }
+}
+
+fun Location.mapToEntity(): LocationEntity {
+    return LocationEntity(
+        name = this.name,
+        mapImage = this.mapImage?.toString(),
+        modifiedAt = System.currentTimeMillis()
+    )
 }

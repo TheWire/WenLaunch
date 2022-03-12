@@ -8,13 +8,13 @@ import androidx.room.PrimaryKey
 data class MissionEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "description")
     val description: String,
     @ColumnInfo(name = "orbit_id")
-    val orbit: Int?,
+    val orbit: Int? = null,
     @ColumnInfo(name = "modified_at")
-    val ModifiedAt: Long,
+    val modifiedAt: Long,
 )

@@ -13,7 +13,6 @@ class PadDtoMapper : DomainMapper<PadDto, Pad> {
             id = model.id,
             name = model.name ?: "",
             location = locationMapper.mapToDomainModel(model.location ?: LocationDto()),
-
         )
     }
 }
