@@ -39,19 +39,18 @@ data class LaunchRelationship(
 
     ) : IRepoToDomain<Launch> {
     override fun mapToDomainModel(): Launch {
+        val instant = Instant.ofEpochSecond(launch.net)
         return Launch(
-            id = this.launch.id,
-            url = this.launch.url?.let { url -> Uri.parse(url) },
-            name = this.launch.name,
-            status = this.status?.mapToDomainModel(),
-            net = {
-                val instant = Instant.ofEpochSecond(this.launch.net)
-                ZonedDateTime.ofInstant(instant, ZoneOffset.UTC)
-            },
-            rocket = this.rocket?.mapToDomainModel(),
-            mission = this.mission?.mapToDomainModel(),
-            vidUris = this.launch.vidUrls.map { VidUri(Uri.parse(it)) },
-            webcastLive = this.launch.webcastLive ?: false
+            id = launch.id,
+            url = launch.url?.let { url -> Uri.parse(url) },
+            name = launch.name,
+            status = status?.mapToDomainModel(),
+            net = ZonedDateTime.ofInstant(instant, ZoneOffset.UTC),
+            rocket = rocket?.mapToDomainModel(),
+            mission = mission?.mapToDomainModel(),
+            vidUris = launch.vidUrls.map { VidUri(Uri.parse(it)) },
+            webcastLive = launch.webcastLive ?: false,
+            modifiedAt = launch.modifiedAt
         )
     }
 }
@@ -61,7 +60,7 @@ fun Launch.mapToEntity(): LaunchRelationship {
         launch = LaunchEntity(
             url = this.url?.toString(),
             name = this.name,
-            net = this.net().toEpochSecond(),
+            net = this.net.toEpochSecond(),
             image = this.image?.toString(),
             webcastLive = this.webcastLive,
             vidUrls = vidUris.map { uri -> uri.toString() },

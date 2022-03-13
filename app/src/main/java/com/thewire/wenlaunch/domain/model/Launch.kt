@@ -11,12 +11,13 @@ data class Launch(
     val url: Uri? = null,
     val name: String,
     val status: Status? = null,
-    val net: () -> ZonedDateTime,
+    val net: ZonedDateTime,
     val rocket: Rocket? = null,
     val mission: Mission? = null,
     val pad: Pad? = null,
     val image: Uri? = null,
     val webcastLive: Boolean,
-    val vidUris: List<VidUri>
+    val vidUris: List<VidUri>,
+    val modifiedAt: Long,
     ) : Parcelable
 

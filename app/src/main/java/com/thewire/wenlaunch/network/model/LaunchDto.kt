@@ -47,13 +47,14 @@ data class LaunchDto(
             url = this.url?.let { url -> Uri.parse(url) },
             name = this.name ?: "",
             status = this.status?.mapToDomainModel(),
-            net = { getTimeObject(this.net) },
+            net = getTimeObject(this.net),
             rocket = this.rocket?.mapToDomainModel(),
             mission = this.mission?.mapToDomainModel(),
             pad = this.pad?.mapToDomainModel(),
             image = this.image?.let { Uri.parse(this.image) },
             webcastLive = this.webcastLive ?: false,
-            vidUris = this.vidURLs?.map { it.mapToDomainModel() } ?: listOf()
+            vidUris = this.vidURLs?.map { it.mapToDomainModel() } ?: listOf(),
+            modifiedAt = System.currentTimeMillis()
         )
     }
 }

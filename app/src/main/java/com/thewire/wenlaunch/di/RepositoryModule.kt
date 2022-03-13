@@ -1,7 +1,7 @@
 package com.thewire.wenlaunch.di
 
+import com.thewire.wenlaunch.cache.LaunchDao
 import com.thewire.wenlaunch.network.LaunchService
-import com.thewire.wenlaunch.network.model.mappers.LaunchDtoMapper
 import com.thewire.wenlaunch.repository.LaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryImpl
 import dagger.Module
@@ -18,8 +18,8 @@ object RepositoryModule {
     @Provides
     fun provideLaunchRepository(
         launchService: LaunchService,
-        launchDtoMapper: LaunchDtoMapper
+        launchDao: LaunchDao
     ) : LaunchRepository {
-        return LaunchRepositoryImpl(launchService, launchDtoMapper)
+        return LaunchRepositoryImpl(launchDao, launchService)
     }
 }

@@ -31,5 +31,5 @@ sealed class LaunchRepositoryUpdatePolicy {
     //get data from network unless unavailable
     object NetworkPrimary: LaunchRepositoryUpdatePolicy()
     //get data from cache unless older than min time
-    data class NetworkModifiedThreshold(val minTime: Long): LaunchRepositoryUpdatePolicy()
+    data class NetworkModifiedThreshold(val threshold: Long): LaunchRepositoryUpdatePolicy()
 }

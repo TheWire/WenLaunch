@@ -21,6 +21,8 @@ object DatabaseModule {
             .build()
     }
 
+    @Singleton
+    @Provides
     fun providesLaunchDao(database: LaunchDatabase): LaunchDao {
         return database.launchDao()
     }

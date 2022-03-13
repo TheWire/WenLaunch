@@ -3,7 +3,6 @@ package com.thewire.wenlaunch.di
 import com.google.gson.GsonBuilder
 import com.thewire.wenlaunch.BuildConfig
 import com.thewire.wenlaunch.network.LaunchService
-import com.thewire.wenlaunch.network.model.mappers.LaunchDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,12 +15,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkMapper {
-
-    @Singleton
-    @Provides
-    fun provideLaunchMapper(): LaunchDtoMapper {
-        return LaunchDtoMapper()
-    }
 
     @Singleton
     @Provides
