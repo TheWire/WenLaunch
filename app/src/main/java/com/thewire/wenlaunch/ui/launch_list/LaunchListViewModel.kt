@@ -11,6 +11,7 @@ import com.thewire.wenlaunch.repository.LaunchRepository
 import com.thewire.wenlaunch.ui.settings.SettingsViewModel
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -52,22 +53,32 @@ constructor(
     }
 
     private suspend fun getUpcoming(limit: Int) {
-        try {
-            val result = repository.upcoming(limit, 0)
-            launches.value = result
-        } catch (e: Exception) {
-            Log.e(TAG, "Exception: $e, ${e.cause}")
+        repository.upcoming(limit, 0).onEach { dataState ->
+            if(dataState.loading) {
+                TODO()
+            }
+            dataState.data?.let { upcoming ->
+                launches.value = upcoming
+            }
+            dataState.error?.let { error ->
+                Log.e(TAG, "Exception: $error")
+            }
         }
     }
 
     private suspend fun getMoreLaunches(numLaunches: Int) {
-        try {
-            val result = repository.upcoming(numLaunches, launches.value.size)
-            val currentList = ArrayList(launches.value)
-            currentList.addAll(result)
-            launches.value = currentList
-        } catch (e: Exception) {
-            Log.e(TAG, "Exception: $e, ${e.cause}")
+        repository.upcoming(numLaunches, launches.value.size).onEach { dataState ->
+            if(dataState.loading) {
+                TODO()
+            }
+            dataState.data?.let { upcoming ->
+                val currentList = ArrayList(launches.value)
+                currentList.addAll(upcoming)
+                launches.value = currentList
+            }
+            dataState.error?.let { error ->
+                Log.e(TAG, "Exception: $error")
+            }
         }
     }
 }

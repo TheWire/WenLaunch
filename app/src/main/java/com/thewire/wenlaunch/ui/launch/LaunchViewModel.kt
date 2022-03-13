@@ -15,6 +15,7 @@ import com.thewire.wenlaunch.ui.launch.LaunchEvent.*
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import javax.inject.Inject
@@ -44,7 +45,6 @@ constructor(
         } catch (e: Exception) {
             Log.e(TAG, "onEvent: Error $e ${e.cause}")
         }
-
     }
 
     override fun onStart(owner: LifecycleOwner) {
@@ -97,16 +97,20 @@ constructor(
 
     private fun getLaunch(id: String) {
         viewModelScope.launch {
-            try {
-                val newLaunch = launchRepository.launch(id)
-                launch.value = newLaunch
-                if (newLaunch.status?.abbrev == LaunchStatus.GO) {
-                    newLaunch.net?.let { net ->
-                        startCountdown(net)
+            launchRepository.launch(id).onEach { dataState ->
+                if(dataState.loading) {
+                    TODO()
+                }
+                dataState.data?.let { newLaunch ->
+                    launch.value = newLaunch
+                    if (newLaunch.status?.abbrev == LaunchStatus.GO) {
+                        startCountdown(newLaunch.net)
                     }
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Exception: $e, ${e.cause}")
+
+                dataState.error?.let { error ->
+                    Log.e(TAG, "Exception: $error")
+                }
             }
         }
     }
