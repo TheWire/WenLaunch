@@ -11,33 +11,33 @@ import com.thewire.wenlaunch.cache.model.relations.RocketRelationship
 interface LaunchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLaunchEntity(launchEntity: LaunchEntity): String
+    suspend fun insertLaunchEntity(launchEntity: LaunchEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStatus(statusEntity: StatusEntity): Int
+    suspend fun insertStatus(statusEntity: StatusEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(locationEntity: LocationEntity): Int
+    suspend fun insertLocation(locationEntity: LocationEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPadEntity(padEntity: PadEntity): Int
+    suspend fun insertPadEntity(padEntity: PadEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMissionEntity(missionEntity: MissionEntity): Int
+    suspend fun insertMissionEntity(missionEntity: MissionEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrbit(orbitEntity: OrbitEntity): Int
+    suspend fun insertOrbit(orbitEntity: OrbitEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRocketEntity(rocketEntity: RocketEntity): Int
+    suspend fun insertRocketEntity(rocketEntity: RocketEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRocketConfiguration(rocketConfigurationEntity: RocketConfigurationEntity): Int
+    suspend fun insertRocketConfiguration(rocketConfigurationEntity: RocketConfigurationEntity): Long
 
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRocket(rocket: RocketRelationship): Int {
+    suspend fun insertRocket(rocket: RocketRelationship): Long {
         rocket.configuration?.let { configuration ->
             insertRocketConfiguration(configuration)
         }
@@ -46,7 +46,7 @@ interface LaunchDao {
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPad(pad: PadRelationship): Int {
+    suspend fun insertPad(pad: PadRelationship): Long {
         pad.location?.let { location ->
             insertLocation(location)
         }
@@ -55,7 +55,7 @@ interface LaunchDao {
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMission(mission: MissionRelationship): Int {
+    suspend fun insertMission(mission: MissionRelationship): Long {
         mission.orbit?.let { orbit ->
             insertOrbit(orbit)
         }
@@ -64,7 +64,7 @@ interface LaunchDao {
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLaunch(launch: LaunchRelationship): String {
+    suspend fun insertLaunch(launch: LaunchRelationship): Long {
         launch.status?.let { status ->
             insertStatus(status)
         }
@@ -80,19 +80,20 @@ interface LaunchDao {
         return insertLaunchEntity(launch.launch)
     }
 
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLaunches(launches: List<LaunchRelationship>): List<String> {
-        val ret = arrayListOf<String>()
+    suspend fun insertLaunches(launches: List<LaunchRelationship>): LongArray {
+        val ret = arrayListOf<Long>()
         launches.forEach { launch ->
             ret.add(insertLaunch(launch))
         }
-        return ret
+        return ret.toLongArray()
     }
 
+    @Transaction
     @Query("SELECT * FROM launch WHERE id=:launchId")
-    suspend fun getLaunch(launchId: String): LaunchRelationship
+    suspend fun getLaunch(launchId: String): LaunchRelationship?
 
+    @Transaction
     @Query(
         """
         SELECT * FROM launch

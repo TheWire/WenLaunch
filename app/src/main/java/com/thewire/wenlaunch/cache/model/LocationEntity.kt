@@ -10,7 +10,7 @@ import com.thewire.wenlaunch.domain.model.Location
 data class LocationEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int = 0,
+    val id: Int,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "map_image")
@@ -29,6 +29,7 @@ data class LocationEntity(
 
 fun Location.mapToEntity(): LocationEntity {
     return LocationEntity(
+        id = this.id ?: throw(IllegalArgumentException("primary key null")),
         name = this.name,
         mapImage = this.mapImage?.toString(),
         modifiedAt = System.currentTimeMillis()

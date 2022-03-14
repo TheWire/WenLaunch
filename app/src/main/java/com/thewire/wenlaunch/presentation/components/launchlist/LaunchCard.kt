@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import coil.request.CachePolicy
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.presentation.components.layout.LaunchCardLayout
@@ -35,12 +36,7 @@ fun LaunchCard(
 
         LaunchCardLayout(
             modifier = modifier,
-            image = rememberImagePainter(data = launch.image ?: "error",
-                builder = {
-                    placeholder(DEFAULT_LAUNCH_IMAGE)
-                    error(DEFAULT_LAUNCH_IMAGE)
-                }
-            ),
+            image = launchPainter(launch.image),
             imageDescription = "launch image",
             header = {
                 Row(

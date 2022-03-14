@@ -6,16 +6,16 @@ import kotlinx.coroutines.flow.Flow
 
 interface LaunchRepository {
 
-    suspend fun upcoming(
+    fun upcoming(
         limit: Int,
         offset: Int,
         updatePolicy: LaunchRepositoryUpdatePolicy = LaunchRepositoryUpdatePolicy.CacheUntilNetwork
     ) : Flow<DataState<List<Launch>>>
 
-    suspend fun launch(
+    fun launch(
         id: String,
         updatePolicy: LaunchRepositoryUpdatePolicy = LaunchRepositoryUpdatePolicy.CacheUntilNetwork
-    ) : Flow<DataState<Launch>>
+    ) : Flow<DataState<Launch?>>
 
 }
 

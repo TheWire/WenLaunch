@@ -1,21 +1,24 @@
 package com.thewire.wenlaunch.repository
 
+import android.util.Log
 import com.thewire.wenlaunch.cache.LaunchDao
 import com.thewire.wenlaunch.cache.model.relations.mapToEntity
 import com.thewire.wenlaunch.domain.DataState
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.network.LaunchService
+import com.thewire.wenlaunch.presentation.components.TAG
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.lang.IllegalArgumentException
 
 class LaunchRepositoryImpl(
     private val launchDao: LaunchDao,
     private val launchService: LaunchService,
 ) : LaunchRepository {
 
-    override suspend fun launch(id: String, updatePolicy: LaunchRepositoryUpdatePolicy):
-            Flow<DataState<Launch>> {
+    override fun launch(id: String, updatePolicy: LaunchRepositoryUpdatePolicy):
+            Flow<DataState<Launch?>> {
         return getWithUpdatePolicy(
             updatePolicy = updatePolicy,
             getFromCache = suspend { getLaunchFromCache(id) },
@@ -25,7 +28,7 @@ class LaunchRepositoryImpl(
         ) { launch, threshold -> launch == null || launch.modifiedAt < threshold }
     }
 
-    override suspend fun upcoming(
+    override fun upcoming(
         limit: Int,
         offset: Int,
         updatePolicy: LaunchRepositoryUpdatePolicy
@@ -44,7 +47,7 @@ class LaunchRepositoryImpl(
         }
     }
 
-    private suspend fun <T> getWithUpdatePolicy(
+    private fun <T> getWithUpdatePolicy(
         updatePolicy: LaunchRepositoryUpdatePolicy,
         getFromCache: suspend () -> T,
         getFromRemoteAndUpdateCache: suspend () -> T,
@@ -88,6 +91,8 @@ class LaunchRepositoryImpl(
 
         } catch (e: Exception) {
             emit(DataState.error(e.message ?: "Unknown error"))
+        } catch(illegalArgument: IllegalArgumentException) {
+            Log.e(TAG, illegalArgument.message ?: "unknown illegal argument error")
         }
     }
 
@@ -97,8 +102,8 @@ class LaunchRepositoryImpl(
         return launch
     }
 
-    private suspend fun getLaunchFromCache(id: String): Launch {
-        return launchDao.getLaunch(id).mapToDomainModel()
+    private suspend fun getLaunchFromCache(id: String): Launch? {
+        return launchDao.getLaunch(id)?.mapToDomainModel()
     }
 
     private suspend fun getUpcomingFromCache(limit: Int, offset: Int): List<Launch> {

@@ -15,6 +15,7 @@ import com.thewire.wenlaunch.ui.launch.LaunchEvent.*
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
@@ -96,22 +97,21 @@ constructor(
     }
 
     private fun getLaunch(id: String) {
-        viewModelScope.launch {
-            launchRepository.launch(id).onEach { dataState ->
-                if(dataState.loading) {
-                    TODO()
-                }
-                dataState.data?.let { newLaunch ->
-                    launch.value = newLaunch
-                    if (newLaunch.status?.abbrev == LaunchStatus.GO) {
-                        startCountdown(newLaunch.net)
-                    }
-                }
-
-                dataState.error?.let { error ->
-                    Log.e(TAG, "Exception: $error")
+        launchRepository.launch(id).onEach { dataState ->
+            if (dataState.loading) {
+                println("loading")
+            }
+            dataState.data?.let { newLaunch ->
+                println()
+                launch.value = newLaunch
+                if (newLaunch.status?.abbrev == LaunchStatus.GO) {
+                    startCountdown(newLaunch.net)
                 }
             }
-        }
+
+            dataState.error?.let { error ->
+                Log.e(TAG, "Exception: $error")
+            }
+        }.launchIn(viewModelScope)
     }
 }

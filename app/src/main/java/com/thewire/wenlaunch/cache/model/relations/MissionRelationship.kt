@@ -30,8 +30,10 @@ data class MissionRelationship(
 fun Mission.mapToEntity(): MissionRelationship {
     return MissionRelationship(
         mission = MissionEntity(
+            id = this.id ?: throw(IllegalArgumentException("primary key null")),
             name = this.name,
             description = this.description,
+            orbit = this.orbit?.id,
             modifiedAt = System.currentTimeMillis(),
         ),
         orbit = this.orbit?.mapToEntity()

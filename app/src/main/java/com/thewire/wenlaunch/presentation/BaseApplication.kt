@@ -31,7 +31,7 @@ class BaseApplication : Application() {
     private val settingsModel: MutableState<SettingsModel> = mutableStateOf(SettingsModel())
     val notifications: MutableState<Map<NotificationLevel, Boolean>> = mutableStateOf(HashMap())
     val darkMode = mutableStateOf(false)
-    private val workManager = WorkManager.getInstance(this)
+
     override fun onCreate() {
         super.onCreate()
         loadSettings()
@@ -72,6 +72,7 @@ class BaseApplication : Application() {
     }
 
     fun runNotificationWorker() {
+        val workManager: WorkManager = WorkManager.getInstance(this)
         if(!notifications.value.containsValue(true)) {
             workManager.cancelAllWorkByTag(WORKER_TAG)
             return

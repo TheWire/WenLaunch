@@ -9,7 +9,7 @@ import com.thewire.wenlaunch.domain.model.RocketConfiguration
 data class RocketConfigurationEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int = 0,
+    val id: Int,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "family")
@@ -34,6 +34,7 @@ data class RocketConfigurationEntity(
 
 fun RocketConfiguration.mapToEntity(): RocketConfigurationEntity {
     return RocketConfigurationEntity(
+        id = this.id ?: throw(IllegalArgumentException("primary key null")),
         name = this.name,
         family = this.family,
         variant = this.variant,

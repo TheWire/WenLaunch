@@ -28,6 +28,8 @@ data class RocketRelationship (
 fun Rocket.mapToEntity(): RocketRelationship {
     return RocketRelationship(
         rocket = RocketEntity(
+            id = this.id ?: throw(IllegalArgumentException("primary key null")),
+            configuration = this.configuration?.id,
             modifiedAt = System.currentTimeMillis()
         ),
         configuration = this.configuration?.mapToEntity()

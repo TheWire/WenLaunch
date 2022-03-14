@@ -30,7 +30,9 @@ data class PadRelationship(
 fun Pad.mapToEntity(): PadRelationship {
     return PadRelationship(
         pad = PadEntity(
+            id = this.id ?: throw(IllegalArgumentException("primary key null")),
             name = this.name,
+            location = this.location?.id,
             modifiedAt = System.currentTimeMillis()
         ),
         location = this.location?.mapToEntity()

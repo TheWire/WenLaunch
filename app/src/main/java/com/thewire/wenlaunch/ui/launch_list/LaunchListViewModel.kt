@@ -11,8 +11,8 @@ import com.thewire.wenlaunch.repository.LaunchRepository
 import com.thewire.wenlaunch.ui.settings.SettingsViewModel
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 const val INITIAL_LAUNCH_NUM = 5
@@ -27,35 +27,27 @@ constructor(
 ) : ViewModel() {
 
     init {
-        viewModelScope.launch {
-            try {
-                getUpcoming(INITIAL_LAUNCH_NUM)
-            } catch (e: Exception) {
-                Log.e(TAG, "Exception: $e, ${e.cause}")
-            }
-        }
+        getUpcoming(INITIAL_LAUNCH_NUM)
     }
 
     val launches: MutableState<List<Launch>> = mutableStateOf(listOf())
 
     fun onEvent(event: LaunchListEvent) {
-        viewModelScope.launch {
-            when (event) {
-                is LaunchListEvent.RefreshLaunches -> {
-                    getUpcoming(launches.value.size)
-                    event.callback()
-                }
-                is LaunchListEvent.MoreLaunches -> {
-                    getMoreLaunches(event.numLaunches)
-                }
+        when (event) {
+            is LaunchListEvent.RefreshLaunches -> {
+                getUpcoming(launches.value.size)
+                event.callback()
+            }
+            is LaunchListEvent.MoreLaunches -> {
+                getMoreLaunches(event.numLaunches)
             }
         }
     }
 
-    private suspend fun getUpcoming(limit: Int) {
+    private fun getUpcoming(limit: Int) {
         repository.upcoming(limit, 0).onEach { dataState ->
-            if(dataState.loading) {
-                TODO()
+            if (dataState.loading) {
+                println("loading")
             }
             dataState.data?.let { upcoming ->
                 launches.value = upcoming
@@ -63,13 +55,13 @@ constructor(
             dataState.error?.let { error ->
                 Log.e(TAG, "Exception: $error")
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
-    private suspend fun getMoreLaunches(numLaunches: Int) {
+    private fun getMoreLaunches(numLaunches: Int) {
         repository.upcoming(numLaunches, launches.value.size).onEach { dataState ->
-            if(dataState.loading) {
-                TODO()
+            if (dataState.loading) {
+                println("loading")
             }
             dataState.data?.let { upcoming ->
                 val currentList = ArrayList(launches.value)
@@ -79,6 +71,6 @@ constructor(
             dataState.error?.let { error ->
                 Log.e(TAG, "Exception: $error")
             }
-        }
+        }.launchIn(viewModelScope)
     }
 }

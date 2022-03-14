@@ -10,7 +10,7 @@ import com.thewire.wenlaunch.domain.model.Status
 data class StatusEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int = 0,
+    val id: Int,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "abbrev")
@@ -32,6 +32,7 @@ data class StatusEntity(
 
 fun Status.mapToEntity(): StatusEntity {
     return StatusEntity(
+        id = this.id ?: throw(IllegalArgumentException("primary key null")),
         name = this.name,
         abbrev = this.abbrev.status,
         description = this.description,

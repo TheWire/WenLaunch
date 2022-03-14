@@ -9,7 +9,7 @@ import com.thewire.wenlaunch.domain.model.Orbit
 data class OrbitEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int = 0,
+    val id: Int,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "abbrev")
@@ -28,6 +28,7 @@ data class OrbitEntity(
 
 fun Orbit.mapToEntity(): OrbitEntity {
     return OrbitEntity(
+        id = this.id ?: throw(IllegalArgumentException("primary key null")),
         name = this.name,
         abbrev = this.abbrev,
         modifiedAt = System.currentTimeMillis(),

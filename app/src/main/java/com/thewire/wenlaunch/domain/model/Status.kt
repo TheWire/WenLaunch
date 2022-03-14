@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Status(
-    val id: Int? = null,
+    val id: Int?,
     val name: String,
     val abbrev: LaunchStatus,
     val description: String,

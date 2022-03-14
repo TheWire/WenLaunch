@@ -39,18 +39,20 @@ data class LaunchRelationship(
 
     ) : IRepoToDomain<Launch> {
     override fun mapToDomainModel(): Launch {
-        val instant = Instant.ofEpochSecond(launch.net)
+        val instant = Instant.ofEpochSecond(this.launch.net)
         return Launch(
-            id = launch.id,
-            url = launch.url?.let { url -> Uri.parse(url) },
-            name = launch.name,
-            status = status?.mapToDomainModel(),
+            id = this.launch.id,
+            url = this.launch.url?.let { url -> Uri.parse(url) },
+            name = this.launch.name,
+            status = this.status?.mapToDomainModel(),
             net = ZonedDateTime.ofInstant(instant, ZoneOffset.UTC),
-            rocket = rocket?.mapToDomainModel(),
-            mission = mission?.mapToDomainModel(),
-            vidUris = launch.vidUrls.map { VidUri(Uri.parse(it)) },
-            webcastLive = launch.webcastLive ?: false,
-            modifiedAt = launch.modifiedAt
+            rocket = this.rocket?.mapToDomainModel(),
+            mission = this.mission?.mapToDomainModel(),
+            pad = this.pad?.mapToDomainModel(),
+            image = this.launch.image?.let { url -> Uri.parse(url) },
+            vidUris = this.launch.vidUrls.map { VidUri(Uri.parse(it)) },
+            webcastLive = this.launch.webcastLive ?: false,
+            modifiedAt = this.launch.modifiedAt
         )
     }
 }
@@ -58,12 +60,17 @@ data class LaunchRelationship(
 fun Launch.mapToEntity(): LaunchRelationship {
     return LaunchRelationship(
         launch = LaunchEntity(
+            id = this.id ?: throw(IllegalArgumentException("primary key null")),
             url = this.url?.toString(),
             name = this.name,
+            status = this.status?.id,
             net = this.net.toEpochSecond(),
+            rocket = this.rocket?.id,
+            mission = this.mission?.id,
+            pad = this.pad?.id,
             image = this.image?.toString(),
             webcastLive = this.webcastLive,
-            vidUrls = vidUris.map { uri -> uri.toString() },
+            vidUrls = this.vidUris.map { uri -> uri.toString() },
             modifiedAt = System.currentTimeMillis(),
         ),
         status = this.status?.mapToEntity(),

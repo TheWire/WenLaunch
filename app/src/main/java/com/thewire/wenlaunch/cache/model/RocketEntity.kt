@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class RocketEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Int = 0,
+    val id: Int,
     @ColumnInfo(name = "configuration_id")
     val configuration: Int? = null,
     @ColumnInfo(name = "modified_at")

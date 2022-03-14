@@ -10,7 +10,7 @@ import com.thewire.wenlaunch.domain.model.Launch
 data class LaunchEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: String = "",
+    val id: String,
     @ColumnInfo(name = "url")
     val url: String? = null,
     @ColumnInfo(name = "name")
