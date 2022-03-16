@@ -4,9 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.work.*
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.domain.model.settings.SettingsModel
 import com.thewire.wenlaunch.notifications.NotificationWorker
@@ -17,7 +15,6 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -25,7 +22,10 @@ const val WORKER_TAG = "WENLAUNCH_NOTIFICATION_WORKER"
 const val UNIQUE_WORK_TAG = "WENLAUNCH_UNIQUE_WORKER"
 
 @HiltAndroidApp
-class BaseApplication : Application() {
+class BaseApplication() : Application(), Configuration.Provider {
+
+    @Inject
+    lateinit var notificationWorkerFactory: DelegatingWorkerFactory
     @Inject
     lateinit var settingsStore: SettingsStore
     private val settingsModel: MutableState<SettingsModel> = mutableStateOf(SettingsModel())
@@ -71,14 +71,24 @@ class BaseApplication : Application() {
         runNotificationWorker()
     }
 
-    fun runNotificationWorker() {
+    private fun runNotificationWorker() {
         val workManager: WorkManager = WorkManager.getInstance(this)
         if(!notifications.value.containsValue(true)) {
             workManager.cancelAllWorkByTag(WORKER_TAG)
             return
         }
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val data = Data.Builder()
+            .putAll(notifications.value.mapKeys {
+                it.key.toString()
+            })
+            .build()
         val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
             repeatInterval = 1, repeatIntervalTimeUnit = TimeUnit.DAYS)
+            .setConstraints(constraints)
+            .setInputData(data)
             .addTag(WORKER_TAG)
             .build()
 
@@ -99,4 +109,9 @@ class BaseApplication : Application() {
         }
     }
 
+    override fun getWorkManagerConfiguration(): Configuration {
+        return Configuration.Builder()
+            .setWorkerFactory(notificationWorkerFactory)
+            .build()
+    }
 }

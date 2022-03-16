@@ -1,6 +1,7 @@
 package com.thewire.wenlaunch.di
 
 import android.content.Context
+import androidx.work.DelegatingWorkerFactory
 import com.thewire.wenlaunch.presentation.BaseApplication
 import dagger.Module
 import dagger.Provides

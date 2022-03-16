@@ -24,7 +24,7 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
                     .setContentText(text)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .build()
-                //ToDo
+
                 val notificationId = 1
                 with(NotificationManagerCompat.from(context)) {
                     notify(notificationId, notification)

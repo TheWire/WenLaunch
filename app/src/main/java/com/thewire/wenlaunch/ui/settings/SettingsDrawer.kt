@@ -127,18 +127,18 @@ fun SwitchButton(
     }
 }
 
-@Preview
-@Composable
-fun SettingsDrawPreview() {
-    WenLaunchTheme(darkTheme = false) {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            SettingsDrawer(
-                modifier = Modifier.fillMaxSize().padding(6.dp),
-                viewModel = SettingsViewModel(BaseApplication())
-            )
-        }
-    }
-}
+//@Preview
+//@Composable
+//fun SettingsDrawPreview() {
+//    WenLaunchTheme(darkTheme = false) {
+//        Surface(
+//            modifier = Modifier
+//                .fillMaxSize()
+//        ) {
+//            SettingsDrawer(
+//                modifier = Modifier.fillMaxSize().padding(6.dp),
+//                viewModel =
+//            )
+//        }
+//    }
+//}

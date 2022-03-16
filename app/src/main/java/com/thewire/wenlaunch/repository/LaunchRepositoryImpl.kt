@@ -60,7 +60,9 @@ class LaunchRepositoryImpl(
             } else {
                 null
             }
-            cache?.let { emit(DataState.success(it)) }
+            if(cache != null && updatePolicy != NetworkPrimary) {
+                emit(DataState.success(cache))
+            }
 
             val remote: T? = when (updatePolicy) {
                 CacheOnly -> null

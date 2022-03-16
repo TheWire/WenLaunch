@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.repository.LaunchRepository
+import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
 import com.thewire.wenlaunch.ui.settings.SettingsViewModel
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +28,7 @@ constructor(
 ) : ViewModel() {
 
     init {
-        getUpcoming(INITIAL_LAUNCH_NUM)
+        getUpcoming(INITIAL_LAUNCH_NUM, LaunchRepositoryUpdatePolicy.CacheUntilNetwork)
     }
 
     val launches: MutableState<List<Launch>> = mutableStateOf(listOf())
@@ -35,7 +36,7 @@ constructor(
     fun onEvent(event: LaunchListEvent) {
         when (event) {
             is LaunchListEvent.RefreshLaunches -> {
-                getUpcoming(launches.value.size)
+                getUpcoming(launches.value.size, LaunchRepositoryUpdatePolicy.NetworkOnly)
                 event.callback()
             }
             is LaunchListEvent.MoreLaunches -> {
@@ -44,8 +45,8 @@ constructor(
         }
     }
 
-    private fun getUpcoming(limit: Int) {
-        repository.upcoming(limit, 0).onEach { dataState ->
+    private fun getUpcoming(limit: Int, updatePolicy: LaunchRepositoryUpdatePolicy) {
+        repository.upcoming(limit, 0, updatePolicy).onEach { dataState ->
             if (dataState.loading) {
                 println("loading")
             }
