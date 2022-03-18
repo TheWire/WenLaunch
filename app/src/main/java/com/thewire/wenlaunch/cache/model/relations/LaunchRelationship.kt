@@ -60,7 +60,7 @@ data class LaunchRelationship(
 fun Launch.mapToEntity(): LaunchRelationship {
     return LaunchRelationship(
         launch = LaunchEntity(
-            id = this.id ?: throw(IllegalArgumentException("primary key null")),
+            id = this.id,
             url = this.url?.toString(),
             name = this.name,
             status = this.status?.id,

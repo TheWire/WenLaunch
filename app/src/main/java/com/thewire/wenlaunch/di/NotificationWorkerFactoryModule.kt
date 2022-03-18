@@ -1,6 +1,7 @@
 package com.thewire.wenlaunch.di
 
 import androidx.work.DelegatingWorkerFactory
+import com.thewire.wenlaunch.notifications.NotificationAlarmGenerator
 import com.thewire.wenlaunch.notifications.NotificationWorkerFactory
 import com.thewire.wenlaunch.repository.LaunchRepository
 import dagger.Module
@@ -15,9 +16,15 @@ object NotificationWorkerFactoryModule {
 
     @Singleton
     @Provides
-    fun providesNotificationWorkerFactory(repository: LaunchRepository, dispatcher: IDispatcherProvider): DelegatingWorkerFactory {
+    fun providesNotificationWorkerFactory(
+        repository: LaunchRepository,
+        dispatcher: IDispatcherProvider,
+        alarmGenerator: NotificationAlarmGenerator,
+    ): DelegatingWorkerFactory {
         val delegatingFactory = DelegatingWorkerFactory()
-        delegatingFactory.addFactory(NotificationWorkerFactory(repository, dispatcher))
+        delegatingFactory.addFactory(
+            NotificationWorkerFactory(repository, dispatcher, alarmGenerator)
+        )
         return delegatingFactory
     }
 }

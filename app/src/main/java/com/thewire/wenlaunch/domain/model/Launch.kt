@@ -7,7 +7,7 @@ import java.time.ZonedDateTime
 
 @Parcelize
 data class Launch(
-    val id: String?,
+    val id: String,
     val url: Uri?,
     val name: String,
     val status: Status?,

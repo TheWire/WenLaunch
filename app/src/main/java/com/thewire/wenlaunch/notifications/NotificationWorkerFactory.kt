@@ -12,7 +12,8 @@ class NotificationWorkerFactory
 @Inject
 constructor(
     private val repository: LaunchRepository,
-    private val dispatcher: IDispatcherProvider
+    private val dispatcher: IDispatcherProvider,
+    private val notificationAlarmGenerator: NotificationAlarmGenerator
 ) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,
@@ -21,7 +22,12 @@ constructor(
     ): ListenableWorker? {
         return when (workerClassName) {
             NotificationWorker::class.java.name ->
-                NotificationWorker(appContext, workerParameters, repository, dispatcher)
+                NotificationWorker(
+                    appContext,
+                    workerParameters,
+                    repository, dispatcher,
+                    notificationAlarmGenerator
+                )
             else -> null
         }
     }

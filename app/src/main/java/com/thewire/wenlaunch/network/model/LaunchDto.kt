@@ -43,7 +43,7 @@ data class LaunchDto(
 ) : IRepoToDomain<Launch> {
     override fun mapToDomainModel(): Launch {
         return Launch(
-            id = this.id ?: "",
+            id = this.id ?: throw(IllegalArgumentException("launch id null")),
             url = this.url?.let { url -> Uri.parse(url) },
             name = this.name ?: "",
             status = this.status?.mapToDomainModel(),

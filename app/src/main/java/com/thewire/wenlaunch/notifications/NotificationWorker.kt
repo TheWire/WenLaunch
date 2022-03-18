@@ -16,57 +16,44 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.collect
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalUnit
 
 const val SECONDS_IN_DAY = 60L * 60L * 24L
-const val ALARM_AHEAD = 60L
+const val ALARM_AHEAD = 120L
 
 class NotificationWorker(
-    private val ctx: Context,
+    ctx: Context,
     params: WorkerParameters,
     private val repository: LaunchRepository,
     private val dispatcher: IDispatcherProvider,
+    private val notificationAlarmGenerator: NotificationAlarmGenerator
 ) : CoroutineWorker(ctx, params) {
 
     var alarmsSet = false
+
     override suspend fun doWork(): Result {
-        val job = withContext(dispatcher.getIOContext()) {
+        alarmsSet = false
+        withContext(dispatcher.getIOContext()) {
             repository.upcoming(10, 0, LaunchRepositoryUpdatePolicy.NetworkPrimary)
                 .collect { dataState ->
                     dataState.data?.let { launches ->
-                        val notifications = inputData.keyValueMap.mapKeys { NotificationLevel.valueOf(it.key) }
+                        val notifications = inputData.keyValueMap.entries.associate {
+                            NotificationLevel.valueOf(it.key) to it.value as Boolean
+                        }
                         val now = ZonedDateTime.now()
                         val launchIn24 = launches.filter { launch ->
                             ChronoUnit.SECONDS.between(now, launch.net) < SECONDS_IN_DAY
                                     && launch.status?.abbrev == LaunchStatus.GO
                         }
-                        setAlarms(launchIn24, notifications)
+                        if(!alarmsSet) {
+                            launchIn24.forEach { launch ->
+                                notificationAlarmGenerator.setLaunchAlarms(launch, notifications)
+                            }
+                            alarmsSet = true
+                        }
                     }
                 }
         }
         return Result.success()
-    }
-
-    private fun setAlarms(launches: List<Launch>, notifications: Map<NotificationLevel, Any>) {
-        if(alarmsSet) { return }
-        alarmsSet = true
-        launches.forEach { launch ->
-            notifications.forEach { (notificationLevel, on) ->
-                if(on is Boolean && on) {
-                    setAlarm(launch, notificationLevel.time)
-                }
-            }
-        }
-    }
-
-    private fun setAlarm(launch: Launch, time: Long) {
-        val alarmTime = launch.net.minus(ALARM_AHEAD + time, ChronoUnit.SECONDS)
-        val intent = Intent(ctx, NotificationAlarmReceiver::class.java)
-        intent.action = "sdfsdf"
-        val alarmManager = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val pendingIntent =
-            PendingIntent.getBroadcast(ctx, requestID, intent, PendingIntent.FLAG_IMMUTABLE)
-        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime.toEpochSecond(), pendingIntent)
     }
 }
 
