@@ -16,7 +16,7 @@ class NotificationAlarmGenerator(private val context: Context) {
             if (on) {
                 setAlarm(
                     launch,
-                     notificationLevel.time * 60L,
+                    notificationLevel,
                     notifications
                 )
             }
@@ -25,14 +25,15 @@ class NotificationAlarmGenerator(private val context: Context) {
 
     private fun setAlarm(
         launch: Launch,
-        notifyTimeAheadSeconds: Long,
+        notificationLevel: NotificationLevel,
         notifications: Map<NotificationLevel, Boolean>
     ) {
-        val alarmTime = launch.net.minus(ALARM_AHEAD + notifyTimeAheadSeconds, ChronoUnit.SECONDS)
+        val alarmTime =
+            launch.net.minus(ALARM_AHEAD + (notificationLevel.time * 60L), ChronoUnit.SECONDS)
         val intent = Intent(context, NotificationAlarmReceiver::class.java)
         intent.action = ALARM_ACTION
         intent.putExtra(ALARM_RECEIVER_LAUNCH_TIME, launch.net.toEpochSecond())
-        intent.putExtra(ALARM_RECEIVER_NOTIFY_TIME, notifyTimeAheadSeconds)
+        intent.putExtra(ALARM_RECEIVER_NOTIFICATION_LEVEL, notificationLevel.name)
         intent.putExtra(ALARM_RECEIVER_LAUNCH_ID, launch.id)
         val notificationList: List<String> = notifications.filter { it.value }.map { it.key.name }
         intent.putExtra(ALARM_RECEIVER_NOTIFICATIONS, notificationList.toTypedArray())
@@ -54,7 +55,8 @@ class NotificationAlarmGenerator(private val context: Context) {
         val intent = Intent(context, this::class.java)
         intent.action = ALARM_ACTION
         val pendingIntent = PendingIntent.getBroadcast(
-            context, launchId.hashCode(), intent, PendingIntent.FLAG_IMMUTABLE)
+            context, launchId.hashCode(), intent, PendingIntent.FLAG_IMMUTABLE
+        )
         alarmManager.cancel(pendingIntent)
     }
 }

@@ -1,19 +1,15 @@
 package com.thewire.wenlaunch.notifications
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.thewire.wenlaunch.di.IDispatcherProvider
-import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.repository.LaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -44,7 +40,7 @@ class NotificationWorker(
                             ChronoUnit.SECONDS.between(now, launch.net) < SECONDS_IN_DAY
                                     && launch.status?.abbrev == LaunchStatus.GO
                         }
-                        if(!alarmsSet) {
+                        if (!alarmsSet) {
                             launchIn24.forEach { launch ->
                                 notificationAlarmGenerator.setLaunchAlarms(launch, notifications)
                             }

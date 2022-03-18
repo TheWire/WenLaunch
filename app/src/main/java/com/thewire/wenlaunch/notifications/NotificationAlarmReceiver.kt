@@ -24,7 +24,7 @@ import javax.inject.Inject
 const val ALARM_ACTION = "com.thewire.wenlaunch.NotificationAlarm"
 const val NOTIFICATION_CHANNEL_ID: String = "com.thewire.wenlaunch.NOTIFICATION_CHANNEL"
 const val ALARM_RECEIVER_LAUNCH_TIME = "ALARM_RECEIVER_LAUNCH_TIME"
-const val ALARM_RECEIVER_NOTIFY_TIME = "ALARM_RECEIVER_NOTIFY_TIME"
+const val ALARM_RECEIVER_NOTIFICATION_LEVEL = "ALARM_RECEIVER_NOTIFICATION_LEVEL"
 const val ALARM_RECEIVER_LAUNCH_ID = "LAUNCH_ID"
 const val ALARM_RECEIVER_NOTIFICATIONS = "NOTIFICATIONS"
 const val ALARM_RECEIVER_LAUNCH_MARGIN = 60L
@@ -41,13 +41,17 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
         if (context != null && intent != null) {
             val launchId = intent.getStringExtra(ALARM_RECEIVER_LAUNCH_ID)
             val launchTime = intent.getLongExtra(ALARM_RECEIVER_LAUNCH_TIME, 0)
-            val notifyTime = intent.getLongExtra(ALARM_RECEIVER_NOTIFY_TIME, 0)
+            val notificationLevel =
+                intent.getStringExtra(ALARM_RECEIVER_NOTIFICATION_LEVEL)?.let { level ->
+                    NotificationLevel.valueOf(level)
+                } ?: NotificationLevel.DEFAULT
+
             val notifications =
                 intent.getStringArrayListExtra(ALARM_RECEIVER_NOTIFICATIONS)?.associate {
                     NotificationLevel.valueOf(it) to true
                 }
             launchId?.let { id ->
-                updateAndNotify(context, id, launchTime, notifyTime, notifications)
+                updateAndNotify(context, id, launchTime, notificationLevel, notifications)
             }
         }
     }
@@ -56,7 +60,7 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
         context: Context,
         id: String,
         launchTime: Long,
-        notifyTime: Long,
+        notificationLevel: NotificationLevel,
         notifications: Map<NotificationLevel, Boolean>?
     ) {
         CoroutineScope(dispatcherProvider.getIOContext()).launch {
@@ -70,7 +74,7 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
                         if (launchTimeNew + ALARM_RECEIVER_LAUNCH_MARGIN > launchTime &&
                             launchTimeNew - ALARM_RECEIVER_LAUNCH_MARGIN < launchTime
                         ) {
-                            sendNotification(context, launch, notifyTime)
+                            sendNotification(context, launch, notificationLevel)
                         } else {
                             notificationAlarmGenerator.cancelAlarms(launch.id)
                             notifications?.let {
@@ -85,12 +89,22 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
         }
     }
 
-    private suspend fun sendNotification(context: Context, launch: Launch, notifyAheadTime: Long) {
-        val notifyTime = launch.net.toEpochSecond() - notifyAheadTime
+    private suspend fun sendNotification(
+        context: Context,
+        launch: Launch,
+        notificationLevel: NotificationLevel
+    ) {
+        val notifyTime = launch.net.toEpochSecond() - (notificationLevel.time * 60L)
+        val text = when (notificationLevel) {
+            NotificationLevel.DEFAULT,
+            NotificationLevel.WEBCAST,
+            NotificationLevel.LAUNCH -> notificationLevel.description
+            else -> "launch in ${notificationLevel.description}"
+        }
         val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentTitle(launch.name.ifEmptyNull() ?: "Unknown Launch")
-            .setContentText("launch in ")
+            .setContentText(text)
             .setWhen(notifyTime)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()

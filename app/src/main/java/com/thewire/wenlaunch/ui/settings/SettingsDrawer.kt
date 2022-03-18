@@ -78,15 +78,15 @@ fun SettingsDrawer(
                     state -> viewModel.onEvent(SettingsEvent.NotificationsChange(MINUTES10, state))
             }
         )
-        SwitchButton(
-            modifier = switchModifier,
-            text = "Webast",
-            checked = viewModel.notifications.value[WEBCAST] ?: false,
-            onCheckedChanged = {
-                    state -> viewModel.onEvent(SettingsEvent.NotificationsChange(WEBCAST, state))
-            }
-
-        )
+//        SwitchButton(
+//            modifier = switchModifier,
+//            text = "Webast",
+//            checked = viewModel.notifications.value[WEBCAST] ?: false,
+//            onCheckedChanged = {
+//                    state -> viewModel.onEvent(SettingsEvent.NotificationsChange(WEBCAST, state))
+//            }
+//
+//        )
         SwitchButton(
             modifier = switchModifier,
             text = "Launch",
