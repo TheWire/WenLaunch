@@ -1,12 +1,17 @@
 package com.thewire.wenlaunch.presentation
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.work.*
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.domain.model.settings.SettingsModel
+import com.thewire.wenlaunch.notifications.NOTIFICATION_CHANNEL_ID
 import com.thewire.wenlaunch.notifications.NotificationWorker
 import com.thewire.wenlaunch.repository.store.SettingsStore
 import com.thewire.wenlaunch.repository.store.SettingsStoreResult
@@ -35,7 +40,22 @@ class BaseApplication() : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         loadSettings()
+        createNotificationChannel()
         runNotificationWorker()
+    }
+
+    private fun createNotificationChannel() {
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            "WenLaunch",
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = "Launch notifications"
+        }
+
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun loadSettings() {

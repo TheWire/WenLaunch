@@ -12,8 +12,9 @@ class NotificationAlarmGenerator(private val context: Context) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     fun setLaunchAlarms(launch: Launch, notifications: Map<NotificationLevel, Boolean>) {
+        val nowMillis = System.currentTimeMillis()
         notifications.forEach { (notificationLevel, on) ->
-            if (on) {
+            if (on && isAlarmInFuture(launch, notificationLevel, nowMillis)) {
                 setAlarm(
                     launch,
                     notificationLevel,
@@ -21,6 +22,11 @@ class NotificationAlarmGenerator(private val context: Context) {
                 )
             }
         }
+    }
+
+    private fun isAlarmInFuture(launch: Launch, notificationLevel: NotificationLevel, nowMillis: Long): Boolean {
+        val time = (launch.net.toEpochSecond() - notificationLevel.time * 60L) * 1000L
+        return time < nowMillis
     }
 
     private fun setAlarm(
@@ -52,7 +58,7 @@ class NotificationAlarmGenerator(private val context: Context) {
     }
 
     fun cancelAlarms(launchId: String) {
-        val intent = Intent(context, this::class.java)
+        val intent = Intent(context, NotificationAlarmReceiver::class.java)
         intent.action = ALARM_ACTION
         val pendingIntent = PendingIntent.getBroadcast(
             context, launchId.hashCode(), intent, PendingIntent.FLAG_IMMUTABLE
