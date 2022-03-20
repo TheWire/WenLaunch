@@ -5,15 +5,15 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.thewire.wenlaunch.di.IDispatcherProvider
-import com.thewire.wenlaunch.repository.LaunchRepository
+import com.thewire.wenlaunch.repository.ILaunchRepository
 import javax.inject.Inject
 
 class NotificationWorkerFactory
 @Inject
 constructor(
-    private val repository: LaunchRepository,
+    private val repository: ILaunchRepository,
     private val dispatcher: IDispatcherProvider,
-    private val notificationAlarmGenerator: NotificationAlarmGenerator
+    private val notificationAlarmGenerator: INotificationAlarmGenerator
 ) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,

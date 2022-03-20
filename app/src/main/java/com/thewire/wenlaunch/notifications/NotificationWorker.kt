@@ -6,7 +6,7 @@ import androidx.work.WorkerParameters
 import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
-import com.thewire.wenlaunch.repository.LaunchRepository
+import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
@@ -19,9 +19,9 @@ const val ALARM_AHEAD = 120L
 class NotificationWorker(
     ctx: Context,
     params: WorkerParameters,
-    private val repository: LaunchRepository,
+    private val repository: ILaunchRepository,
     private val dispatcher: IDispatcherProvider,
-    private val notificationAlarmGenerator: NotificationAlarmGenerator
+    private val notificationAlarmGenerator: INotificationAlarmGenerator
 ) : CoroutineWorker(ctx, params) {
 
     var alarmsSet = false

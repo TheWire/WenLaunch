@@ -15,7 +15,7 @@ import java.lang.IllegalArgumentException
 class LaunchRepositoryImpl(
     private val launchDao: LaunchDao,
     private val launchService: LaunchService,
-) : LaunchRepository {
+) : ILaunchRepository {
 
     override fun launch(id: String, updatePolicy: LaunchRepositoryUpdatePolicy):
             Flow<DataState<Launch?>> {

@@ -8,10 +8,10 @@ import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import java.time.temporal.ChronoUnit
 
-class NotificationAlarmGenerator(private val context: Context) {
+class NotificationAlarmGenerator(private val context: Context) : INotificationAlarmGenerator {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    fun setLaunchAlarms(launch: Launch, notifications: Map<NotificationLevel, Boolean>) {
+    override fun setLaunchAlarms(launch: Launch, notifications: Map<NotificationLevel, Boolean>) {
         val nowMillis = System.currentTimeMillis()
         notifications.forEach { (notificationLevel, on) ->
             if (on && isAlarmInFuture(launch, notificationLevel, nowMillis)) {
@@ -57,7 +57,7 @@ class NotificationAlarmGenerator(private val context: Context) {
         )
     }
 
-    fun cancelAlarms(launchId: String) {
+    override fun cancelAlarms(launchId: String) {
         val intent = Intent(context, NotificationAlarmReceiver::class.java)
         intent.action = ALARM_ACTION
         val pendingIntent = PendingIntent.getBroadcast(

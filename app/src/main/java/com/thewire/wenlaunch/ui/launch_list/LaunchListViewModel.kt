@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thewire.wenlaunch.domain.model.Launch
-import com.thewire.wenlaunch.repository.LaunchRepository
+import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
 import com.thewire.wenlaunch.ui.settings.SettingsViewModel
 import com.thewire.wenlaunch.util.TAG
@@ -22,7 +22,7 @@ const val INITIAL_LAUNCH_NUM = 5
 class LaunchListViewModel
 @Inject
 constructor(
-    private val repository: LaunchRepository,
+    private val repositoryI: ILaunchRepository,
     private val savedStateHandle: SavedStateHandle,
     val settingsViewModel: SettingsViewModel,
 ) : ViewModel() {
@@ -46,7 +46,7 @@ constructor(
     }
 
     private fun getUpcoming(limit: Int, updatePolicy: LaunchRepositoryUpdatePolicy) {
-        repository.upcoming(limit, 0, updatePolicy).onEach { dataState ->
+        repositoryI.upcoming(limit, 0, updatePolicy).onEach { dataState ->
             if (dataState.loading) {
                 println("loading")
             }
@@ -60,7 +60,7 @@ constructor(
     }
 
     private fun getMoreLaunches(numLaunches: Int) {
-        repository.upcoming(numLaunches, launches.value.size).onEach { dataState ->
+        repositoryI.upcoming(numLaunches, launches.value.size).onEach { dataState ->
             if (dataState.loading) {
                 println("loading")
             }

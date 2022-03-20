@@ -4,7 +4,7 @@ import com.thewire.wenlaunch.domain.DataState
 import com.thewire.wenlaunch.domain.model.Launch
 import kotlinx.coroutines.flow.Flow
 
-interface LaunchRepository {
+interface ILaunchRepository {
 
     fun upcoming(
         limit: Int,

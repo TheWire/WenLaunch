@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
-import com.thewire.wenlaunch.repository.LaunchRepository
+import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.ui.launch.LaunchEvent.*
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class LaunchViewModel
 @Inject
 constructor(
-    private val launchRepository: LaunchRepository,
+    private val ILaunchRepository: ILaunchRepository,
     private val dispatcherProvider: IDispatcherProvider,
 ) : ViewModel(), DefaultLifecycleObserver {
     val launch: MutableState<Launch?> = mutableStateOf(null)
@@ -97,7 +97,7 @@ constructor(
     }
 
     private fun getLaunch(id: String) {
-        launchRepository.launch(id).onEach { dataState ->
+        ILaunchRepository.launch(id).onEach { dataState ->
             if (dataState.loading) {
                 println("loading")
             }
