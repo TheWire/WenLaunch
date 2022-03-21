@@ -16,7 +16,7 @@ import com.thewire.wenlaunch.domain.model.Rocket
 fun RocketInfo(
     modifier: Modifier = Modifier,
     rocket: Rocket,
-    imageUri: Uri?
+    imageUri: String?
 ) {
     InfoCard(
         modifier = modifier,

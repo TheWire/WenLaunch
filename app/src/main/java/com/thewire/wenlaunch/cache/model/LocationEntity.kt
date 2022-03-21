@@ -22,7 +22,7 @@ data class LocationEntity(
         return Location(
             id = this.id,
             name = this.name,
-            mapImage = Uri.parse(this.mapImage)
+            mapImage = this.mapImage
         )
     }
 }
@@ -31,7 +31,7 @@ fun Location.mapToEntity(): LocationEntity {
     return LocationEntity(
         id = this.id ?: throw(IllegalArgumentException("primary key null")),
         name = this.name,
-        mapImage = this.mapImage?.toString(),
+        mapImage = this.mapImage,
         modifiedAt = System.currentTimeMillis()
     )
 }

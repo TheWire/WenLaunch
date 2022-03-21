@@ -2,6 +2,7 @@ package com.thewire.wenlaunch.di
 
 import android.content.Context
 import androidx.work.DelegatingWorkerFactory
+import com.thewire.wenlaunch.Logging.ILogger
 import com.thewire.wenlaunch.notifications.*
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import dagger.Module
@@ -50,13 +51,16 @@ object NotificationModule {
         repository: ILaunchRepository,
         dispatcher: IDispatcherProvider,
         notificationAlarmGenerator: INotificationAlarmGenerator,
-        notificationSender: INotificationSender
+        notificationSender: INotificationSender,
+        logger: ILogger
     ): NotificationHandler {
         return NotificationHandler(
             repository,
             dispatcher,
             notificationAlarmGenerator,
             notificationSender,
+            logger,
+            System::currentTimeMillis,
         )
     }
 }

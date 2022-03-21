@@ -5,6 +5,6 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class VidUri(
-    val uri: Uri?
+data class VidUrl(
+    val uri: String
 ) : Parcelable

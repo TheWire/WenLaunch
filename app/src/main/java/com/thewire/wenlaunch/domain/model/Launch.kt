@@ -1,6 +1,5 @@
 package com.thewire.wenlaunch.domain.model
 
-import android.net.Uri
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import java.time.ZonedDateTime
@@ -8,16 +7,16 @@ import java.time.ZonedDateTime
 @Parcelize
 data class Launch(
     val id: String,
-    val url: Uri?,
+    val url: String?,
     val name: String,
     val status: Status?,
     val net: ZonedDateTime,
     val rocket: Rocket?,
     val mission: Mission?,
     val pad: Pad?,
-    val image: Uri?,
+    val image: String?,
     val webcastLive: Boolean,
-    val vidUris: List<VidUri>,
+    val vidUrls: List<VidUrl>,
     val modifiedAt: Long,
     ) : Parcelable
 

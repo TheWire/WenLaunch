@@ -19,7 +19,7 @@ data class LocationDto (
         return Location(
             id = this.id,
             name = this.name ?: "",
-            mapImage = this.map_image?.let { Uri.parse(this.map_image) }
+            mapImage = this.map_image
         )
     }
 }

@@ -44,16 +44,16 @@ data class LaunchDto(
     override fun mapToDomainModel(): Launch {
         return Launch(
             id = this.id ?: throw(IllegalArgumentException("launch id null")),
-            url = this.url?.let { url -> Uri.parse(url) },
+            url = this.url,
             name = this.name ?: "",
             status = this.status?.mapToDomainModel(),
             net = getTimeObject(this.net),
             rocket = this.rocket?.mapToDomainModel(),
             mission = this.mission?.mapToDomainModel(),
             pad = this.pad?.mapToDomainModel(),
-            image = this.image?.let { Uri.parse(this.image) },
+            image = this.image,
             webcastLive = this.webcastLive ?: false,
-            vidUris = this.vidURLs?.map { it.mapToDomainModel() } ?: listOf(),
+            vidUrls = this.vidURLs?.map { it.mapToDomainModel() } ?: listOf(),
             modifiedAt = System.currentTimeMillis()
         )
     }

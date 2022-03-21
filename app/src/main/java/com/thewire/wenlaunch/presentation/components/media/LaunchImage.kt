@@ -17,7 +17,7 @@ const val DEFAULT_LOCATION_IMAGE = R.drawable.default_location
 @Composable
 fun LaunchImage(
     modifier: Modifier = Modifier,
-    imageUri: Uri?,
+    imageUri: String?,
     defaultImage: Int = DEFAULT_LAUNCH_IMAGE,
     contentDescription: String = ""
 ) {
@@ -31,7 +31,7 @@ fun LaunchImage(
 
 @Composable
 fun launchPainter(
-    imageUri: Uri?,
+    imageUri: String?,
     defaultImage: Int = DEFAULT_LAUNCH_IMAGE,
 ) : Painter {
     return rememberImagePainter(

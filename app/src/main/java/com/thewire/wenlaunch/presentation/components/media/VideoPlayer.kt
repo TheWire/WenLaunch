@@ -21,7 +21,7 @@ const val TAG = "VIDEO_PLAYER"
 @Composable
 fun VideoPlayer(
     modifier: Modifier = Modifier,
-    videoUri: Uri
+    videoUri: String
 ) {
     val context = LocalContext.current
     val player = remember(context) { ExoPlayer.Builder(context).build() }

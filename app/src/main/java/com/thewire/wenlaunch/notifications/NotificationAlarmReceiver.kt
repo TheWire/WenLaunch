@@ -3,22 +3,11 @@ package com.thewire.wenlaunch.notifications
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import com.thewire.wenlaunch.R
 import com.thewire.wenlaunch.di.IDispatcherProvider
-import com.thewire.wenlaunch.domain.model.Launch
-import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.repository.ILaunchRepository
-import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
-import com.thewire.wenlaunch.util.ifEmptyNull
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 const val ALARM_ACTION = "com.thewire.wenlaunch.NotificationAlarm"
@@ -34,6 +23,7 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var repository: ILaunchRepository
     lateinit var notificationHandler: NotificationHandler
+    lateinit var dispatcher: IDispatcherProvider
 
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -50,7 +40,14 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
                     NotificationLevel.valueOf(it) to true
                 }
             launchId?.let { id ->
-                notificationHandler.updateAndNotify(id, launchTime, notificationLevel, notifications)
+                CoroutineScope(dispatcher.getMainContext()).launch {
+                    notificationHandler.updateAndNotify(
+                        id,
+                        launchTime,
+                        notificationLevel,
+                        notifications
+                    )
+                }
             }
         }
     }

@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Webcast(
     modifier: Modifier = Modifier,
-    uri: Uri,
+    uri: String,
 ) {
     Card(
         modifier = modifier,

@@ -1,12 +1,18 @@
 package com.thewire.wenlaunch.notifications
 
-import android.util.Log
+import com.thewire.wenlaunch.logging.MockLogger
+import org.junit.Assert.assertEquals
+
 
 const val TAG = "MOCK_NOTIFICATION"
-class MockNotificationSender : INotificationSender {
-    override fun sendNotification(title: String, icon: Int, text: String, time: Long) {
-        Log.d(TAG, title)
-        Log.d(TAG, text)
-        Log.d(TAG, time.toString())
+class MockNotificationSender(
+    val expectedLaunchNotification: LaunchNotification
+) : INotificationSender {
+    val Log = MockLogger()
+    override fun sendNotification(launchNotification: LaunchNotification) {
+        Log.d(TAG, launchNotification.title)
+        Log.d(TAG, launchNotification.text)
+        Log.d(TAG, launchNotification.time.toString())
+        assertEquals(launchNotification, expectedLaunchNotification)
     }
 }
