@@ -2,6 +2,7 @@ package com.thewire.wenlaunch.repository
 
 import com.thewire.wenlaunch.domain.DataState
 import com.thewire.wenlaunch.domain.model.Launch
+import com.thewire.wenlaunch.notifications.model.Alarm
 import kotlinx.coroutines.flow.Flow
 
 interface ILaunchRepository {
@@ -16,6 +17,10 @@ interface ILaunchRepository {
         id: String,
         updatePolicy: LaunchRepositoryUpdatePolicy = LaunchRepositoryUpdatePolicy.CacheUntilNetwork
     ) : Flow<DataState<Launch?>>
+
+    fun alarm(): Flow<DataState<Alarm>>
+
+    fun alarmsOfLaunch(launchId: String): Flow<DataState<List<Alarm>>>
 
 }
 

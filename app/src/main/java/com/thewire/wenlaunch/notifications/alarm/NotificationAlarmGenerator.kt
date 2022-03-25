@@ -1,4 +1,4 @@
-package com.thewire.wenlaunch.notifications
+package com.thewire.wenlaunch.notifications.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -6,9 +6,14 @@ import android.content.Context
 import android.content.Intent
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
+import com.thewire.wenlaunch.notifications.workers.ALARM_AHEAD
+import com.thewire.wenlaunch.repository.ILaunchRepository
 import java.time.temporal.ChronoUnit
 
-class NotificationAlarmGenerator(private val context: Context) : INotificationAlarmGenerator {
+class NotificationAlarmGenerator(
+    private val context: Context,
+    private val repository: ILaunchRepository
+) : INotificationAlarmGenerator {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     override fun setLaunchAlarms(launch: Launch, notifications: Map<NotificationLevel, Boolean>) {
@@ -24,7 +29,11 @@ class NotificationAlarmGenerator(private val context: Context) : INotificationAl
         }
     }
 
-    private fun isAlarmInFuture(launch: Launch, notificationLevel: NotificationLevel, nowMillis: Long): Boolean {
+    private fun isAlarmInFuture(
+        launch: Launch,
+        notificationLevel: NotificationLevel,
+        nowMillis: Long
+    ): Boolean {
         val time = (launch.net.toEpochSecond() - notificationLevel.time * 60L) * 1000L
         return time < nowMillis
     }
@@ -48,7 +57,7 @@ class NotificationAlarmGenerator(private val context: Context) : INotificationAl
                 context,
                 launch.id.hashCode(),
                 intent,
-                PendingIntent.FLAG_IMMUTABLE
+                0
             )
         alarmManager.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
@@ -61,8 +70,9 @@ class NotificationAlarmGenerator(private val context: Context) : INotificationAl
         val intent = Intent(context, NotificationAlarmReceiver::class.java)
         intent.action = ALARM_ACTION
         val pendingIntent = PendingIntent.getBroadcast(
-            context, launchId.hashCode(), intent, PendingIntent.FLAG_IMMUTABLE
+            context, launchId.hashCode(), intent, PendingIntent.FLAG_CANCEL_CURRENT
         )
         alarmManager.cancel(pendingIntent)
+        pendingIntent.cancel()
     }
 }

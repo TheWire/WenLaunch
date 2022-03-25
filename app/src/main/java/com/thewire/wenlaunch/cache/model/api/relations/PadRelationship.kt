@@ -1,11 +1,11 @@
-package com.thewire.wenlaunch.cache.model.relations
+package com.thewire.wenlaunch.cache.model.api.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.thewire.wenlaunch.cache.model.IRepoToDomain
-import com.thewire.wenlaunch.cache.model.LocationEntity
-import com.thewire.wenlaunch.cache.model.PadEntity
-import com.thewire.wenlaunch.cache.model.mapToEntity
+import com.thewire.wenlaunch.cache.model.api.LocationEntity
+import com.thewire.wenlaunch.cache.model.api.PadEntity
+import com.thewire.wenlaunch.cache.model.api.mapToEntity
 import com.thewire.wenlaunch.domain.model.Pad
 
 data class PadRelationship(

@@ -1,10 +1,11 @@
 package com.thewire.wenlaunch.notifications
 
 import com.thewire.wenlaunch.logging.MockLogger
+import com.thewire.wenlaunch.notifications.model.LaunchNotification
 import org.junit.Assert.assertEquals
 
 
-const val TAG = "MOCK_NOTIFICATION"
+private const val TAG = "MOCK_NOTIFICATION"
 class MockNotificationSender(
     val expectedLaunchNotification: LaunchNotification
 ) : INotificationSender {

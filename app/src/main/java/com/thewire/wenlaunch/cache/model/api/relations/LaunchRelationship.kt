@@ -1,8 +1,9 @@
-package com.thewire.wenlaunch.cache.model.relations
+package com.thewire.wenlaunch.cache.model.api.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.thewire.wenlaunch.cache.model.*
+import com.thewire.wenlaunch.cache.model.IRepoToDomain
+import com.thewire.wenlaunch.cache.model.api.*
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.VidUrl
 import java.time.Instant

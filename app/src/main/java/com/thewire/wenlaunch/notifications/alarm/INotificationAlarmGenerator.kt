@@ -1,4 +1,4 @@
-package com.thewire.wenlaunch.notifications
+package com.thewire.wenlaunch.notifications.alarm
 
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel

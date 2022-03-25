@@ -1,10 +1,8 @@
-package com.thewire.wenlaunch.cache.model
+package com.thewire.wenlaunch.cache.model.api
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.thewire.wenlaunch.cache.model.relations.LaunchRelationship
-import com.thewire.wenlaunch.domain.model.Launch
 
 @Entity(tableName = "launch")
 data class LaunchEntity(

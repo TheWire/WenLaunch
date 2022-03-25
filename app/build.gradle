@@ -7,6 +7,10 @@ plugins {
     id 'com.google.protobuf' version "0.8.17"
 }
 
+kapt {
+    correctErrorTypes true
+}
+
 android {
     compileSdk 31
 
@@ -72,7 +76,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     implementation 'androidx.activity:activity-compose:1.4.0'
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
-    implementation 'androidx.test:monitor:1.4.0'
+    implementation 'androidx.test:monitor:1.5.0'
 
     def turbine_version = "0.7.0"
     testImplementation "app.cash.turbine:turbine:$turbine_version"

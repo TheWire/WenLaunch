@@ -1,4 +1,4 @@
-package com.thewire.wenlaunch.cache.model
+package com.thewire.wenlaunch.cache.model.api
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

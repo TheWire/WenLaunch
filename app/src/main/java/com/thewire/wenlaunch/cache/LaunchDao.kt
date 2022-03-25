@@ -1,11 +1,13 @@
 package com.thewire.wenlaunch.cache
 
 import androidx.room.*
+import com.thewire.wenlaunch.cache.alarm.AlarmEntity
 import com.thewire.wenlaunch.cache.model.*
-import com.thewire.wenlaunch.cache.model.relations.LaunchRelationship
-import com.thewire.wenlaunch.cache.model.relations.MissionRelationship
-import com.thewire.wenlaunch.cache.model.relations.PadRelationship
-import com.thewire.wenlaunch.cache.model.relations.RocketRelationship
+import com.thewire.wenlaunch.cache.model.api.*
+import com.thewire.wenlaunch.cache.model.api.relations.LaunchRelationship
+import com.thewire.wenlaunch.cache.model.api.relations.MissionRelationship
+import com.thewire.wenlaunch.cache.model.api.relations.PadRelationship
+import com.thewire.wenlaunch.cache.model.api.relations.RocketRelationship
 
 @Dao
 interface LaunchDao {
@@ -33,6 +35,12 @@ interface LaunchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRocketConfiguration(rocketConfigurationEntity: RocketConfigurationEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAlarm(alarmEntity: AlarmEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAlarms(alarms: List<AlarmEntity>): LongArray
 
 
     @Transaction
@@ -101,4 +109,16 @@ interface LaunchDao {
         """
     )
     suspend fun getUpcoming(limit: Int, offset: Int): List<LaunchRelationship>
+
+    @Query("SELECT * FROM alarm WHERE launch_id=:launchId")
+    suspend fun getAlarmsByLaunch(launchId: String): List<AlarmEntity>
+
+    @Query("DELETE FROM alarm WHERE request_id=:requestId")
+    suspend fun deleteAlarm(requestId: Int)
+
+    @Query("DELETE FROM alarm WHERE launch_id=:launchId")
+    suspend fun deleteAlarmByLaunchId(launchId: String)
+
+    @Query("DELETE FROM alarm")
+    suspend fun deleteAllAlarms()
 }

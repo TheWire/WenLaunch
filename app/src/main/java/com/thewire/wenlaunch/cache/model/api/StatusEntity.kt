@@ -1,8 +1,9 @@
-package com.thewire.wenlaunch.cache.model
+package com.thewire.wenlaunch.cache.model.api
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.thewire.wenlaunch.cache.model.IRepoToDomain
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.domain.model.Status
 

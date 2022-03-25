@@ -2,10 +2,11 @@ package com.thewire.wenlaunch.repository
 
 import android.util.Log
 import com.thewire.wenlaunch.cache.LaunchDao
-import com.thewire.wenlaunch.cache.model.relations.mapToEntity
+import com.thewire.wenlaunch.cache.model.api.relations.mapToEntity
 import com.thewire.wenlaunch.domain.DataState
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.network.LaunchService
+import com.thewire.wenlaunch.notifications.model.Alarm
 import com.thewire.wenlaunch.presentation.components.TAG
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy.*
 import kotlinx.coroutines.flow.Flow
@@ -45,6 +46,14 @@ class LaunchRepositoryImpl(
         ) { upcomingLaunches, threshold ->
             upcomingLaunches.isNullOrEmpty() || upcomingLaunches[0].modifiedAt < threshold
         }
+    }
+
+    override fun alarm(): Flow<DataState<Alarm>> = flow {
+
+    }
+
+    override fun alarmsOfLaunch(launchId: String): Flow<DataState<List<Alarm>>> = flow {
+
     }
 
     private fun <T> getWithUpdatePolicy(

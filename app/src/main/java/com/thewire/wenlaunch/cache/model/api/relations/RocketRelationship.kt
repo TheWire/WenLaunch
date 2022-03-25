@@ -1,14 +1,14 @@
-package com.thewire.wenlaunch.cache.model.relations
+package com.thewire.wenlaunch.cache.model.api.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.thewire.wenlaunch.cache.model.IRepoToDomain
-import com.thewire.wenlaunch.cache.model.RocketConfigurationEntity
-import com.thewire.wenlaunch.cache.model.RocketEntity
-import com.thewire.wenlaunch.cache.model.mapToEntity
+import com.thewire.wenlaunch.cache.model.api.RocketConfigurationEntity
+import com.thewire.wenlaunch.cache.model.api.RocketEntity
+import com.thewire.wenlaunch.cache.model.api.mapToEntity
 import com.thewire.wenlaunch.domain.model.Rocket
 
-data class RocketRelationship (
+data class RocketRelationship(
     @Embedded
     val rocket: RocketEntity,
     @Relation(

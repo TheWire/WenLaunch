@@ -1,11 +1,11 @@
-package com.thewire.wenlaunch.cache.model.relations
+package com.thewire.wenlaunch.cache.model.api.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.thewire.wenlaunch.cache.model.IRepoToDomain
-import com.thewire.wenlaunch.cache.model.MissionEntity
-import com.thewire.wenlaunch.cache.model.OrbitEntity
-import com.thewire.wenlaunch.cache.model.mapToEntity
+import com.thewire.wenlaunch.cache.model.api.MissionEntity
+import com.thewire.wenlaunch.cache.model.api.OrbitEntity
+import com.thewire.wenlaunch.cache.model.api.mapToEntity
 import com.thewire.wenlaunch.domain.model.Mission
 
 data class MissionRelationship(

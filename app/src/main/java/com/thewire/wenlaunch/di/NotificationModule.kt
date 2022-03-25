@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.work.DelegatingWorkerFactory
 import com.thewire.wenlaunch.Logging.ILogger
 import com.thewire.wenlaunch.notifications.*
+import com.thewire.wenlaunch.notifications.alarm.INotificationAlarmGenerator
+import com.thewire.wenlaunch.notifications.alarm.NotificationAlarmGenerator
+import com.thewire.wenlaunch.notifications.workers.NotificationWorkerFactory
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import dagger.Module
 import dagger.Provides
@@ -20,21 +23,21 @@ object NotificationModule {
     @Singleton
     @Provides
     fun providesNotificationWorkerFactory(
-        repositoryI: ILaunchRepository,
+        repository: ILaunchRepository,
         dispatcher: IDispatcherProvider,
         alarmGenerator: INotificationAlarmGenerator,
     ): DelegatingWorkerFactory {
         val delegatingFactory = DelegatingWorkerFactory()
         delegatingFactory.addFactory(
-            NotificationWorkerFactory(repositoryI, dispatcher, alarmGenerator)
+            NotificationWorkerFactory(repository, dispatcher, alarmGenerator)
         )
         return delegatingFactory
     }
 
     @Singleton
     @Provides
-    fun provideINotificationAlarmGenerator(@ApplicationContext app: Context): INotificationAlarmGenerator {
-        return NotificationAlarmGenerator(app)
+    fun provideINotificationAlarmGenerator(@ApplicationContext app: Context, repository: ILaunchRepository): INotificationAlarmGenerator {
+        return NotificationAlarmGenerator(app, repository)
     }
 
     @Singleton
