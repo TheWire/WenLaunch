@@ -110,15 +110,21 @@ interface LaunchDao {
     )
     suspend fun getUpcoming(limit: Int, offset: Int): List<LaunchRelationship>
 
-    @Query("SELECT * FROM alarm WHERE launch_id=:launchId")
-    suspend fun getAlarmsByLaunch(launchId: String): List<AlarmEntity>
+    @Query("SELECT * FROM alarm WHERE request_id=:id")
+    suspend fun getAlarm(id: Int): AlarmEntity
 
-    @Query("DELETE FROM alarm WHERE request_id=:requestId")
-    suspend fun deleteAlarm(requestId: Int)
+    @Query("SELECT * FROM alarm")
+    suspend fun getAllAlarms(): List<AlarmEntity>
+
+    @Query("SELECT * FROM alarm WHERE launch_id=:launchId")
+    suspend fun getAlarmsByLaunchId(launchId: String): List<AlarmEntity>
+
+    @Query("DELETE FROM alarm WHERE request_id=:id")
+    suspend fun deleteAlarm(id: Int): Int
 
     @Query("DELETE FROM alarm WHERE launch_id=:launchId")
-    suspend fun deleteAlarmByLaunchId(launchId: String)
+    suspend fun deleteAlarmByLaunchId(launchId: String): Int
 
     @Query("DELETE FROM alarm")
-    suspend fun deleteAllAlarms()
+    suspend fun deleteAllAlarms(): Int
 }

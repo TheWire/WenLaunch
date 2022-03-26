@@ -48,12 +48,68 @@ class LaunchRepositoryImpl(
         }
     }
 
-    override fun alarm(): Flow<DataState<Alarm>> = flow {
+    override fun alarm(requestId: Int): Flow<DataState<Alarm>> = flow {
+        emit(DataState.loading())
+        try {
+            val alarm = launchDao.getAlarm(requestId).mapToDomainModel()
+            emit(DataState.success(alarm))
+        } catch (e: Exception) {
+            emit(DataState.error(e.message ?: "Unknown error"))
+        }
+    }
 
+    override fun alarmsAll(): Flow<DataState<List<Alarm>>> = flow {
+        emit(DataState.loading())
+        try {
+            val alarms = launchDao.getAllAlarms().map { alarm -> alarm.mapToDomainModel() }
+            emit(DataState.success(alarms))
+        } catch (e: Exception) {
+            emit(DataState.error(e.message ?: "Unknown error"))
+        }
     }
 
     override fun alarmsOfLaunch(launchId: String): Flow<DataState<List<Alarm>>> = flow {
+        emit(DataState.loading())
+        try {
+            val alarms =
+                launchDao.getAlarmsByLaunchId(launchId).map { alarm -> alarm.mapToDomainModel() }
+            emit(DataState.success(alarms))
+        } catch (e: Exception) {
+            emit(DataState.error(e.message ?: "Unknown error"))
+        }
+    }
 
+    override fun deleteAllAlarms(): Flow<DataState<Int>> = flow {
+        emit(DataState.loading())
+        try {
+            val alarms =
+                launchDao.deleteAllAlarms()
+            emit(DataState.success(alarms))
+        } catch (e: Exception) {
+            emit(DataState.error(e.message ?: "Unknown error"))
+        }
+    }
+
+    override fun deleteAlarm(requestId: Int): Flow<DataState<Int>> = flow {
+        emit(DataState.loading())
+        try {
+            val alarms =
+                launchDao.deleteAlarm(requestId)
+            emit(DataState.success(alarms))
+        } catch (e: Exception) {
+            emit(DataState.error(e.message ?: "Unknown error"))
+        }
+    }
+
+    override fun deleteAlarmsOfLaunch(launchId: String): Flow<DataState<Int>> = flow {
+        emit(DataState.loading())
+        try {
+            val alarms =
+                launchDao.deleteAlarmByLaunchId(launchId)
+            emit(DataState.success(alarms))
+        } catch (e: Exception) {
+            emit(DataState.error(e.message ?: "Unknown error"))
+        }
     }
 
     private fun <T> getWithUpdatePolicy(
@@ -69,7 +125,7 @@ class LaunchRepositoryImpl(
             } else {
                 null
             }
-            if(cache != null && updatePolicy != NetworkPrimary) {
+            if (cache != null && updatePolicy != NetworkPrimary) {
                 emit(DataState.success(cache))
             }
 
@@ -102,7 +158,7 @@ class LaunchRepositoryImpl(
 
         } catch (e: Exception) {
             emit(DataState.error(e.message ?: "Unknown error"))
-        } catch(illegalArgument: IllegalArgumentException) {
+        } catch (illegalArgument: IllegalArgumentException) {
             Log.e(TAG, illegalArgument.message ?: "unknown illegal argument error")
         }
     }

@@ -4,15 +4,22 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.thewire.wenlaunch.Logging.ILogger
+import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.notifications.workers.ALARM_AHEAD
 import com.thewire.wenlaunch.repository.ILaunchRepository
+import kotlinx.coroutines.withContext
 import java.time.temporal.ChronoUnit
+import kotlinx.coroutines.flow.collect
 
+const val TAG = "NOTIFICATION_ALARM_GENERATOR"
 class NotificationAlarmGenerator(
     private val context: Context,
-    private val repository: ILaunchRepository
+    private val repository: ILaunchRepository,
+    private val dispatcher: IDispatcherProvider,
+    private val Log: ILogger,
 ) : INotificationAlarmGenerator {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -55,7 +62,7 @@ class NotificationAlarmGenerator(
         val pendingIntent =
             PendingIntent.getBroadcast(
                 context,
-                launch.id.hashCode(),
+                Pair(launch.id, launch.net.toEpochSecond()).hashCode(),
                 intent,
                 0
             )
@@ -64,13 +71,63 @@ class NotificationAlarmGenerator(
             alarmTime.toEpochSecond(),
             pendingIntent
         )
+
     }
 
-    override fun cancelAlarms(launchId: String) {
+    override suspend fun cancelSingleAlarm(id: Int) {
+        cancelAlarm(id)
+        withContext(dispatcher.getIOContext()) {
+            repository.deleteAlarm(id).collect { deleteResult ->
+                deleteResult.error?.let {
+                    Log.e(TAG, it)
+                }
+            }
+        }
+    }
+
+    override suspend fun cancelAllAlarms() {
+        withContext(dispatcher.getIOContext()) {
+            repository.alarmsAll().collect { datastate ->
+                datastate.data?.let { alarms ->
+                    alarms.forEach { alarm ->
+                        withContext(dispatcher.getMainContext()) {
+                            cancelAlarm(alarm.requestId)
+                        }
+                    }
+                    repository.deleteAllAlarms().collect { deleteResult ->
+                        deleteResult.error?.let {
+                            Log.e(TAG, it)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override suspend fun cancelAlarmsOfLaunch(launchId: String) {
+        withContext(dispatcher.getIOContext()) {
+            repository.alarmsOfLaunch(launchId).collect { datastate ->
+                datastate.data?.let { alarms ->
+                    alarms.forEach { alarm ->
+                        withContext(dispatcher.getMainContext()) {
+                            cancelAlarm(alarm.requestId)
+                        }
+                    }
+                    repository.deleteAlarmsOfLaunch(launchId).collect { deleteResult ->
+                        deleteResult.error?.let {
+                            Log.e(TAG, it)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun cancelAlarm(requestId: Int) {
         val intent = Intent(context, NotificationAlarmReceiver::class.java)
         intent.action = ALARM_ACTION
         val pendingIntent = PendingIntent.getBroadcast(
-            context, launchId.hashCode(), intent, PendingIntent.FLAG_CANCEL_CURRENT
+            context, requestId, intent, PendingIntent.FLAG_CANCEL_CURRENT
         )
         alarmManager.cancel(pendingIntent)
         pendingIntent.cancel()

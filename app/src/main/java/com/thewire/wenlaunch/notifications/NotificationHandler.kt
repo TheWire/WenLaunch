@@ -46,9 +46,12 @@ class NotificationHandler(
                             launchTimeNew - ALARM_RECEIVER_LAUNCH_MARGIN < launchTime
                         ) {
                             sendNotification(launch, notificationLevel)
+                            notificationAlarmGenerator.cancelSingleAlarm(
+                                Pair(id, launchTime).hashCode()
+                            )
                         } else {
                             Log.i(TAG, "launch $id at $launchTime changed to $launchTimeNew")
-                            notificationAlarmGenerator.cancelAlarms(launch.id)
+                            notificationAlarmGenerator.cancelAlarmsOfLaunch(launch.id)
                             notifications?.let {
                                 notificationAlarmGenerator.setLaunchAlarms(launch, it)
                             }
@@ -59,7 +62,7 @@ class NotificationHandler(
                                     "${notificationLevel.name} changed to " +
                                     "${launch.status?.abbrev?.status}"
                         )
-                        notificationAlarmGenerator.cancelAlarms(launch.id)
+                        notificationAlarmGenerator.cancelAlarmsOfLaunch(launch.id)
                     }
                 }
             }
