@@ -22,10 +22,9 @@ const val ALARM_RECEIVER_LAUNCH_MARGIN = 60L
 
 @AndroidEntryPoint
 class NotificationAlarmReceiver : BroadcastReceiver() {
-    @Inject
-    lateinit var repository: ILaunchRepository
-    lateinit var notificationHandler: NotificationHandler
-    lateinit var dispatcher: IDispatcherProvider
+    @Inject lateinit var repository: ILaunchRepository
+    @Inject lateinit var notificationHandler: NotificationHandler
+    @Inject lateinit var dispatcher: IDispatcherProvider
 
 
     override fun onReceive(context: Context?, intent: Intent?) {

@@ -36,8 +36,13 @@ object NotificationModule {
 
     @Singleton
     @Provides
-    fun provideINotificationAlarmGenerator(@ApplicationContext app: Context, repository: ILaunchRepository): INotificationAlarmGenerator {
-        return NotificationAlarmGenerator(app, repository)
+    fun provideINotificationAlarmGenerator(
+        @ApplicationContext app: Context,
+        repository: ILaunchRepository,
+        dispatcher: IDispatcherProvider,
+        logger: ILogger,
+    ): INotificationAlarmGenerator {
+        return NotificationAlarmGenerator(app, repository, dispatcher, logger)
     }
 
     @Singleton
