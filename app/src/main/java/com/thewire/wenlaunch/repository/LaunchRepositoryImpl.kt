@@ -2,6 +2,7 @@ package com.thewire.wenlaunch.repository
 
 import android.util.Log
 import com.thewire.wenlaunch.cache.LaunchDao
+import com.thewire.wenlaunch.cache.alarm.mapToEntity
 import com.thewire.wenlaunch.cache.model.api.relations.mapToEntity
 import com.thewire.wenlaunch.domain.DataState
 import com.thewire.wenlaunch.domain.model.Launch
@@ -160,6 +161,25 @@ class LaunchRepositoryImpl(
             emit(DataState.error(e.message ?: "Unknown error"))
         } catch (illegalArgument: IllegalArgumentException) {
             Log.e(TAG, illegalArgument.message ?: "unknown illegal argument error")
+        }
+    }
+
+    override fun insertAlarm(alarm: Alarm): Flow<DataState<Long>> = flow {
+        try {
+            emit(DataState.loading())
+            emit(DataState.success(launchDao.insertAlarm(alarm.mapToEntity())))
+        } catch (e: Exception) {
+            emit(DataState.error(e.message ?: "Unknown error"))
+        }
+    }
+
+    override fun insertAlarms(alarms: List<Alarm>): Flow<DataState<LongArray>> = flow {
+        try {
+            emit(DataState.loading())
+            val ret = launchDao.insertAlarms(alarms.map{ it.mapToEntity() })
+            emit(DataState.success(ret))
+        } catch (e: Exception) {
+            emit(DataState.error(e.message ?: "Unknown error"))
         }
     }
 

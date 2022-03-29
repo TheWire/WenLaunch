@@ -30,6 +30,7 @@ class NotificationHandler(
     suspend fun updateAndNotify(
         id: String,
         launchTime: Long,
+        requestId: Int,
         notificationLevel: NotificationLevel,
         notifications: Map<NotificationLevel, Boolean>?
     ) {
@@ -46,9 +47,7 @@ class NotificationHandler(
                             launchTimeNew - ALARM_RECEIVER_LAUNCH_MARGIN < launchTime
                         ) {
                             sendNotification(launch, notificationLevel)
-                            notificationAlarmGenerator.cancelSingleAlarm(
-                                Pair(id, launchTime).hashCode()
-                            )
+                            notificationAlarmGenerator.cancelSingleAlarm(requestId)
                         } else {
                             Log.i(TAG, "launch $id at $launchTime changed to $launchTimeNew")
                             notificationAlarmGenerator.cancelAlarmsOfLaunch(launch.id)

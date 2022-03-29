@@ -44,7 +44,6 @@ class LaunchNotificationHandlerTest {
                 NotificationLevel.MINUTES1,
                 notifications
             )
-            assert(!alarmGenerator.cancel)
             assert(alarmGenerator.alarms.isEmpty())
         }
     }
@@ -73,8 +72,8 @@ class LaunchNotificationHandlerTest {
                 NotificationLevel.MINUTES1,
                 notifications
             )
-            assert(alarmGenerator.cancel)
-            assertEquals(alarmGenerator.alarms[0].id, "72188aca-810d-40b9-887d-43040614dd2c")
+            assertEquals(alarmGenerator.alarms[0].requestId, "72188aca-810d-40b9-887d-43040614dd2c")
+            assertEquals(alarmGenerator.alarms.size, 1)
         }
     }
 }

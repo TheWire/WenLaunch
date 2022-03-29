@@ -8,6 +8,7 @@ import com.thewire.wenlaunch.Logging.ILogger
 import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
+import com.thewire.wenlaunch.notifications.model.Alarm
 import com.thewire.wenlaunch.notifications.workers.ALARM_AHEAD
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import kotlinx.coroutines.withContext
@@ -15,6 +16,7 @@ import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.collect
 
 const val TAG = "NOTIFICATION_ALARM_GENERATOR"
+
 class NotificationAlarmGenerator(
     private val context: Context,
     private val repository: ILaunchRepository,
@@ -23,7 +25,10 @@ class NotificationAlarmGenerator(
 ) : INotificationAlarmGenerator {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    override fun setLaunchAlarms(launch: Launch, notifications: Map<NotificationLevel, Boolean>) {
+    override suspend fun setLaunchAlarms(
+        launch: Launch,
+        notifications: Map<NotificationLevel, Boolean>
+    ) {
         val nowMillis = System.currentTimeMillis()
         notifications.forEach { (notificationLevel, on) ->
             if (on && isAlarmInFuture(launch, notificationLevel, nowMillis)) {
@@ -45,7 +50,7 @@ class NotificationAlarmGenerator(
         return time < nowMillis
     }
 
-    private fun setAlarm(
+    private suspend fun setAlarm(
         launch: Launch,
         notificationLevel: NotificationLevel,
         notifications: Map<NotificationLevel, Boolean>
@@ -57,12 +62,14 @@ class NotificationAlarmGenerator(
         intent.putExtra(ALARM_RECEIVER_LAUNCH_TIME, launch.net.toEpochSecond())
         intent.putExtra(ALARM_RECEIVER_NOTIFICATION_LEVEL, notificationLevel.name)
         intent.putExtra(ALARM_RECEIVER_LAUNCH_ID, launch.id)
+        val requestId = Pair(launch.id, alarmTime.toEpochSecond()).hashCode()
+        intent.putExtra(ALARM_REQUEST_ID, requestId)
         val notificationList: List<String> = notifications.filter { it.value }.map { it.key.name }
         intent.putExtra(ALARM_RECEIVER_NOTIFICATIONS, notificationList.toTypedArray())
         val pendingIntent =
             PendingIntent.getBroadcast(
                 context,
-                Pair(launch.id, launch.net.toEpochSecond()).hashCode(),
+                requestId,
                 intent,
                 0
             )
@@ -71,7 +78,15 @@ class NotificationAlarmGenerator(
             alarmTime.toEpochSecond(),
             pendingIntent
         )
-
+        withContext(dispatcher.getIOContext()) {
+            repository.insertAlarm(
+                Alarm(
+                    requestId = requestId,
+                    time = alarmTime.toEpochSecond(),
+                    launchId = launch.id,
+                )
+            ).collect {}
+        }
     }
 
     override suspend fun cancelSingleAlarm(id: Int) {

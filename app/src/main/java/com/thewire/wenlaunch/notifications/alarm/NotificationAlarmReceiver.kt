@@ -15,6 +15,7 @@ import javax.inject.Inject
 const val ALARM_ACTION = "com.thewire.wenlaunch.NotificationAlarm"
 const val NOTIFICATION_CHANNEL_ID: String = "com.thewire.wenlaunch.NOTIFICATION_CHANNEL"
 const val ALARM_RECEIVER_LAUNCH_TIME = "ALARM_RECEIVER_LAUNCH_TIME"
+const val ALARM_REQUEST_ID = "ALARM_REQUEST_ID"
 const val ALARM_RECEIVER_NOTIFICATION_LEVEL = "ALARM_RECEIVER_NOTIFICATION_LEVEL"
 const val ALARM_RECEIVER_LAUNCH_ID = "LAUNCH_ID"
 const val ALARM_RECEIVER_NOTIFICATIONS = "NOTIFICATIONS"
@@ -31,6 +32,7 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
         if (intent != null) {
             val launchId = intent.getStringExtra(ALARM_RECEIVER_LAUNCH_ID)
             val launchTime = intent.getLongExtra(ALARM_RECEIVER_LAUNCH_TIME, 0)
+            val requestId = intent.getIntExtra(ALARM_REQUEST_ID, 0)
             val notificationLevel =
                 intent.getStringExtra(ALARM_RECEIVER_NOTIFICATION_LEVEL)?.let { level ->
                     NotificationLevel.valueOf(level)
@@ -45,8 +47,9 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
                     notificationHandler.updateAndNotify(
                         id,
                         launchTime,
+                        requestId,
                         notificationLevel,
-                        notifications
+                        notifications,
                     )
                 }
             }
