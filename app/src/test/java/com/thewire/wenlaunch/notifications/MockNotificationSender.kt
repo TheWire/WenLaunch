@@ -6,14 +6,13 @@ import org.junit.Assert.assertEquals
 
 
 private const val TAG = "MOCK_NOTIFICATION"
-class MockNotificationSender(
-    val expectedLaunchNotification: LaunchNotification
-) : INotificationSender {
-    val Log = MockLogger()
+class MockNotificationSender() : INotificationSender {
+    private val Log = MockLogger()
+    val notificationsSent = arrayListOf<LaunchNotification>()
     override fun sendNotification(launchNotification: LaunchNotification) {
         Log.d(TAG, launchNotification.title)
         Log.d(TAG, launchNotification.text)
         Log.d(TAG, launchNotification.time.toString())
-        assertEquals(launchNotification, expectedLaunchNotification)
+        notificationsSent.add(launchNotification)
     }
 }

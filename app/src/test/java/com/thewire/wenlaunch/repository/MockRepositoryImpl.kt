@@ -2,13 +2,16 @@ package com.thewire.wenlaunch.repository
 
 import com.thewire.wenlaunch.domain.DataState
 import com.thewire.wenlaunch.domain.model.Launch
+import com.thewire.wenlaunch.logging.MockLogger
 import com.thewire.wenlaunch.notifications.model.Alarm
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class MockRepositoryImpl : ILaunchRepository {
+const val TAG= "MOCK_LOGGER"
+class MockRepositoryImpl() : ILaunchRepository {
 
+    val Log = MockLogger()
     var alarms = listOf<Alarm>()
     override fun upcoming(
         limit: Int,
@@ -47,11 +50,7 @@ class MockRepositoryImpl : ILaunchRepository {
     override fun alarmsOfLaunch(launchId: String): Flow<DataState<List<Alarm>>> = flow {
         emit(DataState.loading())
         val ret = alarms.filter { it.launchId == launchId }
-        if(ret == null) {
-            emit(DataState.error("can not find alarm"))
-        } else {
-            emit(DataState.success(ret))
-        }
+        emit(DataState.success(ret))
     }
 
     override fun deleteAllAlarms(): Flow<DataState<Int>> = flow {
@@ -70,9 +69,8 @@ class MockRepositoryImpl : ILaunchRepository {
         if(size == alarms.size) {
             emit(DataState.error("can not find alarm"))
         } else {
-            1
+            emit(DataState.success(1))
         }
-        emit(DataState.success(1))
     }
 
     override fun deleteAlarmsOfLaunch(launchId: String): Flow<DataState<Int>> = flow {
@@ -81,13 +79,13 @@ class MockRepositoryImpl : ILaunchRepository {
         alarms = alarms.filter {
             it.launchId != launchId
         }
-        alarms = listOf()
+        println(alarms)
         if(size == alarms.size) {
             emit(DataState.error("can not find alarm"))
         } else {
-            1
+            emit(DataState.success(1))
         }
-        emit(DataState.success(1))
+
     }
 
     override fun insertAlarm(alarm: Alarm): Flow<DataState<Long>> = flow {
