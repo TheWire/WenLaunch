@@ -4,9 +4,7 @@ import com.thewire.wenlaunch.di.IDispatcherProvider
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.time.LocalTime
-import java.time.Period
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.temporal.ChronoUnit
 
 
@@ -59,11 +57,11 @@ class LaunchCountdown(
         job?.apply {
             if (isActive) return
         }
-        var secondDifference = ChronoUnit.SECONDS.between(timeNow(), launchTime)
+        var secondDifference = ChronoUnit.SECONDS.between(timeNow().asUTC(), launchTime.asUTC())
         job = scope.launch(dispatcherProvider.getIOContext()) {
             while (secondDifference > 0 && this.isActive) {
                 val now = timeNow()
-                _countdown.value = DateTimePeriod.between(now, launchTime)
+                _countdown.value = DateTimePeriod.between(now.asUTC(), launchTime.asUTC())
                 secondDifference = ChronoUnit.SECONDS.between(now, launchTime)
                 delay(1000)
             }
@@ -104,19 +102,32 @@ class LaunchCountdown(
 
             val ZERO = DateTimePeriod(Period.ZERO, TimePeriod.ZERO)
 
-            fun between(earlier: ZonedDateTime, later: ZonedDateTime): DateTimePeriod {
+            fun between(earlier: LocalDateTime, later: LocalDateTime): DateTimePeriod {
+                //what is the difference in only time
                 val timePeriod =
-                    earlier.toLocalTime().until(later.toLocalTime(), ChronoUnit.SECONDS)
+                    earlier.toLocalTime().until(later, ChronoUnit.SECONDS)
+                //if earlier is later in its own day correct for this
+                //this ensures that time is accounted for as well as date
+                //i.e. 2023-01-1T12:00:00Z is 1 day 12 hours from "2023-01-3T00:00:00Z not 2 days"
                 val adjustedPeriod = if (timePeriod < 0) {
                     later.plusSeconds(timePeriod)
                 } else {
                     later
                 }
+                println(adjustedPeriod)
+                println(earlier)
 
                 return DateTimePeriod(
-                    Period.between(earlier.toLocalDate(), adjustedPeriod.toLocalDate()),
+                    Period.between(
+                        earlier.toLocalDate(),
+                        adjustedPeriod.toLocalDate()
+                    ),
                     TimePeriod.fromLocalTimes(earlier.toLocalTime(), later.toLocalTime())
                 )
             }
         }
     }
+
+fun ZonedDateTime.asUTC() : LocalDateTime {
+    return LocalDateTime.ofInstant(this.toInstant(), ZoneId.of("Z"))
+}

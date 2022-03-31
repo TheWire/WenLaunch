@@ -1,6 +1,5 @@
 package com.thewire.wenlaunch.presentation.components
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

@@ -1,9 +1,7 @@
 package com.thewire.wenlaunch.presentation.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -42,8 +40,9 @@ fun LaunchStatusIndicator(
 }
 
 fun getStatusColor(launchStatus: LaunchStatus?): Color {
-    return when(launchStatus) {
+    return when (launchStatus) {
         LaunchStatus.GO -> Color.Green
+        LaunchStatus.HOLD -> Color.Red
         LaunchStatus.TBD -> Color.Yellow
         LaunchStatus.TBC -> Color(0xffa9fca7)
         LaunchStatus.OTHER -> Color(0xffeb7434)
@@ -52,7 +51,7 @@ fun getStatusColor(launchStatus: LaunchStatus?): Color {
 }
 
 fun getStatusText(launchStatus: LaunchStatus?): String {
-    return when(launchStatus) {
+    return when (launchStatus) {
         LaunchStatus.GO -> LaunchStatus.GO.toString()
         LaunchStatus.TBD -> LaunchStatus.TBD.toString()
         LaunchStatus.TBC -> LaunchStatus.TBC.toString()

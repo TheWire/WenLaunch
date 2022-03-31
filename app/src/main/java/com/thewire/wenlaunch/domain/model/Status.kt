@@ -13,6 +13,7 @@ data class Status(
 
 enum class LaunchStatus(val status: String) {
     GO("Go"),
+    HOLD("Hold"),
     TBD("TBD"),
     TBC("TBC"),
     SUCCESS("Success"),
@@ -23,6 +24,7 @@ enum class LaunchStatus(val status: String) {
             val ret = if(status != null)
                 when(status) {
                     "Go" -> GO
+                    "Hold" -> HOLD
                     "TBD" -> TBD
                     "TBC" -> TBC
                     "Success" -> SUCCESS

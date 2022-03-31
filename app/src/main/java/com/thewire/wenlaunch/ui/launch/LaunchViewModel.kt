@@ -74,7 +74,9 @@ constructor(
     }
 
     private fun resumeCountdown() {
-        launchCountdown?.resume()
+        if(launch.value?.status?.abbrev == LaunchStatus.GO) {
+            launchCountdown?.resume()
+        }
     }
 
     private fun pauseCountdown() {
@@ -104,8 +106,12 @@ constructor(
             dataState.data?.let { newLaunch ->
                 println()
                 launch.value = newLaunch
-                if (newLaunch.status?.abbrev == LaunchStatus.GO) {
-                    startCountdown(newLaunch.net)
+                when (newLaunch.status?.abbrev) {
+                    LaunchStatus.GO, LaunchStatus.HOLD -> startCountdown(newLaunch.net)
+                    else -> {}
+                }
+                if(newLaunch.status?.abbrev == LaunchStatus.HOLD) {
+                    pauseCountdown()
                 }
             }
 

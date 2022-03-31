@@ -3,7 +3,7 @@ package com.thewire.wenlaunch.ui.launch
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import app.cash.turbine.test
 import com.thewire.wenlaunch.di.IDispatcherProvider
-import com.thewire.wenlaunch.di.ProductionDispatcherProviderImpl
+import com.thewire.wenlaunch.di.TestDispatcherProvider
 import kotlinx.coroutines.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -21,7 +21,7 @@ class LaunchCountdownTimerTest {
 
     @Before
     fun setup() {
-        dispatcherProvider = ProductionDispatcherProviderImpl
+        dispatcherProvider = TestDispatcherProvider
         scope = CoroutineScope(dispatcherProvider.getDefaultContext())
     }
 
@@ -78,9 +78,37 @@ class LaunchCountdownTimerTest {
     }
 
     @Test
-    fun `CountdownTime should return 0 for time in past`() {
+    fun `CountdownTime should return expected time difference 5`() {
+        val launchTime = ZonedDateTime.parse("2022-03-31T13:30:00Z")
+        val mockTimeNow = ZonedDateTime.parse("2022-03-31T14:20:01+01:00[Europe/London]")
+        println(launchTime.toLocalDateTime())
+        println(mockTimeNow.toLocalDateTime())
+        val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
+        runBlocking {
+            val timer = launchCountdown.start()
+            timer.test {
+                compareTimePeriod(this.awaitItem(), 0, 0, 0, 0, 9L, 59L)
+            }
+        }
+    }
+
+    @Test
+    fun `CountdownTime should return 0 for time in past 1`() {
         val launchTime = ZonedDateTime.parse("2022-03-01T00:00:00Z")
         val mockTimeNow = ZonedDateTime.parse("2022-03-01T06:06:06Z")
+        val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
+        runBlocking {
+            val timer = launchCountdown.start()
+            timer.test {
+                compareTimePeriod(this.awaitItem(), 0, 0, 0, 0L, 0L, 0L)
+            }
+        }
+    }
+
+    @Test
+    fun `CountdownTime should return 0 for time in past 2`() {
+        val launchTime = ZonedDateTime.parse("2022-03-31T13:30:00Z")
+        val mockTimeNow = ZonedDateTime.parse("2022-03-31T13:40:00Z")
         val launchCountdown = LaunchCountdown(launchTime, { mockTimeNow }, dispatcherProvider)
         runBlocking {
             val timer = launchCountdown.start()

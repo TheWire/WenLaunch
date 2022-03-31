@@ -29,8 +29,8 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", 'SERVER_URL', '"https://lldev.thespacedevs.com/2.2.0/"'
-//            buildConfigField "String", "SERVER_URL", '"https://ll.thespacedevs.com/2.2.0/"'
+//            buildConfigField "String", 'SERVER_URL', '"https://lldev.thespacedevs.com/2.2.0/"'
+            buildConfigField "String", "SERVER_URL", '"https://ll.thespacedevs.com/2.2.0/"'
         }
         release {
             buildConfigField "String", "SERVER_URL", '"https://ll.thespacedevs.com/2.2.0/"'
