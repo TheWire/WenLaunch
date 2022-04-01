@@ -1,10 +1,14 @@
 package com.thewire.wenlaunch.ui.launch
 
 import com.thewire.wenlaunch.di.IDispatcherProvider
+import com.thewire.wenlaunch.util.asUTC
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.time.*
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.Period
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 
@@ -70,64 +74,60 @@ class LaunchCountdown(
 }
 
 
-    data class TimePeriod(val totalSeconds: Long) {
-        val totalMinutes = totalSeconds / 60
-        val hours = totalMinutes / 60
-        val minutes = totalMinutes % 60
-        val seconds = totalSeconds - (totalMinutes * 60)
+data class TimePeriod(val totalSeconds: Long) {
+    val totalMinutes = totalSeconds / 60
+    val hours = totalMinutes / 60
+    val minutes = totalMinutes % 60
+    val seconds = totalSeconds - (totalMinutes * 60)
 
-        companion object {
-            val ZERO = TimePeriod(0)
-            fun fromLocalTimes(earlier: LocalTime, later: LocalTime): TimePeriod {
-                val differenceSeconds = later.toSecondOfDay() - earlier.toSecondOfDay()
-                val finalDifference = if (differenceSeconds < 0) {
-                    (later.toSecondOfDay() + 24 * 60 * 60) - earlier.toSecondOfDay()
-                } else {
-                    differenceSeconds
-                }
-                return TimePeriod(finalDifference.toLong())
+    companion object {
+        val ZERO = TimePeriod(0)
+        fun fromLocalTimes(earlier: LocalTime, later: LocalTime): TimePeriod {
+            val differenceSeconds = later.toSecondOfDay() - earlier.toSecondOfDay()
+            val finalDifference = if (differenceSeconds < 0) {
+                (later.toSecondOfDay() + 24 * 60 * 60) - earlier.toSecondOfDay()
+            } else {
+                differenceSeconds
             }
-        }
-
-        operator fun compareTo(timePeriod: TimePeriod): Int {
-            return (this.totalSeconds - timePeriod.totalSeconds).toInt()
+            return TimePeriod(finalDifference.toLong())
         }
     }
 
-    data class DateTimePeriod(
-        val period: Period,
-        val timePeriod: TimePeriod,
-    ) {
-        companion object {
+    operator fun compareTo(timePeriod: TimePeriod): Int {
+        return (this.totalSeconds - timePeriod.totalSeconds).toInt()
+    }
+}
 
-            val ZERO = DateTimePeriod(Period.ZERO, TimePeriod.ZERO)
+data class DateTimePeriod(
+    val period: Period,
+    val timePeriod: TimePeriod,
+) {
+    companion object {
 
-            fun between(earlier: LocalDateTime, later: LocalDateTime): DateTimePeriod {
-                //what is the difference in only time
-                val timePeriod =
-                    earlier.toLocalTime().until(later, ChronoUnit.SECONDS)
-                //if earlier is later in its own day correct for this
-                //this ensures that time is accounted for as well as date
-                //i.e. 2023-01-1T12:00:00Z is 1 day 12 hours from "2023-01-3T00:00:00Z not 2 days"
-                val adjustedPeriod = if (timePeriod < 0) {
-                    later.plusSeconds(timePeriod)
-                } else {
-                    later
-                }
-                println(adjustedPeriod)
-                println(earlier)
+        val ZERO = DateTimePeriod(Period.ZERO, TimePeriod.ZERO)
 
-                return DateTimePeriod(
-                    Period.between(
-                        earlier.toLocalDate(),
-                        adjustedPeriod.toLocalDate()
-                    ),
-                    TimePeriod.fromLocalTimes(earlier.toLocalTime(), later.toLocalTime())
-                )
+        fun between(earlier: LocalDateTime, later: LocalDateTime): DateTimePeriod {
+            //what is the difference in only time
+            val timePeriod =
+                earlier.toLocalTime().until(later, ChronoUnit.SECONDS)
+            //if earlier is later in its own day correct for this
+            //this ensures that time is accounted for as well as date
+            //i.e. 2023-01-1T12:00:00Z is 1 day 12 hours from "2023-01-3T00:00:00Z not 2 days"
+            val adjustedPeriod = if (timePeriod < 0) {
+                later.plusSeconds(timePeriod)
+            } else {
+                later
             }
+            println(adjustedPeriod)
+            println(earlier)
+
+            return DateTimePeriod(
+                Period.between(
+                    earlier.toLocalDate(),
+                    adjustedPeriod.toLocalDate()
+                ),
+                TimePeriod.fromLocalTimes(earlier.toLocalTime(), later.toLocalTime())
+            )
         }
     }
-
-fun ZonedDateTime.asUTC() : LocalDateTime {
-    return LocalDateTime.ofInstant(this.toInstant(), ZoneId.of("Z"))
 }

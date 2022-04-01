@@ -75,7 +75,7 @@ class NotificationHandler(
         val notifyTime = launch.net.toEpochSecond() - (notificationLevel.time * 60L)
         val text = when (notificationLevel) {
             NotificationLevel.DEFAULT,
-            NotificationLevel.WEBCAST,
+//            NotificationLevel.WEBCAST,
             NotificationLevel.LAUNCH -> notificationLevel.description
             else -> "launch in ${notificationLevel.description}"
         }

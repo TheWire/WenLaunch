@@ -3,12 +3,14 @@ package com.thewire.wenlaunch.notifications.workers
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.thewire.wenlaunch.Logging.ILogger
 import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.notifications.alarm.INotificationAlarmGenerator
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
+import com.thewire.wenlaunch.util.asUTC
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
@@ -22,7 +24,7 @@ class NotificationWorker(
     params: WorkerParameters,
     private val repository: ILaunchRepository,
     private val dispatcher: IDispatcherProvider,
-    private val notificationAlarmGenerator: INotificationAlarmGenerator
+    private val notificationAlarmGenerator: INotificationAlarmGenerator,
 ) : CoroutineWorker(ctx, params) {
 
     var alarmsSet = false
@@ -38,8 +40,8 @@ class NotificationWorker(
                         }
                         val now = ZonedDateTime.now()
                         val launchIn24 = launches.filter { launch ->
-                            ChronoUnit.SECONDS.between(now, launch.net) < SECONDS_IN_DAY
-                                    && launch.status?.abbrev == LaunchStatus.GO
+                            ChronoUnit.SECONDS.between(now.asUTC(), launch.net.asUTC()) < SECONDS_IN_DAY
+                                    && launch.status?.abbrev == LaunchStatus.GO //should this include hold?
                         }
                         if (!alarmsSet) {
                             launchIn24.forEach { launch ->

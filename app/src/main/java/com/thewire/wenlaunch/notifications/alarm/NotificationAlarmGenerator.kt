@@ -11,9 +11,12 @@ import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.notifications.model.Alarm
 import com.thewire.wenlaunch.notifications.workers.ALARM_AHEAD
 import com.thewire.wenlaunch.repository.ILaunchRepository
+import com.thewire.wenlaunch.util.asUTC
 import kotlinx.coroutines.withContext
 import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.collect
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 const val TAG = "NOTIFICATION_ALARM_GENERATOR"
 
@@ -29,9 +32,12 @@ class NotificationAlarmGenerator(
         launch: Launch,
         notifications: Map<NotificationLevel, Boolean>
     ) {
-        val nowMillis = System.currentTimeMillis()
+        val now = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
         notifications.forEach { (notificationLevel, on) ->
-            if (on && isAlarmInFuture(launch, notificationLevel, nowMillis)) {
+            if (on && isAlarmInFuture(
+                    launch.net.asUTC().toEpochSecond(ZoneOffset.UTC), notificationLevel, now
+                )
+            ) {
                 setAlarm(
                     launch,
                     notificationLevel,
@@ -42,12 +48,12 @@ class NotificationAlarmGenerator(
     }
 
     private fun isAlarmInFuture(
-        launch: Launch,
+        net: Long,
         notificationLevel: NotificationLevel,
-        nowMillis: Long
+        now: Long
     ): Boolean {
-        val time = (launch.net.toEpochSecond() - notificationLevel.time * 60L) * 1000L
-        return time < nowMillis
+        val time = (net - notificationLevel.time * 60L)
+        return time > now
     }
 
     private suspend fun setAlarm(

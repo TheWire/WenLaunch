@@ -32,7 +32,7 @@ class SettingsStore_Impl(
                         .setDarkMode(settingsModel.darkMode)
                         .setNotification24Hours(settingsModel.notifications[HOURS24] ?: false)
                         .setNotification1Hour(settingsModel.notifications[HOURS1] ?: false)
-                        .setNotificationWebcast(settingsModel.notifications[WEBCAST] ?: false)
+//                        .setNotificationWebcast(settingsModel.notifications[WEBCAST] ?: false)
                         .setNotification10Minutes(settingsModel.notifications[MINUTES10] ?: false)
                         .setNotification1Minute(settingsModel.notifications[MINUTES1] ?: false)
                         .setNotificationLaunch(settingsModel.notifications[LAUNCH] ?: false)
