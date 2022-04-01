@@ -11,10 +11,12 @@ import com.thewire.wenlaunch.notifications.alarm.INotificationAlarmGenerator
 import com.thewire.wenlaunch.notifications.model.LaunchNotification
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
+import com.thewire.wenlaunch.util.asUTC
 import com.thewire.wenlaunch.util.ifEmptyNull
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
+import java.time.ZoneOffset
 
 private const val TAG = "NOTIFICATION_HANDLER"
 
@@ -42,7 +44,7 @@ class NotificationHandler(
             ).collect { dataState ->
                 dataState.data?.let { launch ->
                     if (launch.status?.abbrev == LaunchStatus.GO) {
-                        val launchTimeNew = launch.net.toEpochSecond()
+                        val launchTimeNew = launch.net.asUTC().toEpochSecond(ZoneOffset.UTC)
                         if (launchTimeNew + ALARM_RECEIVER_LAUNCH_MARGIN > launchTime &&
                             launchTimeNew - ALARM_RECEIVER_LAUNCH_MARGIN < launchTime
                         ) {

@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.collect
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-const val TAG = "NOTIFICATION_ALARM_GENERATOR"
+private const val TAG = "NOTIFICATION_ALARM_GENERATOR"
 
 class NotificationAlarmGenerator(
     private val context: Context,
@@ -32,12 +32,14 @@ class NotificationAlarmGenerator(
         launch: Launch,
         notifications: Map<NotificationLevel, Boolean>
     ) {
+        Log.i(TAG, "settings alarms for launch ${launch.id}")
         val now = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
         notifications.forEach { (notificationLevel, on) ->
             if (on && isAlarmInFuture(
-                    launch.net.asUTC().toEpochSecond(ZoneOffset.UTC), notificationLevel, now
+                    launch.net.toEpochSecond(), notificationLevel, now
                 )
             ) {
+                Log.i(TAG, "setting ${launch.id} ${notificationLevel.name}")
                 setAlarm(
                     launch,
                     notificationLevel,
@@ -53,6 +55,9 @@ class NotificationAlarmGenerator(
         now: Long
     ): Boolean {
         val time = (net - notificationLevel.time * 60L)
+        println(time)
+        println(now)
+        println(time > now)
         return time > now
     }
 
