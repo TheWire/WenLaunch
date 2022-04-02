@@ -1,9 +1,8 @@
 package com.thewire.wenlaunch.presentation
 
-import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +12,7 @@ import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.domain.model.settings.SettingsModel
 import com.thewire.wenlaunch.notifications.alarm.INotificationAlarmGenerator
 import com.thewire.wenlaunch.notifications.alarm.NOTIFICATION_CHANNEL_ID
+import com.thewire.wenlaunch.notifications.alarm.NotificationAlarmReceiver
 import com.thewire.wenlaunch.notifications.workers.NotificationWorker
 import com.thewire.wenlaunch.repository.store.SettingsStore
 import com.thewire.wenlaunch.repository.store.SettingsStoreResult
@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

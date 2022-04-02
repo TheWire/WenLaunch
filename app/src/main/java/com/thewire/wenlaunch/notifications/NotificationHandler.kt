@@ -13,6 +13,7 @@ import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
 import com.thewire.wenlaunch.util.asUTC
 import com.thewire.wenlaunch.util.ifEmptyNull
+import com.thewire.wenlaunch.util.toEpochMilliSecond
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
@@ -44,7 +45,7 @@ class NotificationHandler(
             ).collect { dataState ->
                 dataState.data?.let { launch ->
                     if (launch.status?.abbrev == LaunchStatus.GO) {
-                        val launchTimeNew = launch.net.asUTC().toEpochSecond(ZoneOffset.UTC)
+                        val launchTimeNew = launch.net.toEpochMilliSecond()
                         if (launchTimeNew + ALARM_RECEIVER_LAUNCH_MARGIN > launchTime &&
                             launchTimeNew - ALARM_RECEIVER_LAUNCH_MARGIN < launchTime
                         ) {
@@ -74,7 +75,7 @@ class NotificationHandler(
         launch: Launch,
         notificationLevel: NotificationLevel
     ) {
-        val notifyTime = launch.net.toEpochSecond() - (notificationLevel.time * 60L)
+        val notifyTime = launch.net.toEpochMilliSecond() - (notificationLevel.time * 60000L)
         val text = when (notificationLevel) {
             NotificationLevel.DEFAULT,
 //            NotificationLevel.WEBCAST,
@@ -83,7 +84,7 @@ class NotificationHandler(
         }
 
         withContext(dispatcherProvider.getDefaultContext()) {
-            val delayAmount = maxOf((notifyTime * 1000) - timeProviderMillis(), 0)
+            val delayAmount = maxOf(notifyTime - timeProviderMillis(), 0)
             delay(delayAmount)
         }
         withContext(dispatcherProvider.getMainContext()) {

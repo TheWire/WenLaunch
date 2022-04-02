@@ -9,16 +9,15 @@ import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.notifications.model.Alarm
-import com.thewire.wenlaunch.notifications.workers.ALARM_AHEAD
 import com.thewire.wenlaunch.repository.ILaunchRepository
-import com.thewire.wenlaunch.util.asUTC
-import kotlinx.coroutines.withContext
-import java.time.temporal.ChronoUnit
+import com.thewire.wenlaunch.util.toEpochMilliSecond
 import kotlinx.coroutines.flow.collect
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import kotlinx.coroutines.withContext
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 private const val TAG = "NOTIFICATION_ALARM_GENERATOR"
+const val ALARM_AHEAD = 60L
 
 class NotificationAlarmGenerator(
     private val context: Context,
@@ -33,7 +32,7 @@ class NotificationAlarmGenerator(
         notifications: Map<NotificationLevel, Boolean>
     ) {
         Log.i(TAG, "settings alarms for launch ${launch.id}")
-        val now = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+        val now = ZonedDateTime.now().toEpochSecond()
         notifications.forEach { (notificationLevel, on) ->
             if (on && isAlarmInFuture(
                     launch.net.toEpochSecond(), notificationLevel, now
@@ -55,9 +54,6 @@ class NotificationAlarmGenerator(
         now: Long
     ): Boolean {
         val time = (net - notificationLevel.time * 60L)
-        println(time)
-        println(now)
-        println(time > now)
         return time > now
     }
 
@@ -67,13 +63,17 @@ class NotificationAlarmGenerator(
         notifications: Map<NotificationLevel, Boolean>
     ) {
         val alarmTime =
-            launch.net.minus(ALARM_AHEAD + (notificationLevel.time * 60L), ChronoUnit.SECONDS)
+            launch.net.minus(
+                ALARM_AHEAD +
+                        (notificationLevel.time * 60L), ChronoUnit.SECONDS
+            )
+                .toEpochMilliSecond()
         val intent = Intent(context, NotificationAlarmReceiver::class.java)
         intent.action = ALARM_ACTION
-        intent.putExtra(ALARM_RECEIVER_LAUNCH_TIME, launch.net.toEpochSecond())
+        intent.putExtra(ALARM_RECEIVER_LAUNCH_TIME, launch.net.toEpochMilliSecond())
         intent.putExtra(ALARM_RECEIVER_NOTIFICATION_LEVEL, notificationLevel.name)
         intent.putExtra(ALARM_RECEIVER_LAUNCH_ID, launch.id)
-        val requestId = Pair(launch.id, alarmTime.toEpochSecond()).hashCode()
+        val requestId = Pair(launch.id, alarmTime).hashCode()
         intent.putExtra(ALARM_REQUEST_ID, requestId)
         val notificationList: List<String> = notifications.filter { it.value }.map { it.key.name }
         intent.putExtra(ALARM_RECEIVER_NOTIFICATIONS, notificationList.toTypedArray())
@@ -86,14 +86,14 @@ class NotificationAlarmGenerator(
             )
         alarmManager.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            alarmTime.toEpochSecond(),
+            alarmTime,
             pendingIntent
         )
         withContext(dispatcher.getIOContext()) {
             repository.insertAlarm(
                 Alarm(
                     requestId = requestId,
-                    time = alarmTime.toEpochSecond(),
+                    time = alarmTime,
                     launchId = launch.id,
                 )
             ).collect {}
