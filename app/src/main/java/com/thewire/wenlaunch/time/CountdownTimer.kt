@@ -63,7 +63,7 @@ class LaunchCountdown(
         }
         var secondDifference = ChronoUnit.SECONDS.between(timeNow().asUTC(), launchTime.asUTC())
         job = scope.launch(dispatcherProvider.getIOContext()) {
-            while (secondDifference > 0 && this.isActive) {
+            while (secondDifference > 0 && isActive) {
                 val now = timeNow()
                 _countdown.value = DateTimePeriod.between(now.asUTC(), launchTime.asUTC())
                 secondDifference = ChronoUnit.SECONDS.between(now, launchTime)
@@ -118,8 +118,6 @@ data class DateTimePeriod(
             } else {
                 later
             }
-            println(adjustedPeriod)
-            println(earlier)
 
             return DateTimePeriod(
                 Period.between(

@@ -108,7 +108,6 @@ constructor(
                 println("loading")
             }
             dataState.data?.let { newLaunch ->
-                println()
                 launch.value = newLaunch
                 when (newLaunch.status?.abbrev) {
                     LaunchStatus.GO, LaunchStatus.HOLD -> startCountdown(newLaunch.net)
