@@ -66,8 +66,7 @@ class NotificationAlarmGenerator(
             launch.net.minus(
                 ALARM_AHEAD +
                         (notificationLevel.time * 60L), ChronoUnit.SECONDS
-            )
-                .toEpochMilliSecond()
+            ).toEpochMilliSecond()
         val intent = Intent(context, NotificationAlarmReceiver::class.java)
         intent.action = ALARM_ACTION
         intent.putExtra(ALARM_RECEIVER_LAUNCH_TIME, launch.net.toEpochMilliSecond())

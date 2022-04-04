@@ -18,7 +18,6 @@ class MockRepositoryImpl() : ILaunchRepository {
         offset: Int,
         updatePolicy: LaunchRepositoryUpdatePolicy
     ): Flow<DataState<List<Launch>>> = flow {
-        emit(DataState.loading())
         delay(1000)
         emit(DataState.success(MockLaunchData.launches))
     }
@@ -27,13 +26,11 @@ class MockRepositoryImpl() : ILaunchRepository {
         id: String,
         updatePolicy: LaunchRepositoryUpdatePolicy
     ): Flow<DataState<Launch?>> = flow {
-        emit(DataState.loading())
         delay(1000)
         emit(DataState.success(MockLaunchData.launches[0]))
     }
 
     override fun alarm(requestId: Int): Flow<DataState<Alarm>> = flow {
-        emit(DataState.loading())
         val ret = alarms.find { it.requestId == requestId }
         if(ret == null) {
             emit(DataState.error("can not find alarm"))
@@ -43,25 +40,21 @@ class MockRepositoryImpl() : ILaunchRepository {
     }
 
     override fun alarmsAll(): Flow<DataState<List<Alarm>>> = flow {
-        emit(DataState.loading())
         emit(DataState.success(alarms))
     }
 
     override fun alarmsOfLaunch(launchId: String): Flow<DataState<List<Alarm>>> = flow {
-        emit(DataState.loading())
         val ret = alarms.filter { it.launchId == launchId }
         emit(DataState.success(ret))
     }
 
     override fun deleteAllAlarms(): Flow<DataState<Int>> = flow {
-        emit(DataState.loading())
         val size = alarms.size
         alarms = listOf()
         emit(DataState.success(size))
     }
 
     override fun deleteAlarm(requestId: Int): Flow<DataState<Int>> = flow {
-        emit(DataState.loading())
         val size = alarms.size
         alarms = alarms.filter {
             it.requestId == requestId
@@ -74,14 +67,12 @@ class MockRepositoryImpl() : ILaunchRepository {
     }
 
     override fun deleteAlarmsOfLaunch(launchId: String): Flow<DataState<Int>> = flow {
-        emit(DataState.loading())
         val size = alarms.size
         alarms = alarms.filter {
             it.launchId != launchId
         }
-        println(alarms)
         if(size == alarms.size) {
-            emit(DataState.error("can not find alarm"))
+            emit(DataState.error("no alarms deleted"))
         } else {
             emit(DataState.success(1))
         }
@@ -89,7 +80,6 @@ class MockRepositoryImpl() : ILaunchRepository {
     }
 
     override fun insertAlarm(alarm: Alarm): Flow<DataState<Long>> = flow {
-        emit(DataState.loading())
         val newAlarms = alarms.toMutableList()
         val index = newAlarms.size
         newAlarms.add(newAlarms.size, alarm)

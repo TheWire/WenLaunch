@@ -6,10 +6,12 @@ import com.thewire.wenlaunch.logging.MockLogger
 import com.thewire.wenlaunch.notifications.alarm.INotificationAlarmGenerator
 import com.thewire.wenlaunch.notifications.model.Alarm
 import com.thewire.wenlaunch.repository.ILaunchRepository
+import com.thewire.wenlaunch.util.toEpochMilliSecond
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 
 private const val TAG = "MockNotificationAlarmGenerator"
-const val ALARM_AHEAD = 120L
+const val ALARM_AHEAD = 60L
 
 class MockNotificationAlarmGenerator(
     private val repository: ILaunchRepository
@@ -24,12 +26,12 @@ class MockNotificationAlarmGenerator(
 
 
         notifications.forEach {
-            val alarmTime = launch.net.toEpochSecond() - (it.key.time * 60L) - ALARM_AHEAD
+            val alarmTime = launch.net.toEpochMilliSecond() - (it.key.time * 60000L) - (ALARM_AHEAD * 1000L)
             Log.i(TAG, "alarms set ${launch.name} at $alarmTime")
             repository.insertAlarm(
                 Alarm(
-                    requestId = Pair(launch.id, launch.net).hashCode(),
-                    time = launch.net.toEpochSecond() - ALARM_AHEAD,
+                    requestId = Pair(launch.id, alarmTime).hashCode(),
+                    time = alarmTime,
                     launchId = launch.id,
                 )
             ).collect {}
@@ -48,6 +50,6 @@ class MockNotificationAlarmGenerator(
 
     override suspend fun cancelAlarmsOfLaunch(launchId: String) {
         Log.i(TAG, "alarms of launch $launchId canceled")
-        repository.alarmsOfLaunch(launchId).collect {}
+        repository.deleteAlarmsOfLaunch(launchId).collect {}
     }
 }
