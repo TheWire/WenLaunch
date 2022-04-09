@@ -44,7 +44,6 @@ class BaseApplication() : Application(), Configuration.Provider {
         super.onCreate()
         loadSettings()
         createNotificationChannel()
-        runNotificationWorker()
     }
 
     private fun createNotificationChannel() {
@@ -78,6 +77,7 @@ class BaseApplication() : Application(), Configuration.Provider {
     private fun applySettings() {
         darkMode.value = settingsModel.value.darkMode
         notifications.value = settingsModel.value.notifications
+        runNotificationWorker()
     }
 
 
@@ -91,18 +91,18 @@ class BaseApplication() : Application(), Configuration.Provider {
         settingsModel.value.notifications = notifications
         setSettings()
         applySettings()
-        runNotificationWorker()
     }
 
     private fun runNotificationWorker() {
 
         CoroutineScope(dispatcher.getIOContext()).launch {
-            alarmGenerator.cancelAllAlarms()
 
             withContext(dispatcher.getMainContext()) {
                 val workManager: WorkManager = WorkManager.getInstance(this@BaseApplication)
                 if(!notifications.value.containsValue(true)) {
+                    println("cancel notifications")
                     workManager.cancelAllWorkByTag(WORKER_TAG)
+                    alarmGenerator.cancelAllAlarms()
                 } else {
                     val constraints = Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)

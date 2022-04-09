@@ -45,7 +45,7 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
 
             Log.i(TAG, "$launchId, $launchTime, $requestId, ${notificationLevel.name}")
             val notifications =
-                intent.getStringArrayListExtra(ALARM_RECEIVER_NOTIFICATIONS)?.associate {
+                intent.getStringArrayExtra(ALARM_RECEIVER_NOTIFICATIONS)?.associate {
                     NotificationLevel.valueOf(it) to true
                 }
             launchId?.let { id ->

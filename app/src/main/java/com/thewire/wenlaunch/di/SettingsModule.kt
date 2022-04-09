@@ -3,7 +3,7 @@ package com.thewire.wenlaunch.di
 import androidx.datastore.core.DataStore
 import com.thewire.wenlaunch.Settings
 import com.thewire.wenlaunch.repository.store.SettingsStore
-import com.thewire.wenlaunch.repository.store.SettingsStore_Impl
+import com.thewire.wenlaunch.repository.store.SettingsStoreImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +19,6 @@ object SettingsModule {
     fun provideSettingsStore(
         dataStore: DataStore<Settings>
     ) : SettingsStore {
-        return SettingsStore_Impl(dataStore)
+        return SettingsStoreImpl(dataStore)
     }
 }

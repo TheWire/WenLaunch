@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 
-class SettingsStore_Impl(
+class SettingsStoreImpl(
     private val dataStore: DataStore<Settings>
 ) : SettingsStore {
     private val settingsMapper = SettingsMapper()
