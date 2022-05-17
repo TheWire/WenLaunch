@@ -10,8 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
-import coil.request.CachePolicy
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.presentation.components.layout.LaunchCardLayout

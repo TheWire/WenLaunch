@@ -11,13 +11,11 @@ import com.thewire.wenlaunch.notifications.alarm.INotificationAlarmGenerator
 import com.thewire.wenlaunch.notifications.model.LaunchNotification
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
-import com.thewire.wenlaunch.util.asUTC
 import com.thewire.wenlaunch.util.ifEmptyNull
 import com.thewire.wenlaunch.util.toEpochMilliSecond
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
-import java.time.ZoneOffset
 
 private const val TAG = "NOTIFICATION_HANDLER"
 

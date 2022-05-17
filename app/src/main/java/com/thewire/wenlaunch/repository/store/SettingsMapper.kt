@@ -1,8 +1,6 @@
 package com.thewire.wenlaunch.repository.store
 
 import com.thewire.wenlaunch.Settings
-import com.thewire.wenlaunch.SettingsOrBuilder
-import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel.*
 import com.thewire.wenlaunch.domain.model.settings.SettingsModel
 import com.thewire.wenlaunch.domain.util.DomainMapper

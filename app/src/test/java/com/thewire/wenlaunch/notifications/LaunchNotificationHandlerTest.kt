@@ -8,7 +8,6 @@ import com.thewire.wenlaunch.notifications.model.Alarm
 import com.thewire.wenlaunch.notifications.model.LaunchNotification
 import com.thewire.wenlaunch.repository.MockRepositoryImpl
 import com.thewire.wenlaunch.util.toEpochMilliSecond
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals

@@ -1,7 +1,6 @@
 package com.thewire.wenlaunch.ui.settings
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.presentation.BaseApplication

@@ -2,13 +2,11 @@ package com.thewire.wenlaunch.repository.store
 
 import androidx.datastore.core.DataStore
 import com.thewire.wenlaunch.Settings
-import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel.*
 import com.thewire.wenlaunch.domain.model.settings.SettingsModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 
 class SettingsStoreImpl(
     private val dataStore: DataStore<Settings>

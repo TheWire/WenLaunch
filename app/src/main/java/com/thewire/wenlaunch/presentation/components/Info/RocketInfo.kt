@@ -1,6 +1,5 @@
 package com.thewire.wenlaunch.presentation.components
 
-import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding

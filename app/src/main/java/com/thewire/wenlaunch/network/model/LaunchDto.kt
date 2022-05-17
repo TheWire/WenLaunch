@@ -1,6 +1,5 @@
 package com.thewire.wenlaunch.network.model
 
-import android.net.Uri
 import com.google.gson.annotations.SerializedName
 import com.thewire.wenlaunch.cache.model.IRepoToDomain
 import com.thewire.wenlaunch.domain.model.Launch

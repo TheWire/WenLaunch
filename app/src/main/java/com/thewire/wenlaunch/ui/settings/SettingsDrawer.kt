@@ -5,14 +5,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel.*
-import com.thewire.wenlaunch.presentation.BaseApplication
 import com.thewire.wenlaunch.presentation.theme.Typography
-import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
 import com.thewire.wenlaunch.ui.settings.SettingsEvent
 import com.thewire.wenlaunch.ui.settings.SettingsViewModel
 

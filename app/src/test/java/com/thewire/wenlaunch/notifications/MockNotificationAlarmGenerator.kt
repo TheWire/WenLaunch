@@ -8,7 +8,6 @@ import com.thewire.wenlaunch.notifications.model.Alarm
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.util.toEpochMilliSecond
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 
 private const val TAG = "MockNotificationAlarmGenerator"
 const val ALARM_AHEAD = 60L
