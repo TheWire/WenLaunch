@@ -1,7 +1,9 @@
 package com.thewire.wenlaunch.repository
 
 import android.util.Log
+import com.thewire.wenlaunch.Logging.model.LogEntry
 import com.thewire.wenlaunch.cache.LaunchDao
+import com.thewire.wenlaunch.cache.Logging.mapToEntity
 import com.thewire.wenlaunch.cache.alarm.mapToEntity
 import com.thewire.wenlaunch.cache.model.api.relations.mapToEntity
 import com.thewire.wenlaunch.domain.DataState
@@ -119,38 +121,45 @@ class LaunchRepositoryImpl(
         getFromRemoteAndUpdateCache: suspend () -> T,
         meetsThreshold: (T?, threshold: Long) -> Boolean
     ): Flow<DataState<T>> = flow {
+        var cacheEmitted = false
+        var cache: T? = null
         try {
             emit(DataState.loading())
-            val cache = if (updatePolicy != NetworkOnly) {
+            cache = if (updatePolicy != NetworkOnly) {
                 getFromCache()
             } else {
                 null
             }
+            if(updatePolicy == NetworkPrimary) {
+                cacheEmitted = true
+            }
             if (cache != null && updatePolicy != NetworkPrimary) {
                 emit(DataState.success(cache))
+                cacheEmitted = true
             }
 
-            val remote: T? = when (updatePolicy) {
-                CacheOnly -> null
-                CachePrimary -> {
-                    if (cache == null) {
-                        getFromRemoteAndUpdateCache()
-                    } else {
-                        null
+            val remote: T? =
+                when (updatePolicy) {
+                    CacheOnly -> null
+                    CachePrimary -> {
+                        if (cache == null) {
+                            getFromRemoteAndUpdateCache()
+                        } else {
+                            null
+                        }
                     }
-                }
-                is NetworkModifiedThreshold -> {
-                    if (meetsThreshold(cache, updatePolicy.threshold)) {
-                        getFromRemoteAndUpdateCache()
-                    } else {
-                        null
+                    is NetworkModifiedThreshold -> {
+                        if (meetsThreshold(cache, updatePolicy.threshold)) {
+                            getFromRemoteAndUpdateCache()
+                        } else {
+                            null
+                        }
                     }
-                }
-                CacheUntilNetwork,
-                NetworkOnly,
-                NetworkPrimary -> {
-                    getFromRemoteAndUpdateCache()
-                }
+                    CacheUntilNetwork,
+                    NetworkOnly,
+                    NetworkPrimary -> {
+                        getFromRemoteAndUpdateCache()
+                    }
             }
 
             remote?.let {
@@ -159,6 +168,9 @@ class LaunchRepositoryImpl(
 
         } catch (e: Exception) {
             emit(DataState.error(e.message ?: "Unknown error"))
+            if(!cacheEmitted && cache != null) {
+                emit(DataState.success(cache))
+            }
         } catch (illegalArgument: IllegalArgumentException) {
             Log.e(TAG, illegalArgument.message ?: "unknown illegal argument error")
         }
@@ -177,6 +189,15 @@ class LaunchRepositoryImpl(
         try {
             emit(DataState.loading())
             val ret = launchDao.insertAlarms(alarms.map{ it.mapToEntity() })
+            emit(DataState.success(ret))
+        } catch (e: Exception) {
+            emit(DataState.error(e.message ?: "Unknown error"))
+        }
+    }
+
+    override fun insertLog(log: LogEntry): Flow<DataState<Long>> = flow {
+        try {
+            val ret = launchDao.insertLog(log.mapToEntity())
             emit(DataState.success(ret))
         } catch (e: Exception) {
             emit(DataState.error(e.message ?: "Unknown error"))

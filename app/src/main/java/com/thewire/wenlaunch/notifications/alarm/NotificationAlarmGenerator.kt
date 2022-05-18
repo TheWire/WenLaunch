@@ -16,14 +16,14 @@ import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
-private const val TAG = "NOTIFICATION_ALARM_GENERATOR"
+private const val TAG = "LAUNCH_NOTIFICATION_ALARM_GENERATOR"
 const val ALARM_AHEAD = 30L
 
 class NotificationAlarmGenerator(
     private val context: Context,
     private val repository: ILaunchRepository,
     private val dispatcher: IDispatcherProvider,
-    private val Log: ILogger,
+    private val logger: ILogger,
 ) : INotificationAlarmGenerator {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -31,14 +31,14 @@ class NotificationAlarmGenerator(
         launch: Launch,
         notifications: Map<NotificationLevel, Boolean>
     ) {
-        Log.i(TAG, "settings alarms for launch ${launch.id}")
+        logger.i(TAG, "settings alarms for launch ${launch.id}")
         val now = ZonedDateTime.now().toEpochSecond()
         notifications.forEach { (notificationLevel, on) ->
             if (on && isAlarmInFuture(
                     launch.net.toEpochSecond(), notificationLevel, now
                 )
             ) {
-                Log.i(TAG, "setting ${launch.id} ${notificationLevel.name}")
+                logger.v(TAG, "setting ${launch.id} ${notificationLevel.name}")
                 setAlarm(
                     launch,
                     notificationLevel,
@@ -104,7 +104,7 @@ class NotificationAlarmGenerator(
         withContext(dispatcher.getIOContext()) {
             repository.deleteAlarm(id).collect { deleteResult ->
                 deleteResult.error?.let {
-                    Log.e(TAG, it)
+                    logger.e(TAG, it)
                 }
             }
         }
@@ -121,7 +121,7 @@ class NotificationAlarmGenerator(
                     }
                     repository.deleteAllAlarms().collect { deleteResult ->
                         deleteResult.error?.let {
-                            Log.e(TAG, it)
+                            logger.e(TAG, it)
                         }
                     }
                 }
@@ -140,7 +140,7 @@ class NotificationAlarmGenerator(
                     }
                     repository.deleteAlarmsOfLaunch(launchId).collect { deleteResult ->
                         deleteResult.error?.let {
-                            Log.e(TAG, it)
+                            logger.e(TAG, it)
                         }
                     }
                 }

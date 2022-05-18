@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.thewire.wenlaunch.cache.LaunchDao
+import com.thewire.wenlaunch.cache.Logging.LogEntity
 import com.thewire.wenlaunch.cache.alarm.AlarmEntity
 import com.thewire.wenlaunch.cache.model.api.*
 import com.thewire.wenlaunch.cache.model.typeConverters.LaunchTypeConverter
@@ -20,6 +21,7 @@ import com.thewire.wenlaunch.cache.model.typeConverters.LaunchTypeConverter
         PadEntity::class,
         LocationEntity::class,
         AlarmEntity::class,
+        LogEntity::class
     ], version = 1
 )
 @TypeConverters(LaunchTypeConverter::class)

@@ -22,18 +22,18 @@ const val ALARM_RECEIVER_LAUNCH_ID = "LAUNCH_ID"
 const val ALARM_RECEIVER_NOTIFICATIONS = "NOTIFICATIONS"
 const val ALARM_RECEIVER_LAUNCH_MARGIN = 120000L
 
-private const val TAG = "NOTIFICATION_ALARM_RECEIVER"
+private const val TAG = "LAUNCH_NOTIFICATION_ALARM_RECEIVER"
 
 @AndroidEntryPoint
 class NotificationAlarmReceiver : BroadcastReceiver() {
     @Inject lateinit var repository: ILaunchRepository
     @Inject lateinit var notificationHandler: NotificationHandler
     @Inject lateinit var dispatcher: IDispatcherProvider
-    @Inject lateinit var Log: ILogger
+    @Inject lateinit var logger: ILogger
 
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.i(TAG, "alarm received")
+        logger.i(TAG, "alarm received")
         if (intent != null) {
             val launchId = intent.getStringExtra(ALARM_RECEIVER_LAUNCH_ID)
             val launchTime = intent.getLongExtra(ALARM_RECEIVER_LAUNCH_TIME, 0)
@@ -43,7 +43,7 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
                     NotificationLevel.valueOf(level)
                 } ?: NotificationLevel.DEFAULT
 
-            Log.i(TAG, "$launchId, $launchTime, $requestId, ${notificationLevel.name}")
+            logger.v(TAG, "$launchId, $launchTime, $requestId, ${notificationLevel.name}")
             val notifications =
                 intent.getStringArrayExtra(ALARM_RECEIVER_NOTIFICATIONS)?.associate {
                     NotificationLevel.valueOf(it) to true

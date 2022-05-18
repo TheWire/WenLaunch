@@ -1,6 +1,7 @@
 package com.thewire.wenlaunch.cache
 
 import androidx.room.*
+import com.thewire.wenlaunch.cache.Logging.LogEntity
 import com.thewire.wenlaunch.cache.alarm.AlarmEntity
 import com.thewire.wenlaunch.cache.model.api.*
 import com.thewire.wenlaunch.cache.model.api.relations.LaunchRelationship
@@ -40,6 +41,9 @@ interface LaunchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAlarms(alarms: List<AlarmEntity>): LongArray
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLog(logEntity: LogEntity): Long
 
 
     @Transaction

@@ -17,14 +17,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 
-private const val TAG = "NOTIFICATION_HANDLER"
+private const val TAG = "LAUNCH_NOTIFICATION_HANDLER"
 
 class NotificationHandler(
     private val repository: ILaunchRepository,
     private val dispatcherProvider: IDispatcherProvider,
     private val notificationAlarmGenerator: INotificationAlarmGenerator,
     private val notificationSender: INotificationSender,
-    private val Log: ILogger,
+    private val logger: ILogger,
     private val timeProviderMillis: () -> Long,
 ) {
 
@@ -35,7 +35,7 @@ class NotificationHandler(
         notificationLevel: NotificationLevel,
         notifications: Map<NotificationLevel, Boolean>?
     ) {
-        Log.i(TAG, "launch $id at $launchTime ${notificationLevel.name}")
+        logger.i(TAG, "launch $id at $launchTime ${notificationLevel.name}")
         withContext(dispatcherProvider.getIOContext()) {
             repository.launch(
                 id,
@@ -46,10 +46,11 @@ class NotificationHandler(
                     val timeChanged = hasAlarmTimeChanged(
                         launchTime, launchTimeNew, ALARM_RECEIVER_LAUNCH_MARGIN
                     )
+                    logger.v(TAG, "api launch details $launchTimeNew ${launch.status}")
                     if(timeChanged) {
                         if (launch.status?.abbrev == LaunchStatus.GO ||
                             launch.status?.abbrev == LaunchStatus.HOLD) {
-                            Log.i(TAG, "launch $id at $launchTime changed to $launchTimeNew")
+                            logger.i(TAG, "launch $id at $launchTime changed to $launchTimeNew")
                             notificationAlarmGenerator.cancelAlarmsOfLaunch(launch.id)
                             notifications?.let {
                                 notificationAlarmGenerator.setLaunchAlarms(launch, it)
@@ -72,6 +73,9 @@ class NotificationHandler(
                             }
                         }
                     }
+                    dataState.error?.let {
+                        logger.e(TAG, "error $it")
+                    }
                 }
             }
         }
@@ -83,7 +87,7 @@ class NotificationHandler(
         originalLaunchTime: Long,
         notificationLevel: NotificationLevel
     ) {
-        Log.i(
+        logger.i(
             TAG, "launch $id at $originalLaunchTime " +
                     "${notificationLevel.name} changed to " +
                     "${launch.status?.abbrev?.status}"
@@ -115,9 +119,8 @@ class NotificationHandler(
                 NotificationLevel.DEFAULT -> notificationLevel.description
                 else -> "launch in ${notificationLevel.description}"
             }
-
+        logger.v(TAG, "launch time: ${launch.net.toEpochMilliSecond()}notifyTime $notifyTime")
         withContext(dispatcherProvider.getDefaultContext()) {
-            println("notifyTime: $notifyTime timeProviderMillis: ${timeProviderMillis()}")
             val delayAmount = maxOf(notifyTime - timeProviderMillis(), 0)
             delay(delayAmount)
         }

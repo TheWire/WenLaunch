@@ -3,6 +3,7 @@ package com.thewire.wenlaunch.notifications.workers
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.thewire.wenlaunch.Logging.ILogger
 import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
@@ -16,17 +17,21 @@ import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
+private const val TAG = "LAUNCH_NOTIFICATION_WORKER"
+
 class NotificationWorker(
     ctx: Context,
     params: WorkerParameters,
     private val repository: ILaunchRepository,
     private val dispatcher: IDispatcherProvider,
     private val notificationAlarmGenerator: INotificationAlarmGenerator,
+    private val logger: ILogger
 ) : CoroutineWorker(ctx, params) {
 
     var alarmsSet = false
 
     override suspend fun doWork(): Result {
+        logger.i(TAG, "notification worker started")
         alarmsSet = false
         withContext(dispatcher.getIOContext()) {
             repository.upcoming(10, 0, LaunchRepositoryUpdatePolicy.NetworkPrimary)
@@ -46,10 +51,14 @@ class NotificationWorker(
                         }
                         if (!alarmsSet) {
                             launchIn24.forEach { launch ->
+                                logger.v(TAG, "alarm scheduled ${launch.name} ${launch.net}")
                                 notificationAlarmGenerator.setLaunchAlarms(launch, notifications)
                             }
                             alarmsSet = true
                         }
+                    }
+                    dataState.error?.let {
+                        logger.e(TAG, "error $it")
                     }
                 }
         }

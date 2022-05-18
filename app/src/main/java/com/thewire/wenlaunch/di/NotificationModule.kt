@@ -26,10 +26,11 @@ object NotificationModule {
         repository: ILaunchRepository,
         dispatcher: IDispatcherProvider,
         alarmGenerator: INotificationAlarmGenerator,
+        logger: ILogger,
     ): DelegatingWorkerFactory {
         val delegatingFactory = DelegatingWorkerFactory()
         delegatingFactory.addFactory(
-            NotificationWorkerFactory(repository, dispatcher, alarmGenerator)
+            NotificationWorkerFactory(repository, dispatcher, alarmGenerator, logger)
         )
         return delegatingFactory
     }
@@ -49,8 +50,9 @@ object NotificationModule {
     @Provides
     fun provideINotificationSender(
         @ApplicationContext app: Context,
+        logger: ILogger
     ): INotificationSender {
-        return NotificationSender(app)
+        return NotificationSender(app, logger)
     }
 
     @Singleton

@@ -1,5 +1,6 @@
 package com.thewire.wenlaunch.repository
 
+import com.thewire.wenlaunch.Logging.model.LogEntry
 import com.thewire.wenlaunch.domain.DataState
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.logging.MockLogger
@@ -97,5 +98,9 @@ class MockRepositoryImpl() : ILaunchRepository {
             indexes.add(index.toLong())
         }
         emit(DataState.success(indexes.toLongArray()))
+    }
+
+    override fun insertLog(log: LogEntry): Flow<DataState<Long>> = flow{
+        //do nothing
     }
 }

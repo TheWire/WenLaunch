@@ -31,9 +31,11 @@ android {
         debug {
 //            buildConfigField "String", 'SERVER_URL', '"https://lldev.thespacedevs.com/2.2.0/"'
             buildConfigField "String", "SERVER_URL", '"https://ll.thespacedevs.com/2.2.0/"'
+            buildConfigField "Boolean", "LOG_TO_DATABASE", "true"
         }
         release {
             buildConfigField "String", "SERVER_URL", '"https://ll.thespacedevs.com/2.2.0/"'
+            buildConfigField "Boolean", "LOG_TO_DATABASE", "false"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
