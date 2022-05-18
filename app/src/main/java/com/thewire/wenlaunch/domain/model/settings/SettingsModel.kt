@@ -12,5 +12,5 @@ enum class NotificationLevel(val time: Long, val description: String) {
 //    WEBCAST(240, "Webcast Live"),
     MINUTES10(10, "10 minutes"),
     MINUTES1(1, "1 minute"),
-    LAUNCH(0, "launch imminent"),
+//    LAUNCH(0, "launch imminent"),
 }

@@ -15,7 +15,7 @@ class SettingsMapper : DomainMapper<Settings, SettingsModel> {
 //                WEBCAST to model.notificationWebcast,
                 MINUTES10 to model.notification10Minutes,
                 MINUTES1 to model.notification1Minute,
-                LAUNCH to model.notificationLaunch,
+//                LAUNCH to model.notificationLaunch,
             )
         )
     }

@@ -41,7 +41,8 @@ class NotificationWorker(
                                 now.asUTC(),
                                 launch.net.asUTC()
                             ) < SECONDS_IN_DAY
-                                    && launch.status?.abbrev == LaunchStatus.GO //should this include hold?
+                                    && launch.status?.abbrev == LaunchStatus.GO ||
+                                    launch.status?.abbrev == LaunchStatus.HOLD
                         }
                         if (!alarmsSet) {
                             launchIn24.forEach { launch ->

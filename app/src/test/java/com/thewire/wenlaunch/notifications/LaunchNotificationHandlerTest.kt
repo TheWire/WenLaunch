@@ -70,7 +70,7 @@ class LaunchNotificationHandlerTest {
 
     @Test
     fun `notification should be issued with change to time`() {
-        val mockCurrentTime = ZonedDateTime.parse("2022-03-19T04:36:30Z")
+        val mockCurrentTime = ZonedDateTime.parse("2022-03-19T04:39:00Z")
         val alarmTime = ZonedDateTime.parse("2022-03-19T04:36:30Z")
         val notificationTime = ZonedDateTime.parse("2022-03-19T04:38:30Z")
         val launchTimeOriginal = ZonedDateTime.parse("2022-03-19T04:39:30Z")

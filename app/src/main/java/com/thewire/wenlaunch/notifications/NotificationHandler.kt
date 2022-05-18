@@ -42,46 +42,82 @@ class NotificationHandler(
                 LaunchRepositoryUpdatePolicy.NetworkPrimary
             ).collect { dataState ->
                 dataState.data?.let { launch ->
-                    if (launch.status?.abbrev == LaunchStatus.GO) {
-                        val launchTimeNew = launch.net.toEpochMilliSecond()
-                        if (launchTimeNew + ALARM_RECEIVER_LAUNCH_MARGIN > launchTime &&
-                            launchTimeNew - ALARM_RECEIVER_LAUNCH_MARGIN < launchTime
-                        ) {
-                            sendNotification(launch, notificationLevel)
-                            notificationAlarmGenerator.cancelSingleAlarm(requestId)
-                        } else {
+                    val launchTimeNew = launch.net.toEpochMilliSecond()
+                    val timeChanged = hasAlarmTimeChanged(
+                        launchTime, launchTimeNew, ALARM_RECEIVER_LAUNCH_MARGIN
+                    )
+                    if(timeChanged) {
+                        if (launch.status?.abbrev == LaunchStatus.GO ||
+                            launch.status?.abbrev == LaunchStatus.HOLD) {
                             Log.i(TAG, "launch $id at $launchTime changed to $launchTimeNew")
                             notificationAlarmGenerator.cancelAlarmsOfLaunch(launch.id)
                             notifications?.let {
                                 notificationAlarmGenerator.setLaunchAlarms(launch, it)
                             }
+                        } else {
+                            cancelAlarms(launch, id, launchTime, notificationLevel)
                         }
                     } else {
-                        Log.i(
-                            TAG, "launch $id at $launchTime " +
-                                    "${notificationLevel.name} changed to " +
-                                    "${launch.status?.abbrev?.status}"
-                        )
-                        notificationAlarmGenerator.cancelAlarmsOfLaunch(launch.id)
+                        when(launch.status?.abbrev) {
+                            LaunchStatus.GO -> {
+                                sendNotification(launch, notificationLevel)
+                                notificationAlarmGenerator.cancelSingleAlarm(requestId)
+                            }
+                            LaunchStatus.HOLD -> {
+                                sendNotification(launch, notificationLevel, "Holding")
+                                notificationAlarmGenerator.cancelSingleAlarm(requestId)
+                            }
+                            else -> {
+                                cancelAlarms(launch, id, launchTime, notificationLevel)
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    private suspend fun sendNotification(
+    private suspend fun cancelAlarms(
         launch: Launch,
+        id: String,
+        originalLaunchTime: Long,
         notificationLevel: NotificationLevel
     ) {
-        val notifyTime = launch.net.toEpochMilliSecond() - (notificationLevel.time * 60000L)
-        val text = when (notificationLevel) {
-            NotificationLevel.DEFAULT,
-//            NotificationLevel.WEBCAST,
-            NotificationLevel.LAUNCH -> notificationLevel.description
-            else -> "launch in ${notificationLevel.description}"
+        Log.i(
+            TAG, "launch $id at $originalLaunchTime " +
+                    "${notificationLevel.name} changed to " +
+                    "${launch.status?.abbrev?.status}"
+        )
+        notificationAlarmGenerator.cancelAlarmsOfLaunch(launch.id)
+    }
+
+    private fun hasAlarmTimeChanged(
+        launchTime: Long,
+        launchTimeNew: Long,
+        margin: Long
+    ): Boolean {
+        if (launchTimeNew > launchTime + margin ||
+            launchTimeNew < launchTime - margin
+        ) {
+            return true
         }
+        return false
+    }
+
+    private suspend fun sendNotification(
+        launch: Launch,
+        notificationLevel: NotificationLevel,
+        text: String? = null
+    ) {
+        val notifyTime = launch.net.toEpochMilliSecond() - (notificationLevel.time * 60000L)
+        val notificationText = text
+            ?: when (notificationLevel) {
+                NotificationLevel.DEFAULT -> notificationLevel.description
+                else -> "launch in ${notificationLevel.description}"
+            }
 
         withContext(dispatcherProvider.getDefaultContext()) {
+            println("notifyTime: $notifyTime timeProviderMillis: ${timeProviderMillis()}")
             val delayAmount = maxOf(notifyTime - timeProviderMillis(), 0)
             delay(delayAmount)
         }
@@ -90,7 +126,7 @@ class NotificationHandler(
                 LaunchNotification(
                     launch.name.ifEmptyNull() ?: "Unknown Launch",
                     R.mipmap.ic_launcher_round,
-                    text,
+                    notificationText,
                     notifyTime
                 )
             )
