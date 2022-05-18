@@ -17,7 +17,7 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 private const val TAG = "LAUNCH_NOTIFICATION_ALARM_GENERATOR"
-const val ALARM_AHEAD = 30L
+const val ALARM_AHEAD = 8L
 
 class NotificationAlarmGenerator(
     private val context: Context,
