@@ -58,9 +58,10 @@ class NotificationWorker(
                                              && launch.status?.abbrev == LaunchStatus.GO ||
                                              launch.status?.abbrev == LaunchStatus.HOLD
                                 }
-
-                                logger.v(TAG, "alarm scheduled ${launch.name} ${launch.net}")
-                                notificationAlarmGenerator.setLaunchAlarms(launch, alarmsIn24)
+                                if(alarmsIn24.isNotEmpty()) {
+                                    logger.v(TAG, "alarm scheduled ${launch.name} ${launch.net}")
+                                    notificationAlarmGenerator.setLaunchAlarms(launch, alarmsIn24)
+                                }
                             }
                         }
                     }

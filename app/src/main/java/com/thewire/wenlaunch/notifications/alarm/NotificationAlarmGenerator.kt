@@ -83,7 +83,7 @@ class NotificationAlarmGenerator(
                 intent,
                 0
             )
-        alarmManager.setAndAllowWhileIdle(
+        alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             alarmTime,
             pendingIntent
