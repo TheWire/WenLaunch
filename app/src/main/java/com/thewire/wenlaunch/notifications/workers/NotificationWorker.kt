@@ -10,7 +10,6 @@ import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.notifications.alarm.INotificationAlarmGenerator
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
-import com.thewire.wenlaunch.util.SECONDS_IN_DAY
 import com.thewire.wenlaunch.util.asUTC
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
@@ -18,6 +17,7 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 private const val TAG = "LAUNCH_NOTIFICATION_WORKER"
+private const val SECS_IN_HOURS = 3600L
 
 class NotificationWorker(
     ctx: Context,
@@ -25,10 +25,13 @@ class NotificationWorker(
     private val repository: ILaunchRepository,
     private val dispatcher: IDispatcherProvider,
     private val notificationAlarmGenerator: INotificationAlarmGenerator,
-    private val logger: ILogger
+    private val logger: ILogger,
+    private val timePeriodHours: Long
 ) : CoroutineWorker(ctx, params) {
 
     var alarmsSet = false
+
+    private val timePeriodSeconds = timePeriodHours * SECS_IN_HOURS
 
     override suspend fun doWork(): Result {
         logger.i(TAG, "notification worker started")
@@ -40,21 +43,25 @@ class NotificationWorker(
                         val notifications = inputData.keyValueMap.entries.associate {
                             NotificationLevel.valueOf(it.key) to it.value as Boolean
                         }
+
+                        notificationAlarmGenerator.cancelAllAlarms()
+
                         val now = ZonedDateTime.now()
-                        val launchIn24 = launches.filter { launch ->
-                            ChronoUnit.SECONDS.between(
-                                now.asUTC(),
-                                launch.net.asUTC()
-                            ) < SECONDS_IN_DAY
-                                    && launch.status?.abbrev == LaunchStatus.GO ||
-                                    launch.status?.abbrev == LaunchStatus.HOLD
-                        }
+
                         if (!alarmsSet) {
-                            launchIn24.forEach { launch ->
+                            launches.forEach { launch ->
+                                 val alarmsIn24 = notifications.filter { level ->
+                                     ChronoUnit.SECONDS.between(
+                                         now.asUTC(),
+                                         launch.net.asUTC()
+                                     ) < timePeriodSeconds + (level.key.time * 60L) && level.value
+                                             && launch.status?.abbrev == LaunchStatus.GO ||
+                                             launch.status?.abbrev == LaunchStatus.HOLD
+                                }
+
                                 logger.v(TAG, "alarm scheduled ${launch.name} ${launch.net}")
-                                notificationAlarmGenerator.setLaunchAlarms(launch, notifications)
+                                notificationAlarmGenerator.setLaunchAlarms(launch, alarmsIn24)
                             }
-                            alarmsSet = true
                         }
                     }
                     dataState.error?.let {
@@ -63,6 +70,23 @@ class NotificationWorker(
                 }
         }
         return Result.success()
+    }
+
+    //check launch is go/hold and the alarm needs to be issued
+    //before next NotificationWorker runs.
+    private fun launchAlarmInTimePeriod(
+        currentTime: ZonedDateTime,
+        launchTime: ZonedDateTime,
+        workerTimePeriodSecs: Long,
+        launchStatus: LaunchStatus,
+        notificationTimeSecs: Long
+    ): Boolean {
+        return (ChronoUnit.SECONDS.between(
+            currentTime.asUTC(),
+            launchTime.asUTC()
+        ) < workerTimePeriodSecs + notificationTimeSecs
+                && launchStatus == LaunchStatus.GO ||
+                launchStatus == LaunchStatus.HOLD)
     }
 }
 

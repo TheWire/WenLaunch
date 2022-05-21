@@ -90,7 +90,7 @@ class NotificationHandler(
         logger.i(
             TAG, "launch $id at $originalLaunchTime " +
                     "${notificationLevel.name} changed to " +
-                    "${launch.status?.abbrev?.status}"
+                    "${launch.status?.abbrev}"
         )
         notificationAlarmGenerator.cancelAlarmsOfLaunch(launch.id)
     }
@@ -119,7 +119,7 @@ class NotificationHandler(
                 NotificationLevel.DEFAULT -> notificationLevel.description
                 else -> "launch in ${notificationLevel.description}"
             }
-        logger.v(TAG, "launch time: ${launch.net.toEpochMilliSecond()}notifyTime $notifyTime")
+        logger.v(TAG, "launch time: ${launch.net.toEpochMilliSecond()} notifyTime $notifyTime")
         withContext(dispatcherProvider.getDefaultContext()) {
             val delayAmount = maxOf(notifyTime - timeProviderMillis(), 0)
             delay(delayAmount)

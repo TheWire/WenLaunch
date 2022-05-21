@@ -9,6 +9,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.work.*
 import com.thewire.wenlaunch.di.IDispatcherProvider
+import com.thewire.wenlaunch.di.NOTIFICATION_WORKER_TIME_PERIOD_HOURS
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.domain.model.settings.SettingsModel
 import com.thewire.wenlaunch.notifications.alarm.INotificationAlarmGenerator
@@ -119,7 +120,9 @@ class BaseApplication() : Application(), Configuration.Provider {
                         })
                         .build()
                     val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-                        repeatInterval = 1, repeatIntervalTimeUnit = TimeUnit.DAYS)
+                        repeatInterval = NOTIFICATION_WORKER_TIME_PERIOD_HOURS,
+                        repeatIntervalTimeUnit = TimeUnit.HOURS
+                    )
                         .setConstraints(constraints)
                         .setInputData(data)
                         .addTag(WORKER_TAG)

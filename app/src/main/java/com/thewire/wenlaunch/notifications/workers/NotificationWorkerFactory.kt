@@ -17,6 +17,7 @@ constructor(
     private val dispatcher: IDispatcherProvider,
     private val notificationAlarmGenerator: INotificationAlarmGenerator,
     private val logger: ILogger,
+    private val timePeriodHours: Long
 ) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,
@@ -31,7 +32,8 @@ constructor(
                     repository,
                     dispatcher,
                     notificationAlarmGenerator,
-                    logger
+                    logger,
+                    timePeriodHours
                 )
             else -> null
         }

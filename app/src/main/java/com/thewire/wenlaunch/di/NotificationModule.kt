@@ -15,6 +15,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+const val NOTIFICATION_WORKER_TIME_PERIOD_HOURS = 24L
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -30,7 +31,13 @@ object NotificationModule {
     ): DelegatingWorkerFactory {
         val delegatingFactory = DelegatingWorkerFactory()
         delegatingFactory.addFactory(
-            NotificationWorkerFactory(repository, dispatcher, alarmGenerator, logger)
+            NotificationWorkerFactory(
+                repository,
+                dispatcher,
+                alarmGenerator,
+                logger,
+                NOTIFICATION_WORKER_TIME_PERIOD_HOURS
+            )
         )
         return delegatingFactory
     }

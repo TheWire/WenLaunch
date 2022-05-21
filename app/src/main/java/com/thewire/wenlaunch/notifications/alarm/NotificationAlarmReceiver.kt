@@ -43,7 +43,7 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
                     NotificationLevel.valueOf(level)
                 } ?: NotificationLevel.DEFAULT
 
-            logger.v(TAG, "$launchId, $launchTime, $requestId, ${notificationLevel.name}")
+            logger.v(TAG, "alarmId: $requestId launchId: $launchId")
             val notifications =
                 intent.getStringArrayExtra(ALARM_RECEIVER_NOTIFICATIONS)?.associate {
                     NotificationLevel.valueOf(it) to true
