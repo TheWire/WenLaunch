@@ -17,6 +17,9 @@ enum class LaunchStatus(val status: String) {
     TBD("TBD"),
     TBC("TBC"),
     SUCCESS("Success"),
+    IN_FLIGHT("In Flight"),
+    PARTIAL_FAILURE("Partial Failure"),
+    FAILURE("Failure"),
     OTHER("Unknown");
 
     companion object {
@@ -28,6 +31,9 @@ enum class LaunchStatus(val status: String) {
                     "TBD" -> TBD
                     "TBC" -> TBC
                     "Success" -> SUCCESS
+                    "In Flight" -> IN_FLIGHT
+                    "Partial Failure" -> PARTIAL_FAILURE
+                    "Failure" -> FAILURE
                     else -> OTHER
                 } else {
                 OTHER
