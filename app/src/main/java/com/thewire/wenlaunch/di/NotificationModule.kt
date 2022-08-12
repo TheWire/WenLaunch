@@ -15,7 +15,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-const val NOTIFICATION_WORKER_TIME_PERIOD_HOURS = 24L
+const val NOTIFICATION_WORKER_TIME_PERIOD_HOURS = 6L
 
 @Module
 @InstallIn(SingletonComponent::class)
