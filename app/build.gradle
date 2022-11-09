@@ -68,19 +68,19 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-    implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation 'androidx.activity:activity-compose:1.6.1'
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
-    implementation 'androidx.test:monitor:1.5.0'
+    implementation 'androidx.test:monitor:1.6.0'
 
-    def turbine_version = "0.9.0"
+    def turbine_version = '0.12.1'
     testImplementation "app.cash.turbine:turbine:$turbine_version"
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -97,7 +97,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
-    def hilt_version = "2.38.1"
+    def hilt_version = '2.44'
     implementation "com.google.dagger:hilt-android:$hilt_version"
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
@@ -106,17 +106,17 @@ dependencies {
 
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
-    def nav_version = "2.5.1"
+    def nav_version = '2.5.3'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
-    def compose_nav_version = "2.5.1"
+    def compose_nav_version = '2.5.3'
     implementation "androidx.navigation:navigation-compose:$compose_nav_version"
 
     def hilt_nav_version = "1.0.0"
     implementation "androidx.hilt:hilt-navigation:$hilt_nav_version"
 
-    def coil_version = "1.4.0"
+    def coil_version = '2.2.2'
     implementation "io.coil-kt:coil:${coil_version}"
     implementation "io.coil-kt:coil-compose:${coil_version}"
 
