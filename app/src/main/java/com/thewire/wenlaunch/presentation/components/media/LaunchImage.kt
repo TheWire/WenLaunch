@@ -5,7 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import coil.compose.rememberImagePainter
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.thewire.wenlaunch.R
 
 
@@ -32,11 +34,10 @@ fun launchPainter(
     imageUri: String?,
     defaultImage: Int = DEFAULT_LAUNCH_IMAGE,
 ) : Painter {
-    return rememberImagePainter(
-        data = imageUri ?: "error",
-        builder = {
-            placeholder(defaultImage)
-            error(defaultImage)
-        }
+    return rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(imageUri ?: "error")
+            .placeholder(defaultImage)
+            .build()
     )
 }
