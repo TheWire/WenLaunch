@@ -86,7 +86,7 @@ fun LaunchListScreen(
                     onMoreLaunches = { event ->
                         viewModel.onEvent(event)
                     },
-                    refreshCallback = { callback ->
+                    onRefresh = { callback ->
                         viewModel.onEvent(LaunchListEvent.RefreshLaunches(callback))
                     },
                 )

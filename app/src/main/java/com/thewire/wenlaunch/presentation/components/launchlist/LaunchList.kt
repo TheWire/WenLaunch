@@ -1,10 +1,16 @@
 package com.thewire.wenlaunch.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -13,20 +19,33 @@ import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.presentation.components.layout.LazyListOrientationLayout
 import com.thewire.wenlaunch.presentation.navigation.Screen
 import com.thewire.wenlaunch.ui.launch_list.LaunchListEvent
+import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LaunchList(
     modifier: Modifier = Modifier,
     launches: List<Launch>,
     navController: NavController,
     onMoreLaunches: (LaunchListEvent) -> Unit,
-    refreshCallback: (() -> Unit) -> Unit,
+    onRefresh: (()-> Unit) -> Unit,
 ) {
-    RefreshContainer(
-        modifier = modifier
-            .fillMaxSize(),
-        refreshCallback = refreshCallback
+    var refreshing by remember { mutableStateOf(false) }
 
+    fun refresh() {
+        refreshing = true
+        onRefresh {
+            refreshing = false
+            println("refreshed")
+        }
+    }
+
+    val state = rememberPullRefreshState(refreshing = refreshing, onRefresh = ::refresh)
+
+    Box(
+        modifier = modifier
+            .pullRefresh(state)
+            .fillMaxSize(),
     ) {
         LazyListOrientationLayout(
             Modifier
@@ -54,5 +73,10 @@ fun LaunchList(
                 }
             }
         }
+        PullRefreshIndicator(
+            refreshing = refreshing,
+            state = state,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }

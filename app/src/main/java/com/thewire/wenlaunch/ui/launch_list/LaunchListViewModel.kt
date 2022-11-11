@@ -12,6 +12,7 @@ import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
 import com.thewire.wenlaunch.ui.settings.SettingsViewModel
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -36,8 +37,7 @@ constructor(
     fun onEvent(event: LaunchListEvent) {
         when (event) {
             is LaunchListEvent.RefreshLaunches -> {
-                getUpcoming(launches.value.size, LaunchRepositoryUpdatePolicy.NetworkOnly)
-                event.callback()
+                getUpcoming(launches.value.size, LaunchRepositoryUpdatePolicy.NetworkOnly, event.callback)
             }
             is LaunchListEvent.MoreLaunches -> {
                 getMoreLaunches(event.numLaunches)
@@ -45,7 +45,7 @@ constructor(
         }
     }
 
-    private fun getUpcoming(limit: Int, updatePolicy: LaunchRepositoryUpdatePolicy) {
+    private fun getUpcoming(limit: Int, updatePolicy: LaunchRepositoryUpdatePolicy, callback: (() -> Unit)? = null) {
         repositoryI.upcoming(limit, 0, updatePolicy).onEach { dataState ->
             if (dataState.loading) {
                 println("loading")
@@ -55,6 +55,10 @@ constructor(
             }
             dataState.error?.let { error ->
                 Log.e(TAG, "Exception: $error")
+            }
+            callback?.let {
+                delay(100) //delay needed due to bug in pulldownrefreshindictor
+                it()
             }
         }.launchIn(viewModelScope)
     }
