@@ -167,7 +167,7 @@ class LaunchRepositoryImpl(
             }
 
         } catch (e: Exception) {
-            emit(DataState.error(e.message ?: "Unknown error"))
+            Log.e(TAG, e.message ?: "unknown error")
             if(!cacheEmitted && cache != null) {
                 emit(DataState.success(cache))
             }

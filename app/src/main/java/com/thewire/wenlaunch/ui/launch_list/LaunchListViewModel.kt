@@ -28,16 +28,17 @@ constructor(
     val settingsViewModel: SettingsViewModel,
 ) : ViewModel() {
 
+    val launches: MutableState<List<Launch>> = mutableStateOf(listOf())
+    val refreshing = mutableStateOf(false)
+
     init {
         getUpcoming(INITIAL_LAUNCH_NUM, LaunchRepositoryUpdatePolicy.CacheUntilNetwork)
     }
 
-    val launches: MutableState<List<Launch>> = mutableStateOf(listOf())
-
     fun onEvent(event: LaunchListEvent) {
         when (event) {
             is LaunchListEvent.RefreshLaunches -> {
-                getUpcoming(launches.value.size, LaunchRepositoryUpdatePolicy.NetworkOnly, event.callback)
+                getUpcoming(launches.value.size, LaunchRepositoryUpdatePolicy.NetworkOnly)
             }
             is LaunchListEvent.MoreLaunches -> {
                 getMoreLaunches(event.numLaunches)
@@ -45,9 +46,10 @@ constructor(
         }
     }
 
-    private fun getUpcoming(limit: Int, updatePolicy: LaunchRepositoryUpdatePolicy, callback: (() -> Unit)? = null) {
+    private fun getUpcoming(limit: Int, updatePolicy: LaunchRepositoryUpdatePolicy) {
         repositoryI.upcoming(limit, 0, updatePolicy).onEach { dataState ->
             if (dataState.loading) {
+                refreshing.value = true
                 println("loading")
             }
             dataState.data?.let { upcoming ->
@@ -56,22 +58,23 @@ constructor(
             dataState.error?.let { error ->
                 Log.e(TAG, "Exception: $error")
             }
-            callback?.let {
-                delay(100) //delay needed due to bug in pulldownrefreshindictor
-                it()
-            }
+            delay(100) //delay needed due to bug in pulldownrefreshindictor
+            refreshing.value = false
         }.launchIn(viewModelScope)
     }
 
     private fun getMoreLaunches(numLaunches: Int) {
         repositoryI.upcoming(numLaunches, launches.value.size).onEach { dataState ->
             if (dataState.loading) {
+                refreshing.value = true
                 println("loading")
             }
             dataState.data?.let { upcoming ->
                 val currentList = ArrayList(launches.value)
                 currentList.addAll(upcoming)
                 launches.value = currentList
+                delay(100) //delay needed due to bug in pulldownrefreshindictor
+                refreshing.value = false
             }
             dataState.error?.let { error ->
                 Log.e(TAG, "Exception: $error")

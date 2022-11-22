@@ -19,7 +19,6 @@ import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.presentation.components.layout.LazyListOrientationLayout
 import com.thewire.wenlaunch.presentation.navigation.Screen
 import com.thewire.wenlaunch.ui.launch_list.LaunchListEvent
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -28,19 +27,11 @@ fun LaunchList(
     launches: List<Launch>,
     navController: NavController,
     onMoreLaunches: (LaunchListEvent) -> Unit,
-    onRefresh: (()-> Unit) -> Unit,
+    refreshing: MutableState<Boolean>,
+    onRefresh: () -> Unit,
 ) {
-    var refreshing by remember { mutableStateOf(false) }
 
-    fun refresh() {
-        refreshing = true
-        onRefresh {
-            refreshing = false
-            println("refreshed")
-        }
-    }
-
-    val state = rememberPullRefreshState(refreshing = refreshing, onRefresh = ::refresh)
+    val state = rememberPullRefreshState(refreshing = refreshing.value, onRefresh = onRefresh)
 
     Box(
         modifier = modifier
@@ -74,7 +65,7 @@ fun LaunchList(
             }
         }
         PullRefreshIndicator(
-            refreshing = refreshing,
+            refreshing = refreshing.value,
             state = state,
             modifier = Modifier.align(Alignment.TopCenter)
         )
