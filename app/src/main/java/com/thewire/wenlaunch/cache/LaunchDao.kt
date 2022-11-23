@@ -108,10 +108,20 @@ interface LaunchDao {
     @Query(
         """
         SELECT * FROM launch
-        ORDER BY net ASC LIMIT :limit OFFSET :offset
+        LEFT JOIN status ON launch.status_id=status.id
+        WHERE launch.net >= :time
+        AND status.abbrev == "Go" 
+        OR  status.abbrev == "Hold"
+        OR  status.abbrev == "TBD"
+        OR  status.abbrev == "TBC"
+        OR  status.abbrev == "In Flight"
+        ORDER BY launch.net ASC LIMIT :limit OFFSET :offset
         """
     )
-    suspend fun getUpcoming(limit: Int, offset: Int): List<LaunchRelationship>
+    suspend fun getUpcoming(limit: Int, offset: Int, time: Long): List<LaunchRelationship>
+
+    @Query("DELETE FROM launch WHERE net<:time")
+    suspend fun deleteAlarmOlderThan(time: Long): Int
 
     @Query("SELECT * FROM alarm WHERE request_id=:id")
     suspend fun getAlarm(id: Int): AlarmEntity
@@ -130,4 +140,5 @@ interface LaunchDao {
 
     @Query("DELETE FROM alarm")
     suspend fun deleteAllAlarms(): Int
+
 }

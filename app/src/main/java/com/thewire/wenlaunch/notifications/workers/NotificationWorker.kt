@@ -37,6 +37,7 @@ class NotificationWorker(
         logger.i(TAG, "notification worker started")
         alarmsSet = false
         withContext(dispatcher.getIOContext()) {
+            repository.deleteOldLaunches()
             repository.upcoming(10, 0, LaunchRepositoryUpdatePolicy.NetworkPrimary)
                 .collect { dataState ->
                     dataState.data?.let { launches ->

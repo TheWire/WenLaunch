@@ -15,6 +15,7 @@ import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.lang.IllegalArgumentException
+import java.time.ZonedDateTime
 
 class LaunchRepositoryImpl(
     private val launchDao: LaunchDao,
@@ -109,6 +110,17 @@ class LaunchRepositoryImpl(
         try {
             val alarms =
                 launchDao.deleteAlarmByLaunchId(launchId)
+            emit(DataState.success(alarms))
+        } catch (e: Exception) {
+            emit(DataState.error(e.message ?: "Unknown error"))
+        }
+    }
+
+    override fun deleteOldLaunches(): Flow<DataState<Int>> = flow {
+        emit(DataState.loading())
+        try {
+            val time = ZonedDateTime.now().toEpochSecond()
+            val alarms = launchDao.deleteAlarmOlderThan(time)
             emit(DataState.success(alarms))
         } catch (e: Exception) {
             emit(DataState.error(e.message ?: "Unknown error"))
@@ -215,7 +227,8 @@ class LaunchRepositoryImpl(
     }
 
     private suspend fun getUpcomingFromCache(limit: Int, offset: Int): List<Launch> {
-        return launchDao.getUpcoming(limit, offset).map { launch -> launch.mapToDomainModel() }
+        val time = ZonedDateTime.now().toEpochSecond()
+        return launchDao.getUpcoming(limit, offset, time).map { launch -> launch.mapToDomainModel() }
     }
 
     private suspend fun getUpcomingRemoteAndUpdateCache(limit: Int, offset: Int): List<Launch> {

@@ -32,6 +32,8 @@ interface ILaunchRepository {
 
     fun deleteAlarmsOfLaunch(launchId: String) : Flow<DataState<Int>>
 
+    fun deleteOldLaunches() : Flow<DataState<Int>>
+
     fun insertAlarm(alarm: Alarm): Flow<DataState<Long>>
 
     fun insertAlarms(alarms: List<Alarm>): Flow<DataState<LongArray>>

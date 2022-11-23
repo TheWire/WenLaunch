@@ -105,10 +105,7 @@ fun LaunchListInfo(
     }
 }
 
-fun getTimeString(time: ZonedDateTime?, pattern: String): String {
-    if (time == null) {
-        return "Unknown Time"
-    }
+fun getTimeString(time: ZonedDateTime, pattern: String): String {
     return if (pattern.isNotEmpty()) {
         val formatter = DateTimeFormatter.ofPattern(pattern)
         time.withZoneSameInstant(
