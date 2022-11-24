@@ -10,12 +10,13 @@ import com.thewire.wenlaunch.domain.DataState
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.network.LaunchService
 import com.thewire.wenlaunch.notifications.model.Alarm
-import com.thewire.wenlaunch.presentation.components.TAG
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.lang.IllegalArgumentException
 import java.time.ZonedDateTime
+
+const val TAG = "LAUNCH_REPOSITORY"
 
 class LaunchRepositoryImpl(
     private val launchDao: LaunchDao,

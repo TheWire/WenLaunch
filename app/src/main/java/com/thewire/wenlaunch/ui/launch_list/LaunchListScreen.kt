@@ -81,6 +81,7 @@ fun LaunchListScreen(
                 LoadingAnimation(modifier = Modifier.fillMaxSize())
             } else {
                 LaunchList(
+                    loading = viewModel.loading.value,
                     launches = launches,
                     navController = navController,
                     onMoreLaunches = { event ->

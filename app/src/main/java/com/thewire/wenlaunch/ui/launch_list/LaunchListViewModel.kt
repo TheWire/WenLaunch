@@ -16,7 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
-
+const val TAG = "LAUNCH_LIST"
 const val INITIAL_LAUNCH_NUM = 5
 
 @HiltViewModel
@@ -30,6 +30,7 @@ constructor(
 
     val launches: MutableState<List<Launch>> = mutableStateOf(listOf())
     val refreshing = mutableStateOf(false)
+    val loading = mutableStateOf(false)
 
     init {
         getUpcoming(INITIAL_LAUNCH_NUM, LaunchRepositoryUpdatePolicy.CacheUntilNetwork)
@@ -49,8 +50,8 @@ constructor(
     private fun getUpcoming(limit: Int, updatePolicy: LaunchRepositoryUpdatePolicy) {
         repositoryI.upcoming(limit, 0, updatePolicy).onEach { dataState ->
             if (dataState.loading) {
+                loading.value = true
                 refreshing.value = true
-                println("loading")
             }
             dataState.data?.let { upcoming ->
                 launches.value = upcoming
@@ -59,6 +60,7 @@ constructor(
                 Log.e(TAG, "Exception: $error")
             }
             delay(100) //delay needed due to bug in pulldownrefreshindictor
+            loading.value = false
             refreshing.value = false
         }.launchIn(viewModelScope)
     }
@@ -66,15 +68,14 @@ constructor(
     private fun getMoreLaunches(numLaunches: Int) {
         repositoryI.upcoming(numLaunches, launches.value.size).onEach { dataState ->
             if (dataState.loading) {
-                refreshing.value = true
-                println("loading")
+                loading.value = true
             }
             dataState.data?.let { upcoming ->
                 val currentList = ArrayList(launches.value)
                 currentList.addAll(upcoming)
                 launches.value = currentList
                 delay(100) //delay needed due to bug in pulldownrefreshindictor
-                refreshing.value = false
+                loading.value = false
             }
             dataState.error?.let { error ->
                 Log.e(TAG, "Exception: $error")

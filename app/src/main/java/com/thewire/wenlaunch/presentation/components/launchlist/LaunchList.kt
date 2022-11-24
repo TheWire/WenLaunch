@@ -24,6 +24,7 @@ import com.thewire.wenlaunch.ui.launch_list.LaunchListEvent
 @Composable
 fun LaunchList(
     modifier: Modifier = Modifier,
+    loading: Boolean = false,
     launches: List<Launch>,
     navController: NavController,
     onMoreLaunches: (LaunchListEvent) -> Unit,
@@ -49,7 +50,7 @@ fun LaunchList(
             itemsIndexed(
                 items = launches
             ) { index, launch ->
-                if ((index + 1) >= (launches.size)) {
+                if ((index + 1) >= launches.size && !loading) {
                     onMoreLaunches(LaunchListEvent.MoreLaunches((index + 2) - launches.size))
                 }
                 if (launch.status?.abbrev != LaunchStatus.SUCCESS) {

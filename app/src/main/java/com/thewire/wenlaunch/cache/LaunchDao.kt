@@ -104,17 +104,17 @@ interface LaunchDao {
     @Query("SELECT * FROM launch WHERE id=:launchId")
     suspend fun getLaunch(launchId: String): LaunchRelationship?
 
+
+
     @Transaction
     @Query(
         """
-        SELECT * FROM launch
+        SELECT launch.* FROM launch
         LEFT JOIN status ON launch.status_id=status.id
         WHERE launch.net >= :time
-        AND status.abbrev == "Go" 
-        OR  status.abbrev == "Hold"
-        OR  status.abbrev == "TBD"
-        OR  status.abbrev == "TBC"
-        OR  status.abbrev == "In Flight"
+        AND (status.abbrev = 'Go'
+        OR status.abbrev = 'TBC'
+        OR status.abbrev = 'TBD')
         ORDER BY launch.net ASC LIMIT :limit OFFSET :offset
         """
     )
