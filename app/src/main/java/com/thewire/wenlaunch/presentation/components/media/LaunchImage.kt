@@ -37,6 +37,7 @@ fun launchPainter(
     return rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(imageUri ?: "error")
+            .error(defaultImage)
             .placeholder(defaultImage)
             .build()
     )
