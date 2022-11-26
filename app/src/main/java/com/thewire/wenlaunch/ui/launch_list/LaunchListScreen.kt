@@ -76,11 +76,12 @@ fun LaunchListScreen(
                 )
             },
             drawerGesturesEnabled = drawerState.isOpen,
-        ) {
+        ) { paddingValues ->
             if (launches.isEmpty()) {
                 LoadingAnimation(modifier = Modifier.fillMaxSize())
             } else {
                 LaunchList(
+                    modifier = Modifier.padding(paddingValues),
                     loading = viewModel.loading.value,
                     launches = launches,
                     navController = navController,
