@@ -14,7 +14,6 @@ import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
 import com.thewire.wenlaunch.util.ifEmptyNull
 import com.thewire.wenlaunch.util.toEpochMilliSecond
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 
 private const val TAG = "LAUNCH_NOTIFICATION_HANDLER"
@@ -128,7 +127,7 @@ class NotificationHandler(
             notificationSender.sendNotification(
                 LaunchNotification(
                     launch.name.ifEmptyNull() ?: "Unknown Launch",
-                    R.mipmap.ic_launcher_round,
+                    R.drawable.ic_notify,
                     notificationText,
                     notifyTime
                 )
