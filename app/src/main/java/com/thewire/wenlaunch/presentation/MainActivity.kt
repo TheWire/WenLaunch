@@ -3,6 +3,8 @@ package com.thewire.wenlaunch.presentation
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -12,7 +14,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.thewire.wenlaunch.presentation.navigation.Screen
+import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
 import com.thewire.wenlaunch.ui.launch.LaunchScreen
 import com.thewire.wenlaunch.ui.launch.LaunchViewModel
 import com.thewire.wenlaunch.ui.launch_list.LaunchListScreen
@@ -25,6 +29,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         println("onCreate")
         setContent {
+
+            WenLaunchTheme(darkTheme = (application as BaseApplication).darkMode.value) {
+                val systemUiController = rememberSystemUiController()
+                val color = MaterialTheme.colors.primary
+                SideEffect {
+                    systemUiController.setStatusBarColor(
+                        color = color
+                    )
+                }
+            }
+
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = Screen.LaunchList.route) {
                 composable(route = Screen.LaunchList.route) { navBackStackEntry ->
