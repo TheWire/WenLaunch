@@ -85,10 +85,9 @@ fun LaunchListInfo(
             text = launch.pad?.location?.name?.ifEmptyNull() ?: "Unknown Location",
         )
         val timeString: String = when (launch.status?.abbrev) {
-            LaunchStatus.GO -> getTimeString(launch.net, "H:mm EE d MMM yyyy")
             LaunchStatus.TBC -> "NET " + getTimeString(launch.net, "H:mm EE d MMM yyyy")
             LaunchStatus.TBD -> "NET " + getTimeString(launch.net, "d MMM yyyy")
-            else -> getTimeString(launch.net, "")
+            else -> getTimeString(launch.net, "H:mm EE d MMM yyyy")
         }
         Text(
             timeString
@@ -106,12 +105,8 @@ fun LaunchListInfo(
 }
 
 fun getTimeString(time: ZonedDateTime, pattern: String): String {
-    return if (pattern.isNotEmpty()) {
         val formatter = DateTimeFormatter.ofPattern(pattern)
-        time.withZoneSameInstant(
+        return time.withZoneSameInstant(
             ZoneId.systemDefault()
         )?.format(formatter).toString()
-    } else {
-        "Unknown Time"
-    }
 }

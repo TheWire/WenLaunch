@@ -28,7 +28,7 @@ fun LaunchStatusIndicator(
         shape = CircleShape
     ) {
         Text(
-            text = getStatusText(launchStatus),
+            text = launchStatus?.status ?: "?",
             modifier = modifier
                 .padding(padding),
             color = Color.Black,
@@ -46,25 +46,9 @@ fun getStatusColor(launchStatus: LaunchStatus?): Color {
         LaunchStatus.TBD -> Color.Yellow
         LaunchStatus.TBC -> Color(0xffa9fca7)
         LaunchStatus.IN_FLIGHT -> Color(0xff4287f5)
-        LaunchStatus.PARTIAL_FAILURE -> Color(0xffb6c6e)
+        LaunchStatus.PARTIAL_FAILURE -> Color(0xFF663C3C)
         LaunchStatus.FAILURE -> Color(0xff121212)
-
         LaunchStatus.OTHER -> Color(0xffeb7434)
         else -> Color(0xffeb7434)
-    }
-}
-
-fun getStatusText(launchStatus: LaunchStatus?): String {
-    return when (launchStatus) {
-        LaunchStatus.GO -> LaunchStatus.GO.toString()
-        LaunchStatus.HOLD -> LaunchStatus.HOLD.toString()
-        LaunchStatus.SUCCESS -> LaunchStatus.SUCCESS.toString()
-        LaunchStatus.IN_FLIGHT -> LaunchStatus.IN_FLIGHT.toString()
-        LaunchStatus.PARTIAL_FAILURE -> LaunchStatus.PARTIAL_FAILURE.toString()
-        LaunchStatus.FAILURE -> LaunchStatus.FAILURE.toString()
-        LaunchStatus.TBD -> LaunchStatus.TBD.toString()
-        LaunchStatus.TBC -> LaunchStatus.TBC.toString()
-        LaunchStatus.OTHER -> "?"
-        else -> "?"
     }
 }

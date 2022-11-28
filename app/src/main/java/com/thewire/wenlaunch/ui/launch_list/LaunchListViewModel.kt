@@ -10,13 +10,12 @@ import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
 import com.thewire.wenlaunch.ui.settings.SettingsViewModel
-import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
-const val TAG = "LAUNCH_LIST"
+private const val TAG = "LAUNCH_LIST"
 const val INITIAL_LAUNCH_NUM = 5
 
 @HiltViewModel
@@ -48,6 +47,7 @@ constructor(
     }
 
     private fun getUpcoming(limit: Int, updatePolicy: LaunchRepositoryUpdatePolicy) {
+        Log.i(TAG, "getUpcoming")
         repositoryI.upcoming(limit, 0, updatePolicy).onEach { dataState ->
             if (dataState.loading) {
                 loading.value = true
@@ -66,6 +66,7 @@ constructor(
     }
 
     private fun getMoreLaunches(numLaunches: Int) {
+        Log.i(TAG, "getMoreLaunches")
         repositoryI.upcoming(numLaunches, launches.value.size).onEach { dataState ->
             if (dataState.loading) {
                 loading.value = true
