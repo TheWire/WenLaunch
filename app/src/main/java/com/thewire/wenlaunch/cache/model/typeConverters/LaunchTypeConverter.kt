@@ -1,8 +1,8 @@
 package com.thewire.wenlaunch.cache.model.typeConverters
 
 import androidx.room.TypeConverter
-import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class LaunchTypeConverter {
     @TypeConverter

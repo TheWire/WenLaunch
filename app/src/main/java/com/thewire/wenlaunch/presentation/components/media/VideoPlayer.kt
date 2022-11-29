@@ -1,19 +1,18 @@
 package com.thewire.wenlaunch.presentation.components
 
-import android.util.Log
-import android.view.LayoutInflater
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.PlaybackException
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.PlayerView
-import com.thewire.wenlaunch.R
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.DefaultPlayerUiController
 
 const val TAG = "VIDEO_PLAYER"
 
@@ -22,30 +21,58 @@ fun VideoPlayer(
     modifier: Modifier = Modifier,
     videoUri: String
 ) {
-    val context = LocalContext.current
-    val player = remember(context) { ExoPlayer.Builder(context).build() }
-    player.addListener(object : Player.Listener {
-        override fun onPlayerError(error: PlaybackException) {
-            error.message?.let {
-                Log.e(TAG, it)
+    val videoId = getYoutubeVideoId(videoUri)
+    if(videoId.isNullOrEmpty()) {
+        modifier.background(color = Color.Black)
+        Box(
+            modifier = modifier
+        )
+
+    } else {
+        AndroidView(
+            modifier = modifier,
+            factory = { context ->
+                val player = YouTubePlayerView(context)
+                player.enableAutomaticInitialization = false
+                val options: IFramePlayerOptions = IFramePlayerOptions.Builder().controls(0).build()
+                player.initialize(getPlayer(player, videoId), options)
+                player
             }
-        }
-    })
-    val mediaItem = MediaItem.Builder()
-        .setUri(videoUri)
-        .build()
-    player.setMediaItem(mediaItem)
-    LaunchedEffect(player) {
-        player.prepare()
+        )
     }
-    AndroidView(
-        factory = {
-            val layout = LayoutInflater.from(it).inflate(R.layout.video_player, null, false)
-            layout.findViewById(R.id.player) as PlayerView
-        },
-        modifier = modifier,
-        update = {
-            it.player = player
+
+}
+
+fun getPlayer(playerView: YouTubePlayerView, videoId: String): YouTubePlayerListener {
+
+    val listener: YouTubePlayerListener = object : AbstractYouTubePlayerListener() {
+        override fun onReady(youTubePlayer: YouTubePlayer) {
+            // We're using pre-made custom ui
+            val defaultPlayerUiController =
+                DefaultPlayerUiController(playerView, youTubePlayer)
+            defaultPlayerUiController.showFullscreenButton(true)
+
+            // When the video is in full-screen, cover the entire screen
+            defaultPlayerUiController.setFullScreenButtonClickListener {
+                if (playerView.isFullScreen()) {
+                    playerView.exitFullScreen()
+
+                } else {
+                    playerView.enterFullScreen()
+                }
+            }
+
+
+            playerView.setCustomPlayerUi(defaultPlayerUiController.rootView)
+
+            youTubePlayer.cueVideo(videoId = videoId, 0f)
         }
-    )
+    }
+    return listener
+}
+
+fun getYoutubeVideoId(url: String): String? {
+    val parts = url.split("=", ignoreCase = true, limit= 1)
+    if(parts[0] != "https://www.youtube.com/watch?v") return null
+    return parts.last()
 }
