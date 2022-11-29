@@ -1,6 +1,7 @@
 package com.thewire.wenlaunch.presentation.components
 
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -14,7 +15,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFram
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.DefaultPlayerUiController
 
-const val TAG = "VIDEO_PLAYER"
+private const val TAG = "VIDEO_PLAYER"
 
 @Composable
 fun VideoPlayer(
@@ -47,12 +48,10 @@ fun getPlayer(playerView: YouTubePlayerView, videoId: String): YouTubePlayerList
 
     val listener: YouTubePlayerListener = object : AbstractYouTubePlayerListener() {
         override fun onReady(youTubePlayer: YouTubePlayer) {
-            // We're using pre-made custom ui
             val defaultPlayerUiController =
                 DefaultPlayerUiController(playerView, youTubePlayer)
             defaultPlayerUiController.showFullscreenButton(true)
 
-            // When the video is in full-screen, cover the entire screen
             defaultPlayerUiController.setFullScreenButtonClickListener {
                 if (playerView.isFullScreen()) {
                     playerView.exitFullScreen()
@@ -72,7 +71,12 @@ fun getPlayer(playerView: YouTubePlayerView, videoId: String): YouTubePlayerList
 }
 
 fun getYoutubeVideoId(url: String): String? {
-    val parts = url.split("=", ignoreCase = true, limit= 1)
+    val parts = url.split("=")
+    parts.forEach {
+        Log.i(TAG, it)
+    }
+
+
     if(parts[0] != "https://www.youtube.com/watch?v") return null
     return parts.last()
 }

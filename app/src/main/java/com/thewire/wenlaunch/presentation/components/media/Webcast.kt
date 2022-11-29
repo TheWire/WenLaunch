@@ -32,7 +32,7 @@ fun Webcast(
                 )
             }
             VideoPlayer(
-                modifier = Modifier.height(400.dp),
+                modifier = Modifier.fillMaxSize(),
                 videoUri = uri
             )
         }
