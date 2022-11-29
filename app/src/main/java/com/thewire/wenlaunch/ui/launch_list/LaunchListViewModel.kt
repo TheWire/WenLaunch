@@ -11,7 +11,6 @@ import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
 import com.thewire.wenlaunch.ui.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -47,7 +46,6 @@ constructor(
     }
 
     private fun getUpcoming(limit: Int, updatePolicy: LaunchRepositoryUpdatePolicy) {
-        Log.i(TAG, "getUpcoming")
         repositoryI.upcoming(limit, 0, updatePolicy).onEach { dataState ->
             if (dataState.loading) {
                 loading.value = true
@@ -55,18 +53,17 @@ constructor(
             }
             dataState.data?.let { upcoming ->
                 launches.value = upcoming
+                loading.value = false
+                refreshing.value = false
             }
             dataState.error?.let { error ->
                 Log.e(TAG, "Exception: $error")
             }
-            delay(100) //delay needed due to bug in pulldownrefreshindictor
-            loading.value = false
-            refreshing.value = false
+
         }.launchIn(viewModelScope)
     }
 
     private fun getMoreLaunches(numLaunches: Int) {
-        Log.i(TAG, "getMoreLaunches")
         repositoryI.upcoming(numLaunches, launches.value.size).onEach { dataState ->
             if (dataState.loading) {
                 loading.value = true
@@ -75,7 +72,6 @@ constructor(
                 val currentList = ArrayList(launches.value)
                 currentList.addAll(upcoming)
                 launches.value = currentList
-                delay(100) //delay needed due to bug in pulldownrefreshindictor
                 loading.value = false
             }
             dataState.error?.let { error ->
