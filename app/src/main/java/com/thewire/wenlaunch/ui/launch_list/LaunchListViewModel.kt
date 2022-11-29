@@ -40,7 +40,7 @@ constructor(
                 getUpcoming(launches.value.size, LaunchRepositoryUpdatePolicy.NetworkOnly)
             }
             is LaunchListEvent.MoreLaunches -> {
-                getMoreLaunches(event.numLaunches)
+                getMoreLaunches(event.numLaunches, LaunchRepositoryUpdatePolicy.NetworkPrimary)
             }
         }
     }
@@ -58,13 +58,15 @@ constructor(
             }
             dataState.error?.let { error ->
                 Log.e(TAG, "Exception: $error")
+                loading.value = false
+                refreshing.value = false
             }
 
         }.launchIn(viewModelScope)
     }
 
-    private fun getMoreLaunches(numLaunches: Int) {
-        repositoryI.upcoming(numLaunches, launches.value.size).onEach { dataState ->
+    private fun getMoreLaunches(numLaunches: Int, updatePolicy: LaunchRepositoryUpdatePolicy) {
+        repositoryI.upcoming(numLaunches, launches.value.size, updatePolicy).onEach { dataState ->
             if (dataState.loading) {
                 loading.value = true
             }
@@ -76,6 +78,7 @@ constructor(
             }
             dataState.error?.let { error ->
                 Log.e(TAG, "Exception: $error")
+                loading.value = false
             }
         }.launchIn(viewModelScope)
     }
