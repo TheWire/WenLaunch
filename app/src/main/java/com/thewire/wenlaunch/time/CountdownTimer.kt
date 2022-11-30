@@ -1,6 +1,7 @@
 package com.thewire.wenlaunch.ui.launch
 
 import com.thewire.wenlaunch.di.IDispatcherProvider
+import com.thewire.wenlaunch.util.SECONDS_IN_DAY
 import com.thewire.wenlaunch.util.asUTC
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +18,8 @@ class LaunchCountdown(
     private val timeNow: () -> ZonedDateTime = { ZonedDateTime.now() },
     private val dispatcherProvider: IDispatcherProvider,
 ) {
-    private val _countdown = MutableStateFlow(DateTimePeriod.ZERO)
-    val countdown: StateFlow<DateTimePeriod> = _countdown
+    private val countdownInternal = MutableStateFlow(DateTimePeriod.ZERO)
+    val countdown: StateFlow<DateTimePeriod> = countdownInternal
 
     var isStarted = false
         private set(value) {
@@ -33,14 +34,14 @@ class LaunchCountdown(
             return countdown
         } else {
             isStarted = true
-            _start()
+            startInternal()
         }
         return countdown
     }
 
     fun resume() {
         if (isStarted) {
-            _start()
+            startInternal()
         }
     }
 
@@ -57,15 +58,15 @@ class LaunchCountdown(
         pause()
     }
 
-    private fun _start() {
+    private fun startInternal() {
         job?.apply {
             if (isActive) return
         }
         var secondDifference = ChronoUnit.SECONDS.between(timeNow().asUTC(), launchTime.asUTC())
         job = scope.launch(dispatcherProvider.getIOContext()) {
-            while (secondDifference > 0 && isActive) {
+            while (secondDifference >= 0 && isActive) {
                 val now = timeNow()
-                _countdown.value = DateTimePeriod.between(now.asUTC(), launchTime.asUTC())
+                countdownInternal.value = DateTimePeriod.between(now.asUTC(), launchTime.asUTC())
                 secondDifference = ChronoUnit.SECONDS.between(now, launchTime)
                 delay(1000)
             }
@@ -113,16 +114,18 @@ data class DateTimePeriod(
             //if earlier is later in its own day correct for this
             //this ensures that time is accounted for as well as date
             //i.e. 2023-01-1T12:00:00Z is 1 day 12 hours from "2023-01-3T00:00:00Z not 2 days"
-            val adjustedPeriod = if (timePeriod < 0) {
-                later.plusSeconds(timePeriod)
+            val adjustedPeriod = if (timePeriod > SECONDS_IN_DAY) {
+                println("adjusted")
+                later.minusDays(1)
             } else {
                 later
             }
+            println(adjustedPeriod)
 
             return DateTimePeriod(
                 Period.between(
                     earlier.toLocalDate(),
-                    adjustedPeriod.toLocalDate()
+                    later.toLocalDate()
                 ),
                 TimePeriod.fromLocalTimes(earlier.toLocalTime(), later.toLocalTime())
             )
