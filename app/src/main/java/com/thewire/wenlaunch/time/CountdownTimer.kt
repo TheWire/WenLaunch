@@ -1,7 +1,6 @@
 package com.thewire.wenlaunch.ui.launch
 
 import com.thewire.wenlaunch.di.IDispatcherProvider
-import com.thewire.wenlaunch.util.SECONDS_IN_DAY
 import com.thewire.wenlaunch.util.asUTC
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -114,18 +113,18 @@ data class DateTimePeriod(
             //if earlier is later in its own day correct for this
             //this ensures that time is accounted for as well as date
             //i.e. 2023-01-1T12:00:00Z is 1 day 12 hours from "2023-01-3T00:00:00Z not 2 days"
-            val adjustedPeriod = if (timePeriod > SECONDS_IN_DAY) {
-                println("adjusted")
-                later.minusDays(1)
+            val adjustedPeriod = if (timePeriod < 0 && Period.between(
+                    earlier.toLocalDate(),
+                    later.toLocalDate()
+                ).days > 0) {
+                later.toLocalDate().minusDays(1)
             } else {
-                later
+                later.toLocalDate()
             }
-            println(adjustedPeriod)
-
             return DateTimePeriod(
                 Period.between(
                     earlier.toLocalDate(),
-                    later.toLocalDate()
+                    adjustedPeriod
                 ),
                 TimePeriod.fromLocalTimes(earlier.toLocalTime(), later.toLocalTime())
             )
