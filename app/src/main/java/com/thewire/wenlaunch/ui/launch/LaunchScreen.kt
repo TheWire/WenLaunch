@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -88,14 +89,16 @@ fun LaunchScreen(
             }
 
 
-        ) {
+        ) { paddingValues ->
             if (launch == null) {
                 LoadingAnimation(modifier = Modifier.fillMaxSize())
             } else {
                 LaunchView(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxWidth(),
                     launch = launch,
-                    countdown = viewModel.countdownState.value
+                    viewModel = viewModel
                 )
             }
         }

@@ -14,7 +14,6 @@ import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.ui.launch.LaunchEvent.*
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -31,6 +30,10 @@ constructor(
     val launch: MutableState<Launch?> = mutableStateOf(null)
     val countdownState = mutableStateOf<DateTimePeriod?>(null)
     var launchCountdown: LaunchCountdown? = null
+    val videoSeconds = mutableStateOf(0f)
+    val videoState = mutableStateOf("UNSTARTED")
+    val fullscreen = mutableStateOf(false)
+
     fun onEvent(event: LaunchEvent) {
         try {
             when (event) {

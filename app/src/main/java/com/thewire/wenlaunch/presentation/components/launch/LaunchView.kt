@@ -9,13 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.thewire.wenlaunch.domain.model.Launch
-import com.thewire.wenlaunch.ui.launch.DateTimePeriod
+import com.thewire.wenlaunch.ui.launch.LaunchViewModel
 
 @Composable
 fun LaunchView(
     modifier: Modifier = Modifier,
+    viewModel: LaunchViewModel,
     launch: Launch,
-    countdown: DateTimePeriod?,
 ) {
     Column(
         modifier = modifier
@@ -26,13 +26,23 @@ fun LaunchView(
         if (launch.webcastLive && launch.vidUrls.isNotEmpty()) {
             Webcast(
                 modifier = infoModifier.fillMaxWidth(),
-                uri = launch.vidUrls[0].uri
+                uri = launch.vidUrls[0].uri,
+                viewModel.videoSeconds,
+                viewModel.videoState,
+                viewModel.fullscreen
             )
         }
+        Webcast(
+            modifier = infoModifier.fillMaxWidth(),
+            uri = "https://www.youtube.com/watch?v=fXYyE7UI9SI",
+            viewModel.videoSeconds,
+            viewModel.videoState,
+            viewModel.fullscreen
+        )
         StatusInfo(
             modifier = infoModifier.fillMaxWidth(),
             launch = launch,
-            countdown = countdown,
+            countdown = viewModel.countdownState.value,
         )
         launch.rocket?.let { rocket ->
             RocketInfo(
