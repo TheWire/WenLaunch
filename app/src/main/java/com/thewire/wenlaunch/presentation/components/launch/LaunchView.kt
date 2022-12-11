@@ -32,13 +32,6 @@ fun LaunchView(
                 viewModel.fullscreen
             )
         }
-        Webcast(
-            modifier = infoModifier.fillMaxWidth(),
-            uri = "https://www.youtube.com/watch?v=fXYyE7UI9SI",
-            viewModel.videoSeconds,
-            viewModel.videoState,
-            viewModel.fullscreen
-        )
         StatusInfo(
             modifier = infoModifier.fillMaxWidth(),
             launch = launch,
