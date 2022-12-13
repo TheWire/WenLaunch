@@ -1,9 +1,11 @@
 package com.thewire.wenlaunch.presentation
 
+import android.app.Activity
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.ContextWrapper
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -153,4 +155,10 @@ class BaseApplication() : Application(), Configuration.Provider {
             .setWorkerFactory(notificationWorkerFactory)
             .build()
     }
+}
+
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
