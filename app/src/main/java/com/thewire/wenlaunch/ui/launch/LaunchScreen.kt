@@ -1,6 +1,7 @@
 package com.thewire.wenlaunch.ui.launch
 
 import android.content.pm.ActivityInfo
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,8 @@ import com.thewire.wenlaunch.presentation.components.LoadingAnimation
 import com.thewire.wenlaunch.presentation.components.media.VideoPlayer
 import com.thewire.wenlaunch.presentation.findActivity
 import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
+
+private const val TAG = "LAUNCH_SCREEN"
 
 @Composable
 fun LaunchScreen(
@@ -65,21 +68,23 @@ fun LaunchScreen(
         ) {
             val activity = LocalContext.current.findActivity()
             val systemUiController: SystemUiController = rememberSystemUiController()
-            LaunchedEffect(viewModel.fullscreen.value) {
-                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                systemUiController.isSystemBarsVisible = false
-            }
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            systemUiController.isSystemBarsVisible = false
+            Log.i(TAG, "when does this execute")
             DisposableEffect(viewModel.fullscreen.value) {
-                onDispose {
-                    systemUiController.isSystemBarsVisible = true
-                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                }
+                Log.i(TAG, "disposable effect")
+
+                    onDispose {
+                        Log.i(TAG, "disposed effect")
+                        systemUiController.isSystemBarsVisible = true
+                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    }
             }
             VideoPlayer(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black),
-                videoUri =  launch.vidUrls[0].uri,
+                videoUri = "https://www.youtube.com/watch?v=VsacL7_yDSo",//launch.vidUrls[0].uri,
                 videoSeconds = viewModel.videoSeconds,
                 videoState = viewModel.videoState,
                 fullscreen = viewModel.fullscreen

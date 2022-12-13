@@ -20,12 +20,12 @@ import androidx.compose.ui.unit.sp
 fun WebcastLiveIndicator(
     modifier: Modifier = Modifier,
     text: String,
-    uri: Uri?,
+    onClick: () -> Unit,
     fontSize: TextUnit = 14.sp,
     contentPadding: PaddingValues = PaddingValues(0.dp, 0.dp),
 ){
     Button(
-        onClick = {},
+        onClick = onClick,
         modifier = modifier,
         colors = buttonColors(Color.Red, Color.White),
         contentPadding = contentPadding,

@@ -22,13 +22,13 @@ import java.time.format.DateTimeFormatter
 fun LaunchCard(
     modifier: Modifier = Modifier,
     launch: Launch,
-    onClick: () -> Unit,
+    onClick: (Boolean) -> Unit,
 ) {
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = modifier
             .padding(6.dp)
-            .clickable(onClick = onClick),
+            .clickable(onClick = { onClick(false) }),
         elevation = 4.dp
     ) {
 
@@ -63,6 +63,7 @@ fun LaunchCard(
                     .width(200.dp)
                     .padding(4.dp),
                 launch = launch,
+                onLiveClick = { onClick(true)}
             )
         }
     }
@@ -72,6 +73,7 @@ fun LaunchCard(
 fun LaunchListInfo(
     modifier: Modifier = Modifier,
     launch: Launch,
+    onLiveClick: () -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -92,15 +94,14 @@ fun LaunchListInfo(
         Text(
             timeString
         )
-        if (launch.webcastLive) {
+//        if (launch.webcastLive) {
             Spacer(modifier = Modifier.height(10.dp))
             WebcastLiveIndicator(
-                modifier = Modifier
-                    .padding(4.dp, 2.dp),
                 text = "LIVE",
-                uri = null
+                onClick = onLiveClick,
+                contentPadding = PaddingValues(6.dp, 3.dp, 15.dp, 3.dp)
             )
-        }
+//        }
     }
 }
 

@@ -55,14 +55,20 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 composable(
-                    route = Screen.LaunchView.route + "/{launchId}",
-                    arguments = listOf(navArgument("launchId") {
-                        type = NavType.StringType
-                    }),
+                    route = Screen.LaunchView.route + "/{launchId}?fullscreen={fullscreen}",
+                    arguments = listOf(
+                        navArgument("launchId") { type = NavType.StringType },
+                        navArgument("fullscreen") { type = NavType.BoolType },
+                    ),
                 ) { navBackStackEntry ->
                     val factory = HiltViewModelFactory(LocalContext.current, navBackStackEntry)
                     val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current)
                     val viewModel: LaunchViewModel = viewModel(viewModelStoreOwner, "LaunchViewModel", factory)
+                    navBackStackEntry.arguments?.getBoolean("fullscreen")?.let {
+                        viewModel.fullscreen.value = it
+                        //if navigated in fullscreen autoplay video
+                        viewModel.videoState.value = "PLAYING"
+                    }
                     lifecycle.addObserver(viewModel)
                     LaunchScreen(
                         launchId = navBackStackEntry.arguments?.getString("launchId"),
