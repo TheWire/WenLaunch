@@ -68,14 +68,14 @@ fun LaunchScreen(
         ) {
             val activity = LocalContext.current.findActivity()
             val systemUiController: SystemUiController = rememberSystemUiController()
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            systemUiController.isSystemBarsVisible = false
-            Log.i(TAG, "when does this execute")
-            DisposableEffect(viewModel.fullscreen.value) {
-                Log.i(TAG, "disposable effect")
-
+            LaunchedEffect(viewModel) {
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                systemUiController.isSystemBarsVisible = false
+                Log.i(TAG, "LaunchedEffect")
+            }
+            DisposableEffect(viewModel) {
                     onDispose {
-                        Log.i(TAG, "disposed effect")
+                        Log.i(TAG, "onDispose")
                         systemUiController.isSystemBarsVisible = true
                         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     }
