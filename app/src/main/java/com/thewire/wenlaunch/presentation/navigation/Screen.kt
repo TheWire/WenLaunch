@@ -5,5 +5,7 @@ sealed class Screen(
 ) {
     object LaunchList: Screen("launchList")
 
-    object LaunchView: Screen("LaunchView")
+    object LaunchDetails: Screen("launch")
+
+    object LaunchWebcast: Screen("webcast")
 }

@@ -1,9 +1,7 @@
 package com.thewire.wenlaunch.ui.launch
 
-import android.content.pm.ActivityInfo
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,19 +12,14 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
-import com.google.accompanist.systemuicontroller.SystemUiController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.thewire.wenlaunch.presentation.components.LaunchView
+import com.thewire.wenlaunch.presentation.components.launch.LaunchComposable
 import com.thewire.wenlaunch.presentation.components.LoadingAnimation
-import com.thewire.wenlaunch.presentation.components.media.VideoPlayer
-import com.thewire.wenlaunch.presentation.findActivity
+import com.thewire.wenlaunch.presentation.navigation.Screen
 import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
 
 private const val TAG = "LAUNCH_SCREEN"
@@ -39,8 +32,9 @@ fun LaunchScreen(
     viewModel: LaunchViewModel,
     navController: NavController,
 ) {
+    Log.i(TAG, "launch screen ${viewModel.fullscreen.value}")
     val context = LocalContext.current
-    DisposableEffect(key1 = viewModel) {
+    DisposableEffect(viewModel) {
 
         if (launchId == null) {
             navController.popBackStack()
@@ -51,7 +45,7 @@ fun LaunchScreen(
             }
         }
 
-        viewModel.onEvent(LaunchEvent.Start) //is this the right place?
+        viewModel.onEvent(LaunchEvent.Start)
 
         onDispose {
             viewModel.onEvent(LaunchEvent.Stop)
@@ -61,35 +55,8 @@ fun LaunchScreen(
     val launch = viewModel.launch.value
 
     WenLaunchTheme(darkTheme = darkMode) {
-        if(launch != null &&
-            viewModel.fullscreen.value //&&
-//            launch.webcastLive &&
-//            launch.vidUrls.isNotEmpty()
-        ) {
-            val activity = LocalContext.current.findActivity()
-            val systemUiController: SystemUiController = rememberSystemUiController()
-            LaunchedEffect(viewModel) {
-                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                systemUiController.isSystemBarsVisible = false
-                Log.i(TAG, "LaunchedEffect")
-            }
-            DisposableEffect(viewModel) {
-                    onDispose {
-                        Log.i(TAG, "onDispose")
-                        systemUiController.isSystemBarsVisible = true
-                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    }
-            }
-            VideoPlayer(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black),
-                videoUri = "https://www.youtube.com/watch?v=VsacL7_yDSo",//launch.vidUrls[0].uri,
-                videoSeconds = viewModel.videoSeconds,
-                videoState = viewModel.videoState,
-                fullscreen = viewModel.fullscreen
-            )
-        } else {
+        Log.i(TAG, "recompose $viewModel ${viewModel.fullscreen.value}")
+        if (launch != null) {
             Scaffold(
                 topBar = {
                     TopAppBar(
@@ -133,13 +100,16 @@ fun LaunchScreen(
                 if (launch == null) {
                     LoadingAnimation(modifier = Modifier.fillMaxSize())
                 } else {
-                    LaunchView(
+                    LaunchComposable(
                         modifier = Modifier
                             .padding(paddingValues)
                             .fillMaxWidth(),
                         launch = launch,
-                        viewModel = viewModel
-                    )
+                        viewModel = viewModel,
+                    ) {
+                        val route = Screen.LaunchWebcast.route + "/${launch.id}?videoState=${viewModel.videoState}&?seconds=${viewModel.videoSeconds}"
+                        navController.navigate(route)
+                    }
                 }
             }
         }

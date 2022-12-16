@@ -1,9 +1,11 @@
 package com.thewire.wenlaunch.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.HiltViewModelFactory
@@ -17,6 +19,7 @@ import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.thewire.wenlaunch.presentation.navigation.Screen
 import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
+import com.thewire.wenlaunch.ui.launch.LaunchFullScreen
 import com.thewire.wenlaunch.ui.launch.LaunchScreen
 import com.thewire.wenlaunch.ui.launch.LaunchViewModel
 import com.thewire.wenlaunch.ui.launch_list.LaunchListScreen
@@ -45,7 +48,8 @@ class MainActivity : AppCompatActivity() {
                 composable(route = Screen.LaunchList.route) { navBackStackEntry ->
                     val factory = HiltViewModelFactory(LocalContext.current, navBackStackEntry)
                     val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current)
-                    val viewModel: LaunchListViewModel = viewModel(viewModelStoreOwner, "LaunchListViewModel", factory)
+                    val viewModel: LaunchListViewModel =
+                        viewModel(viewModelStoreOwner, "LaunchListViewModel", factory)
                     LaunchListScreen(
                         darkTheme = (application as BaseApplication).darkMode.value,
                         navController = navController,
@@ -55,20 +59,15 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 composable(
-                    route = Screen.LaunchView.route + "/{launchId}?fullscreen={fullscreen}",
+                    route = Screen.LaunchDetails.route + "/{launchId}",
                     arguments = listOf(
                         navArgument("launchId") { type = NavType.StringType },
-                        navArgument("fullscreen") { type = NavType.BoolType },
                     ),
                 ) { navBackStackEntry ->
                     val factory = HiltViewModelFactory(LocalContext.current, navBackStackEntry)
                     val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current)
-                    val viewModel: LaunchViewModel = viewModel(viewModelStoreOwner, "LaunchViewModel", factory)
-                    navBackStackEntry.arguments?.getBoolean("fullscreen")?.let {
-                        viewModel.fullscreen.value = it
-                        //if navigated in fullscreen autoplay video
-                        viewModel.videoState.value = "PLAYING"
-                    }
+                    val viewModel: LaunchViewModel =
+                        viewModel(viewModelStoreOwner, "LaunchViewModel", factory)
                     lifecycle.addObserver(viewModel)
                     LaunchScreen(
                         launchId = navBackStackEntry.arguments?.getString("launchId"),
@@ -76,6 +75,32 @@ class MainActivity : AppCompatActivity() {
                         toggleDarkMode = (application as BaseApplication)::toggleDarkTheme,
                         navController = navController,
                         viewModel = viewModel,
+                    )
+                }
+                composable(
+                    route = Screen.LaunchWebcast.route + "/{launchId}?videoState={videoState}&?seconds={seconds}",
+                    arguments = listOf(
+                        navArgument("launchId") { type = NavType.StringType },
+                        navArgument("videoState") { type = NavType.StringType },
+                        navArgument("seconds") { type = NavType.FloatType },
+                    ),
+                ) { navBackStackEntry ->
+                    val factory = HiltViewModelFactory(LocalContext.current, navBackStackEntry)
+                    val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current)
+                    val viewModel: LaunchViewModel =
+                        viewModel(viewModelStoreOwner, "LaunchViewModel", factory)
+                    navBackStackEntry.arguments?.getString("videoState")?.let { state ->
+                        viewModel.videoState.value = state
+                    }
+                    navBackStackEntry.arguments?.getFloat("seconds")?.let { seconds ->
+                        viewModel.videoSeconds.value = seconds
+                    }
+                    LaunchFullScreen(
+                        launchId = navBackStackEntry.arguments?.getString("launchId"),
+                        darkMode = (application as BaseApplication).darkMode.value,
+                        viewModel = viewModel,
+                        navController = navController,
+                        onExitFullScreen = { navController.popBackStack() }
                     )
                 }
             }

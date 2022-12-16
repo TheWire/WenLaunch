@@ -29,7 +29,7 @@ fun VideoPlayer(
     videoUri: String,
     videoSeconds: MutableState<Float>,
     videoState: MutableState<String>,
-    fullscreen: MutableState<Boolean>,
+    fullScreenCallback: () -> Unit
 ) {
     val videoId = getYoutubeVideoId(videoUri)
     if (videoId.isNullOrEmpty()) {
@@ -60,7 +60,7 @@ fun VideoPlayer(
                             videoId,
                             videoSeconds,
                             videoState,
-                            fullscreen,
+                            fullScreenCallback,
                         ), options
                     )
                     player
@@ -76,7 +76,7 @@ fun getPlayerListener(
     videoId: String,
     videoSeconds: MutableState<Float>,
     videoState: MutableState<String>,
-    fullscreen: MutableState<Boolean>,
+    fullScreenCallback: () -> Unit,
 ): YouTubePlayerListener {
 
     val listener: YouTubePlayerListener = object : AbstractYouTubePlayerListener() {
@@ -87,7 +87,8 @@ fun getPlayerListener(
             defaultPlayerUiController.showFullscreenButton(true)
 
             defaultPlayerUiController.setFullScreenButtonClickListener {
-                fullscreen.value = !fullscreen.value
+                Log.i("LAUNCH_SCREEN", "PLAYER FULLSCREEN STATE CHANGE")
+                fullScreenCallback()
             }
 
 

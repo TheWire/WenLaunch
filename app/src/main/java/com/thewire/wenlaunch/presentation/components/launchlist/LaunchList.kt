@@ -58,7 +58,11 @@ fun LaunchList(
                         modifier = modifier,
                         launch = launch,
                         onClick = { fullscreen ->
-                            val route = Screen.LaunchView.route + "/${launch.id}?fullscreen=${fullscreen}"
+                            val route = if(fullscreen) {
+                                Screen.LaunchWebcast.route
+                            } else {
+                                Screen.LaunchDetails.route
+                            } + "/${launch.id}"
                             navController.navigate(route)
                         }
                     )

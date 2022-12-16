@@ -1,4 +1,4 @@
-package com.thewire.wenlaunch.presentation.components
+package com.thewire.wenlaunch.presentation.components.launch
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,13 +9,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.thewire.wenlaunch.domain.model.Launch
+import com.thewire.wenlaunch.presentation.components.LocationInfo
+import com.thewire.wenlaunch.presentation.components.MissionInfo
+import com.thewire.wenlaunch.presentation.components.RocketInfo
+import com.thewire.wenlaunch.presentation.components.StatusInfo
+import com.thewire.wenlaunch.presentation.components.media.Webcast
 import com.thewire.wenlaunch.ui.launch.LaunchViewModel
 
 @Composable
-fun LaunchView(
+fun LaunchComposable(
     modifier: Modifier = Modifier,
     viewModel: LaunchViewModel,
     launch: Launch,
+    onFullScreenVideo: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -29,9 +35,16 @@ fun LaunchView(
                 uri = launch.vidUrls[0].uri,
                 viewModel.videoSeconds,
                 viewModel.videoState,
-                viewModel.fullscreen
+                onFullScreen = onFullScreenVideo
             )
         }
+        Webcast(
+            modifier = infoModifier.fillMaxWidth(),
+            uri = "https://www.youtube.com/watch?v=VsacL7_yDSo",
+            viewModel.videoSeconds,
+            viewModel.videoState,
+            onFullScreen = onFullScreenVideo
+        )
         StatusInfo(
             modifier = infoModifier.fillMaxWidth(),
             launch = launch,
