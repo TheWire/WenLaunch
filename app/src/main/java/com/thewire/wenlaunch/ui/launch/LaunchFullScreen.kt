@@ -39,8 +39,6 @@ fun LaunchFullScreen(
             }
         }
     }
-    val activity = LocalContext.current.findActivity()
-    val systemUiController: SystemUiController = rememberSystemUiController()
 
     val launch = viewModel.launch.value
 
@@ -50,19 +48,6 @@ fun LaunchFullScreen(
 //            launch.webcastLive &&
 //            launch.vidUrls.isNotEmpty()
         ) {
-
-            LaunchedEffect(viewModel) {
-                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                systemUiController.isSystemBarsVisible = false
-            }
-            DisposableEffect(viewModel) {
-                onDispose {
-                    Log.i(TAG, "onDispose")
-                    systemUiController.isSystemBarsVisible = true
-                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                }
-            }
-
             VideoPlayer(
                 modifier = Modifier
                     .fillMaxSize()
@@ -70,6 +55,7 @@ fun LaunchFullScreen(
                 videoUri = "https://www.youtube.com/watch?v=VsacL7_yDSo",//launch.vidUrls[0].uri,
                 videoSeconds = viewModel.videoSeconds,
                 videoState = viewModel.videoState,
+                startFullScreen = true,
                 fullScreenCallback = onExitFullScreen
             )
         }

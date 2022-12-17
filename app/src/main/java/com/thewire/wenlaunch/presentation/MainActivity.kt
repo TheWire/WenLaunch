@@ -1,11 +1,9 @@
 package com.thewire.wenlaunch.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.HiltViewModelFactory
@@ -78,11 +76,11 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
                 composable(
-                    route = Screen.LaunchWebcast.route + "/{launchId}?videoState={videoState}&?seconds={seconds}",
+                    route = Screen.LaunchWebcast.route + "/{launchId}?videoState={videoState}?seconds={seconds}",
                     arguments = listOf(
                         navArgument("launchId") { type = NavType.StringType },
-                        navArgument("videoState") { type = NavType.StringType },
-                        navArgument("seconds") { type = NavType.FloatType },
+                        navArgument("videoState") { defaultValue = "PLAYING" },
+                        navArgument("seconds") { defaultValue = 0F },
                     ),
                 ) { navBackStackEntry ->
                     val factory = HiltViewModelFactory(LocalContext.current, navBackStackEntry)

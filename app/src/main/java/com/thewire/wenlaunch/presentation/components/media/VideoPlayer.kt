@@ -1,18 +1,24 @@
 package com.thewire.wenlaunch.presentation.components.media
 
 
+import android.content.pm.ActivityInfo
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -20,6 +26,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.You
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.DefaultPlayerUiController
+import com.thewire.wenlaunch.presentation.findActivity
 
 private const val TAG = "VIDEO_PLAYER"
 
@@ -29,8 +36,23 @@ fun VideoPlayer(
     videoUri: String,
     videoSeconds: MutableState<Float>,
     videoState: MutableState<String>,
+    startFullScreen: Boolean = false,
     fullScreenCallback: () -> Unit
 ) {
+    if(startFullScreen) {
+        val activity = LocalContext.current.findActivity()
+        val systemUiController: SystemUiController = rememberSystemUiController()
+        LaunchedEffect(Unit) {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            systemUiController.isSystemBarsVisible = false
+        }
+        DisposableEffect(Unit) {
+            onDispose {
+                systemUiController.isSystemBarsVisible = true
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+        }
+    }
     val videoId = getYoutubeVideoId(videoUri)
     if (videoId.isNullOrEmpty()) {
         modifier.background(color = Color.Black)

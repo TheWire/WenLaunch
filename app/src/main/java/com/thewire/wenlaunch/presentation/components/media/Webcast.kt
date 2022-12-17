@@ -1,6 +1,5 @@
 package com.thewire.wenlaunch.presentation.components.media
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -11,8 +10,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.thewire.wenlaunch.presentation.navigation.Screen
 
 @Composable
 fun Webcast(
@@ -46,6 +43,7 @@ fun Webcast(
                 videoUri = uri,
                 videoSeconds,
                 videoState,
+                false,
                 onFullScreen
             )
         }

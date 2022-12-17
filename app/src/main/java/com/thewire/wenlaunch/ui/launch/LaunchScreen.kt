@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
-import com.thewire.wenlaunch.presentation.components.launch.LaunchComposable
 import com.thewire.wenlaunch.presentation.components.LoadingAnimation
+import com.thewire.wenlaunch.presentation.components.launch.LaunchComposable
 import com.thewire.wenlaunch.presentation.navigation.Screen
 import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
 
@@ -56,7 +56,15 @@ fun LaunchScreen(
 
     WenLaunchTheme(darkTheme = darkMode) {
         Log.i(TAG, "recompose $viewModel ${viewModel.fullscreen.value}")
-        if (launch != null) {
+        if(viewModel.fullscreen.value) {
+            LaunchFullScreen(
+                launchId = launchId,
+                darkMode = darkMode,
+                viewModel = viewModel,
+                onExitFullScreen = { viewModel.fullscreen.value = false },
+                navController = navController
+            )
+        } else {
             Scaffold(
                 topBar = {
                     TopAppBar(
@@ -107,11 +115,14 @@ fun LaunchScreen(
                         launch = launch,
                         viewModel = viewModel,
                     ) {
-                        val route = Screen.LaunchWebcast.route + "/${launch.id}?videoState=${viewModel.videoState}&?seconds=${viewModel.videoSeconds}"
+                        val route =
+                            Screen.LaunchWebcast.route + "/${launch.id}?videoState=${viewModel.videoState.value}?seconds=${viewModel.videoSeconds.value}"
+                        println(route)
                         navController.navigate(route)
                     }
                 }
             }
         }
+
     }
 }
