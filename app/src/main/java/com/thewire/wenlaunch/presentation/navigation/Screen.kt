@@ -6,6 +6,4 @@ sealed class Screen(
     object LaunchList: Screen("launchList")
 
     object LaunchDetails: Screen("launch")
-
-    object LaunchWebcast: Screen("webcast")
 }

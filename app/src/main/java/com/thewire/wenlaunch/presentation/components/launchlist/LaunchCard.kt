@@ -94,14 +94,14 @@ fun LaunchListInfo(
         Text(
             timeString
         )
-//        if (launch.webcastLive) {
+        if (launch.webcastLive) {
             Spacer(modifier = Modifier.height(10.dp))
             WebcastLiveIndicator(
                 text = "LIVE",
                 onClick = onLiveClick,
                 contentPadding = PaddingValues(6.dp, 3.dp, 15.dp, 3.dp)
             )
-//        }
+        }
     }
 }
 

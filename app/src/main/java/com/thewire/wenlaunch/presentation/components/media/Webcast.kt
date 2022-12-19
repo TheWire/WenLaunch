@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Webcast(
     modifier: Modifier = Modifier,
-    uri: String,
+    uri: String?,
     videoSeconds: MutableState<Float>,
     videoState: MutableState<String>,
     onFullScreen: () -> Unit

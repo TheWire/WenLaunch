@@ -1,7 +1,7 @@
 package com.thewire.wenlaunch.ui.launch
 
-import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,12 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
 import com.thewire.wenlaunch.presentation.components.LoadingAnimation
 import com.thewire.wenlaunch.presentation.components.launch.LaunchComposable
-import com.thewire.wenlaunch.presentation.navigation.Screen
+import com.thewire.wenlaunch.presentation.components.media.VideoPlayer
 import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
 
 private const val TAG = "LAUNCH_SCREEN"
@@ -31,8 +32,8 @@ fun LaunchScreen(
     toggleDarkMode: () -> Unit,
     viewModel: LaunchViewModel,
     navController: NavController,
+    launchInFullscreen: Boolean = false
 ) {
-    Log.i(TAG, "launch screen ${viewModel.fullscreen.value}")
     val context = LocalContext.current
     DisposableEffect(viewModel) {
 
@@ -55,14 +56,32 @@ fun LaunchScreen(
     val launch = viewModel.launch.value
 
     WenLaunchTheme(darkTheme = darkMode) {
-        Log.i(TAG, "recompose $viewModel ${viewModel.fullscreen.value}")
-        if(viewModel.fullscreen.value) {
-            LaunchFullScreen(
-                launchId = launchId,
-                darkMode = darkMode,
-                viewModel = viewModel,
-                onExitFullScreen = { viewModel.fullscreen.value = false },
-                navController = navController
+        val onFullScreenChange: () -> Unit = if (launchInFullscreen) {
+            { navController.popBackStack() }
+        } else {
+            { viewModel.fullscreen.value = false }
+        }
+
+        if (launch == null && (viewModel.fullscreen.value || launchInFullscreen)) {
+            LoadingAnimation(modifier = Modifier.fillMaxSize())
+        }
+
+        if (
+            (launch != null && (viewModel.fullscreen.value || launchInFullscreen))
+        ) {
+            if(launch.vidUrls.isEmpty()) {
+                navController.popBackStack()
+                Toast.makeText(context, "Error webcast not found", Toast.LENGTH_SHORT).show()
+            }
+            VideoPlayer(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black),
+                videoUri = if(launch.vidUrls.isEmpty()) null else launch.vidUrls[0].uri,
+                videoSeconds = viewModel.videoSeconds,
+                videoState = viewModel.videoState,
+                startFullScreen = true,
+                fullScreenCallback = onFullScreenChange
             )
         } else {
             Scaffold(
@@ -114,12 +133,7 @@ fun LaunchScreen(
                             .fillMaxWidth(),
                         launch = launch,
                         viewModel = viewModel,
-                    ) {
-                        val route =
-                            Screen.LaunchWebcast.route + "/${launch.id}?videoState=${viewModel.videoState.value}?seconds=${viewModel.videoSeconds.value}"
-                        println(route)
-                        navController.navigate(route)
-                    }
+                    )
                 }
             }
         }

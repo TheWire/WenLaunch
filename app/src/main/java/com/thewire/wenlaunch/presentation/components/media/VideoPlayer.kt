@@ -2,7 +2,7 @@ package com.thewire.wenlaunch.presentation.components.media
 
 
 import android.content.pm.ActivityInfo
-import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -33,13 +33,13 @@ private const val TAG = "VIDEO_PLAYER"
 @Composable
 fun VideoPlayer(
     modifier: Modifier = Modifier,
-    videoUri: String,
+    videoUri: String?,
     videoSeconds: MutableState<Float>,
     videoState: MutableState<String>,
     startFullScreen: Boolean = false,
     fullScreenCallback: () -> Unit
 ) {
-    if(startFullScreen) {
+    if (startFullScreen) {
         val activity = LocalContext.current.findActivity()
         val systemUiController: SystemUiController = rememberSystemUiController()
         LaunchedEffect(Unit) {
@@ -53,7 +53,15 @@ fun VideoPlayer(
             }
         }
     }
-    val videoId = getYoutubeVideoId(videoUri)
+    BackHandler(startFullScreen) {
+        fullScreenCallback()
+    }
+
+    val videoId = if(videoUri.isNullOrEmpty()) {
+        null
+    } else {
+        getYoutubeVideoId(videoUri)
+    }
     if (videoId.isNullOrEmpty()) {
         modifier.background(color = Color.Black)
         Box(
@@ -109,7 +117,6 @@ fun getPlayerListener(
             defaultPlayerUiController.showFullscreenButton(true)
 
             defaultPlayerUiController.setFullScreenButtonClickListener {
-                Log.i("LAUNCH_SCREEN", "PLAYER FULLSCREEN STATE CHANGE")
                 fullScreenCallback()
             }
 
@@ -134,7 +141,6 @@ fun getPlayerListener(
             state: PlayerConstants.PlayerState
         ) {
             super.onStateChange(youTubePlayer, state)
-            Log.i("YOUTUBE", state.toString())
             videoState.value = state.toString()
         }
 
@@ -149,11 +155,6 @@ fun getPlayerListener(
 
 fun getYoutubeVideoId(url: String): String? {
     val parts = url.split("=")
-    parts.forEach {
-        Log.i(TAG, it)
-    }
-
-
     if (parts[0] != "https://www.youtube.com/watch?v") return null
     return parts.last()
 }

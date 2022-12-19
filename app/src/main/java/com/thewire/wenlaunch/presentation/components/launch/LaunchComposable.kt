@@ -21,7 +21,6 @@ fun LaunchComposable(
     modifier: Modifier = Modifier,
     viewModel: LaunchViewModel,
     launch: Launch,
-    onFullScreenVideo: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -32,19 +31,12 @@ fun LaunchComposable(
         if (launch.webcastLive && launch.vidUrls.isNotEmpty()) {
             Webcast(
                 modifier = infoModifier.fillMaxWidth(),
-                uri = launch.vidUrls[0].uri,
+                uri = if(launch.vidUrls.isEmpty()) null else launch.vidUrls[0].uri,
                 viewModel.videoSeconds,
                 viewModel.videoState,
-                onFullScreen = onFullScreenVideo
+                onFullScreen = { viewModel.fullscreen.value = true }
             )
         }
-        Webcast(
-            modifier = infoModifier.fillMaxWidth(),
-            uri = "https://www.youtube.com/watch?v=VsacL7_yDSo",
-            viewModel.videoSeconds,
-            viewModel.videoState,
-            onFullScreen = onFullScreenVideo
-        )
         StatusInfo(
             modifier = infoModifier.fillMaxWidth(),
             launch = launch,
