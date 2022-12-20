@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.presentation.components.LocationInfo
 import com.thewire.wenlaunch.presentation.components.MissionInfo
-import com.thewire.wenlaunch.presentation.components.RocketInfo
+import com.thewire.wenlaunch.presentation.components.Info.RocketInfo
 import com.thewire.wenlaunch.presentation.components.StatusInfo
 import com.thewire.wenlaunch.presentation.components.media.Webcast
 import com.thewire.wenlaunch.ui.launch.LaunchViewModel

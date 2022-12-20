@@ -61,12 +61,16 @@ class LaunchCountdown(
         job?.apply {
             if (isActive) return
         }
-        var secondDifference = ChronoUnit.SECONDS.between(timeNow().asUTC(), launchTime.asUTC())
         job = scope.launch(dispatcherProvider.getIOContext()) {
-            while (secondDifference >= 0 && isActive) {
+            while (true) {
                 val now = timeNow()
-                countdownInternal.value = DateTimePeriod.between(now.asUTC(), launchTime.asUTC())
-                secondDifference = ChronoUnit.SECONDS.between(now, launchTime)
+                val secondDifference = ChronoUnit.SECONDS.between(now, launchTime)
+                println(secondDifference)
+                if(secondDifference >= 0 && isActive) {
+                    countdownInternal.value = DateTimePeriod.between(now.asUTC(), launchTime.asUTC())
+                } else {
+                    break
+                }
                 delay(1000)
             }
         }
