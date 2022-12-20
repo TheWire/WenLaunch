@@ -1,7 +1,7 @@
 package com.thewire.wenlaunch.presentation.components
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -28,7 +28,10 @@ fun RocketInfo(
             style = MaterialTheme.typography.h6
         )
         LaunchImage(
-            modifier = Modifier.align(Alignment.CenterHorizontally).height(450.dp),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth(),
+//                .height(450.dp),
             imageUri = imageUri,
             defaultImage = DEFAULT_LAUNCH_IMAGE
         )
