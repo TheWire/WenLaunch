@@ -31,7 +31,7 @@ fun LaunchComposable(
         if (launch.webcastLive && launch.vidUrls.isNotEmpty()) {
             Webcast(
                 modifier = infoModifier.fillMaxWidth(),
-                uri = if(launch.vidUrls.isEmpty()) null else launch.vidUrls[0].uri,
+                uri = launch.vidUrls[0].uri,
                 viewModel.videoSeconds,
                 viewModel.videoState,
                 onFullScreen = { viewModel.fullscreen.value = true }

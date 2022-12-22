@@ -69,15 +69,11 @@ fun LaunchScreen(
         if (
             (launch != null && (viewModel.fullscreen.value || launchInFullscreen))
         ) {
-            if(launch.vidUrls.isEmpty()) {
-                navController.popBackStack()
-                Toast.makeText(context, "Error webcast not found", Toast.LENGTH_SHORT).show()
-            }
             VideoPlayer(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black),
-                videoUri = if(launch.vidUrls.isEmpty()) null else launch.vidUrls[0].uri,
+                videoUri = launch.vidUrls[0].uri,
                 videoSeconds = viewModel.videoSeconds,
                 videoState = viewModel.videoState,
                 startFullScreen = true,
