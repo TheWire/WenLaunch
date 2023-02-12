@@ -1,14 +1,18 @@
 package com.thewire.wenlaunch.presentation
 
+import android.Manifest
 import android.app.Activity
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.app.ActivityCompat
 import androidx.work.*
 import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.di.NOTIFICATION_WORKER_TIME_PERIOD_HOURS
@@ -32,14 +36,19 @@ const val WORKER_TAG = "WENLAUNCH_NOTIFICATION_WORKER"
 const val UNIQUE_WORK_TAG = "WENLAUNCH_UNIQUE_WORKER"
 
 const val NOTIFICATION_IMPORTANCE = "HIGH"
+private const val PERMISSION_REQUEST_CODE = 1
 
 @HiltAndroidApp
 class BaseApplication() : Application(), Configuration.Provider {
 
-    @Inject lateinit var dispatcher: IDispatcherProvider
-    @Inject lateinit var notificationWorkerFactory: DelegatingWorkerFactory
-    @Inject lateinit var alarmGenerator: INotificationAlarmGenerator
-    @Inject lateinit var settingsStore: SettingsStore
+    @Inject
+    lateinit var dispatcher: IDispatcherProvider
+    @Inject
+    lateinit var notificationWorkerFactory: DelegatingWorkerFactory
+    @Inject
+    lateinit var alarmGenerator: INotificationAlarmGenerator
+    @Inject
+    lateinit var settingsStore: SettingsStore
     private val settingsModel: MutableState<SettingsModel> = mutableStateOf(SettingsModel())
     val notifications: MutableState<Map<NotificationLevel, Boolean>> = mutableStateOf(HashMap())
     val darkMode = mutableStateOf(false)
@@ -51,10 +60,10 @@ class BaseApplication() : Application(), Configuration.Provider {
     }
 
     private fun createNotificationChannel() {
-        val priority = if(NOTIFICATION_IMPORTANCE == "HIGH") {
+        val priority = if (NOTIFICATION_IMPORTANCE == "HIGH") {
             NotificationManager.IMPORTANCE_HIGH
         } else {
-                NotificationManager.IMPORTANCE_DEFAULT
+            NotificationManager.IMPORTANCE_DEFAULT
         }
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
@@ -96,10 +105,37 @@ class BaseApplication() : Application(), Configuration.Provider {
         applySettings()
     }
 
-    fun setNotifications(notifications: Map<NotificationLevel, Boolean>) {
+    fun setNotifications(notifications: Map<NotificationLevel, Boolean>, activity: Activity?) {
         settingsModel.value.notifications = notifications
         setSettings()
+        if (notifications.containsValue(true) && activity != null) {
+            permissions(activity)
+        }
         applySettings()
+
+
+    }
+
+    private fun permissions(activity: Activity) {
+        if(Build.VERSION.SDK_INT >= 33) {
+            val notificationPermission =
+                ActivityCompat.checkSelfPermission(
+                    activity.baseContext,
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+            val alarmPermission =
+                ActivityCompat.checkSelfPermission(activity.baseContext, Manifest.permission.SET_ALARM)
+            if (notificationPermission != PackageManager.PERMISSION_GRANTED || alarmPermission != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    activity,
+                    arrayOf(
+                        Manifest.permission.POST_NOTIFICATIONS,
+                        Manifest.permission.SET_ALARM
+                    ),
+                    PERMISSION_REQUEST_CODE
+                )
+            }
+        }
     }
 
     private fun runNotificationWorker() {
@@ -108,7 +144,7 @@ class BaseApplication() : Application(), Configuration.Provider {
 
             withContext(dispatcher.getMainContext()) {
                 val workManager: WorkManager = WorkManager.getInstance(this@BaseApplication)
-                if(!notifications.value.containsValue(true)) {
+                if (!notifications.value.containsValue(true)) {
                     println("cancel notifications")
                     workManager.cancelAllWorkByTag(WORKER_TAG)
                     alarmGenerator.cancelAllAlarms()

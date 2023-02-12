@@ -17,7 +17,7 @@ import com.thewire.wenlaunch.presentation.components.media.Webcast
 import com.thewire.wenlaunch.ui.launch.LaunchViewModel
 
 @Composable
-fun LaunchComposable(
+fun LaunchDetails(
     modifier: Modifier = Modifier,
     viewModel: LaunchViewModel,
     launch: Launch,
@@ -28,10 +28,10 @@ fun LaunchComposable(
             .padding(6.dp)
     ) {
         val infoModifier = Modifier.padding(top = 6.dp, bottom = 6.dp)
-        if (launch.webcastLive && launch.vidUrls.isNotEmpty()) {
+        if (launch.webcastLive && viewModel.videoURL.value != null) {
             Webcast(
                 modifier = infoModifier.fillMaxWidth(),
-                uri = launch.vidUrls[0].uri,
+                uri = viewModel.videoURL.value!!,
                 viewModel.videoSeconds,
                 viewModel.videoState,
                 onFullScreen = { viewModel.fullscreen.value = true }

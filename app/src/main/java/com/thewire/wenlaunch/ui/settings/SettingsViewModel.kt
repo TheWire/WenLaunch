@@ -24,12 +24,12 @@ constructor(
                 val newMap = notifications.value.mapValues {
                     event.state
                 }
-                application.setNotifications(newMap)
+                application.setNotifications(newMap, event.activity)
             }
             is SettingsEvent.NotificationsChange -> {
                 val newMap = notifications.value.toMutableMap()
                 newMap[event.level] = event.state
-                application.setNotifications(newMap)
+                application.setNotifications(newMap, event.activity)
             }
         }
     }

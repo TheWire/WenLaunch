@@ -32,6 +32,7 @@ constructor(
     var launchCountdown: LaunchCountdown? = null
     val videoSeconds = mutableStateOf(0f)
     val videoState = mutableStateOf("UNSTARTED")
+    val videoURL = mutableStateOf<String?>(null)
     val fullscreen = mutableStateOf(false)
 
     fun onEvent(event: LaunchEvent) {
@@ -108,6 +109,9 @@ constructor(
             }
             dataState.data?.let { newLaunch ->
                 launch.value = newLaunch
+                if(newLaunch.vidUrls.isNotEmpty()) {
+                    videoURL.value = newLaunch.vidUrls[0].uri
+                }
                 when (newLaunch.status?.abbrev) {
                     LaunchStatus.GO, LaunchStatus.HOLD -> startCountdown(newLaunch.net)
                     else -> {}

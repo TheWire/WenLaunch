@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
 import com.thewire.wenlaunch.presentation.components.LoadingAnimation
-import com.thewire.wenlaunch.presentation.components.launch.LaunchComposable
+import com.thewire.wenlaunch.presentation.components.launch.LaunchDetails
 import com.thewire.wenlaunch.presentation.components.media.VideoPlayer
 import com.thewire.wenlaunch.presentation.theme.WenLaunchTheme
 
@@ -66,19 +66,21 @@ fun LaunchScreen(
             LoadingAnimation(modifier = Modifier.fillMaxSize())
         }
 
-        if (
-            (launch != null && (viewModel.fullscreen.value || launchInFullscreen))
-        ) {
-            VideoPlayer(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black),
-                videoUri = launch.vidUrls[0].uri,
-                videoSeconds = viewModel.videoSeconds,
-                videoState = viewModel.videoState,
-                startFullScreen = true,
-                fullScreenCallback = onFullScreenChange
-            )
+        if (launch != null && (viewModel.fullscreen.value || launchInFullscreen)) {
+            if(viewModel.videoURL.value != null) {
+                VideoPlayer(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black),
+                    videoUri = viewModel.videoURL.value,
+                    videoSeconds = viewModel.videoSeconds,
+                    videoState = viewModel.videoState,
+                    startFullScreen = true,
+                    fullScreenCallback = onFullScreenChange
+                )
+            } else {
+                Text("Loading...")
+            }
         } else {
             Scaffold(
                 topBar = {
@@ -123,7 +125,7 @@ fun LaunchScreen(
                 if (launch == null) {
                     LoadingAnimation(modifier = Modifier.fillMaxSize())
                 } else {
-                    LaunchComposable(
+                    LaunchDetails(
                         modifier = Modifier
                             .padding(paddingValues)
                             .fillMaxWidth(),

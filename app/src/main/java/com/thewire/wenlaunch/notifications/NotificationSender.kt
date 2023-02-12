@@ -1,6 +1,9 @@
 package com.thewire.wenlaunch.notifications
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.thewire.wenlaunch.Logging.ILogger
@@ -33,6 +36,14 @@ constructor(
 
         val notificationId = 1
         with(NotificationManagerCompat.from(context)) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+               logger.e(TAG, "notifications not enabled")
+                return
+            }
             notify(notificationId, notification)
         }
 

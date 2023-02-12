@@ -5,17 +5,21 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.thewire.wenlaunch.domain.model.settings.NotificationLevel.*
 import com.thewire.wenlaunch.presentation.theme.Typography
 import com.thewire.wenlaunch.ui.settings.SettingsEvent
 import com.thewire.wenlaunch.ui.settings.SettingsViewModel
+import com.thewire.wenlaunch.util.getActivity
 
 @Composable
 fun SettingsDrawer(
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel
 ) {
+    val context = LocalContext.current
+    val activity = context.getActivity()
     Column(
         modifier = modifier
     ) {
@@ -45,7 +49,7 @@ fun SettingsDrawer(
             text = "All Notifications On",
             checked = viewModel.notifications.value.containsValue(true),
             onCheckedChanged = {
-                    state -> viewModel.onEvent(SettingsEvent.NotificationsToggle(state))
+                    state -> viewModel.onEvent(SettingsEvent.NotificationsToggle(state, activity))
             }
         )
         SwitchButton(
@@ -53,7 +57,7 @@ fun SettingsDrawer(
             text = "24 Hours",
             checked = viewModel.notifications.value[HOURS24] ?: false,
             onCheckedChanged = {
-                    state -> viewModel.onEvent(SettingsEvent.NotificationsChange(HOURS24, state))
+                    state -> viewModel.onEvent(SettingsEvent.NotificationsChange(HOURS24, state, activity))
             }
         )
         SwitchButton(
@@ -61,7 +65,7 @@ fun SettingsDrawer(
             text = "1 Hour",
             checked = viewModel.notifications.value[HOURS1] ?: false,
             onCheckedChanged = {
-                    state -> viewModel.onEvent(SettingsEvent.NotificationsChange(HOURS1, state))
+                    state -> viewModel.onEvent(SettingsEvent.NotificationsChange(HOURS1, state, activity))
             }
 
         )
@@ -70,7 +74,7 @@ fun SettingsDrawer(
             text = "10 Minutes",
             checked = viewModel.notifications.value[MINUTES10] ?: false,
             onCheckedChanged = {
-                    state -> viewModel.onEvent(SettingsEvent.NotificationsChange(MINUTES10, state))
+                    state -> viewModel.onEvent(SettingsEvent.NotificationsChange(MINUTES10, state, activity))
             }
         )
         SwitchButton(
@@ -78,7 +82,7 @@ fun SettingsDrawer(
             text = "1 Minute",
             checked = viewModel.notifications.value[MINUTES1] ?: false,
             onCheckedChanged = {
-                    state -> viewModel.onEvent(SettingsEvent.NotificationsChange(MINUTES1, state))
+                    state -> viewModel.onEvent(SettingsEvent.NotificationsChange(MINUTES1, state, activity))
             }
         )
 //        SwitchButton(

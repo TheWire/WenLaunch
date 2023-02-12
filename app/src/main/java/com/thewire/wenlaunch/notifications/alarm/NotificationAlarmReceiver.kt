@@ -33,7 +33,7 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
 
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        logger.i(TAG, "alarm received")
+        logger.v(TAG, "alarm received")
         if (intent != null) {
             val launchId = intent.getStringExtra(ALARM_RECEIVER_LAUNCH_ID)
             val launchTime = intent.getLongExtra(ALARM_RECEIVER_LAUNCH_TIME, 0)
@@ -43,7 +43,7 @@ class NotificationAlarmReceiver : BroadcastReceiver() {
                     NotificationLevel.valueOf(level)
                 } ?: NotificationLevel.DEFAULT
 
-            logger.v(TAG, "alarmId: $requestId launchId: $launchId")
+            logger.i(TAG, "alarmId: $requestId launchId: $launchId")
             val notifications =
                 intent.getStringArrayExtra(ALARM_RECEIVER_NOTIFICATIONS)?.associate {
                     NotificationLevel.valueOf(it) to true
