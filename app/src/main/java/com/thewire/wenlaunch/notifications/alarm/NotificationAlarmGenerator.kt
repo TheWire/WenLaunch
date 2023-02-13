@@ -11,7 +11,6 @@ import com.thewire.wenlaunch.domain.model.settings.NotificationLevel
 import com.thewire.wenlaunch.notifications.model.Alarm
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.util.toEpochMilliSecond
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -81,13 +80,17 @@ class NotificationAlarmGenerator(
                 context,
                 requestId,
                 intent,
-                0
+                PendingIntent.FLAG_IMMUTABLE
             )
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            alarmTime,
-            pendingIntent
-        )
+        try {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                alarmTime,
+                pendingIntent
+            )
+        } catch (e: Exception) {
+            logger.e(TAG, "error setting alarm $e")
+        }
         withContext(dispatcher.getIOContext()) {
             repository.insertAlarm(
                 Alarm(
@@ -152,7 +155,7 @@ class NotificationAlarmGenerator(
         val intent = Intent(context, NotificationAlarmReceiver::class.java)
         intent.action = ALARM_ACTION
         val pendingIntent = PendingIntent.getBroadcast(
-            context, requestId, intent, PendingIntent.FLAG_CANCEL_CURRENT
+            context, requestId, intent, PendingIntent.FLAG_IMMUTABLE
         )
         alarmManager.cancel(pendingIntent)
         pendingIntent.cancel()
