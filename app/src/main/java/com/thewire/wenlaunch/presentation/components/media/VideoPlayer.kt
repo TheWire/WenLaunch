@@ -19,13 +19,13 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.DefaultPlayerUiController
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.DefaultPlayerUiController
 import com.thewire.wenlaunch.presentation.findActivity
 
 private const val TAG = "VIDEO_PLAYER"
@@ -116,7 +116,7 @@ fun getPlayerListener(
                 DefaultPlayerUiController(playerView, youTubePlayer)
             defaultPlayerUiController.showFullscreenButton(true)
 
-            defaultPlayerUiController.setFullScreenButtonClickListener {
+            defaultPlayerUiController.setFullscreenButtonClickListener {
                 fullScreenCallback()
             }
 
