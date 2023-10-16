@@ -155,6 +155,6 @@ fun getPlayerListener(
 
 fun getYoutubeVideoId(url: String): String? {
     val parts = url.split("=")
-    if (parts[0] != "https://www.youtube.com/watch?v") return null
-    return parts.last()
+    if (parts[0] != "https://www.youtube.com/watch?v" || parts.size < 2) return null
+    return parts[1]
 }

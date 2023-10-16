@@ -13,7 +13,7 @@ import com.thewire.wenlaunch.cache.model.api.relations.RocketRelationship
 interface LaunchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLaunchEntity(launchEntity: LaunchEntity): Long
+    fun insertLaunchEntity(launchEntity: LaunchEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertStatus(statusEntity: StatusEntity): Long
