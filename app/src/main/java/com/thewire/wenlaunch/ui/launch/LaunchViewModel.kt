@@ -11,12 +11,17 @@ import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.domain.model.LaunchStatus
 import com.thewire.wenlaunch.repository.ILaunchRepository
-import com.thewire.wenlaunch.ui.launch.LaunchEvent.*
+import com.thewire.wenlaunch.ui.launch.LaunchEvent.GetLaunch
+import com.thewire.wenlaunch.ui.launch.LaunchEvent.Start
+import com.thewire.wenlaunch.ui.launch.LaunchEvent.StartCountdown
+import com.thewire.wenlaunch.ui.launch.LaunchEvent.Stop
 import com.thewire.wenlaunch.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
@@ -43,6 +48,7 @@ constructor(
                 is GetLaunch -> {
                     getLaunch(event.id)
                 }
+
                 is StartCountdown -> {
                     startCountdown(event.launchTime)
                 }
@@ -78,7 +84,7 @@ constructor(
     }
 
     private fun resumeCountdown() {
-        if(launch.value?.status?.abbrev == LaunchStatus.GO) {
+        if (launch.value?.status?.abbrev == LaunchStatus.GO) {
             launchCountdown?.resume()
         }
     }
@@ -95,35 +101,40 @@ constructor(
         launchCountdown =
             LaunchCountdown(launchTime, dispatcherProvider = dispatcherProvider).apply {
                 viewModelScope.launch {
-                    start().collect { dateTimePeriod ->
-                        countdownState.value = dateTimePeriod
+                    withContext(dispatcherProvider.getIOContext()) {
+                        start().collect { dateTimePeriod ->
+                            countdownState.value = dateTimePeriod
+                        }
                     }
+
                 }
             }
     }
 
     private fun getLaunch(id: String) {
-        ILaunchRepository.launch(id).onEach { dataState ->
-            if (dataState.loading) {
-                println("loading")
-            }
-            dataState.data?.let { newLaunch ->
-                launch.value = newLaunch
-                if(newLaunch.vidUrls.isNotEmpty()) {
-                    videoURL.value = newLaunch.vidUrls[0].uri
+        ILaunchRepository.launch(id)
+            .flowOn(dispatcherProvider.getIOContext())
+            .onEach { dataState ->
+                if (dataState.loading) {
+                    println("loading")
                 }
-                when (newLaunch.status?.abbrev) {
-                    LaunchStatus.GO, LaunchStatus.HOLD -> startCountdown(newLaunch.net)
-                    else -> {}
+                dataState.data?.let { newLaunch ->
+                    launch.value = newLaunch
+                    if (newLaunch.vidUrls.isNotEmpty()) {
+                        videoURL.value = newLaunch.vidUrls[0].uri
+                    }
+                    when (newLaunch.status?.abbrev) {
+                        LaunchStatus.GO, LaunchStatus.HOLD -> startCountdown(newLaunch.net)
+                        else -> {}
+                    }
+                    if (newLaunch.status?.abbrev == LaunchStatus.HOLD) {
+                        pauseCountdown()
+                    }
                 }
-                if(newLaunch.status?.abbrev == LaunchStatus.HOLD) {
-                    pauseCountdown()
-                }
-            }
 
-            dataState.error?.let { error ->
-                Log.e(TAG, "Exception: $error")
-            }
-        }.launchIn(viewModelScope)
+                dataState.error?.let { error ->
+                    Log.e(TAG, "Exception: $error")
+                }
+            }.launchIn(viewModelScope)
     }
 }

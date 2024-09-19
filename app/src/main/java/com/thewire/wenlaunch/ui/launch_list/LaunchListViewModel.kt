@@ -6,14 +6,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thewire.wenlaunch.di.IDispatcherProvider
 import com.thewire.wenlaunch.domain.model.Launch
 import com.thewire.wenlaunch.repository.ILaunchRepository
 import com.thewire.wenlaunch.repository.LaunchRepositoryUpdatePolicy
 import com.thewire.wenlaunch.ui.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
+
 private const val TAG = "LAUNCH_LIST"
 const val INITIAL_LAUNCH_NUM = 5
 
@@ -22,6 +25,7 @@ class LaunchListViewModel
 @Inject
 constructor(
     private val repositoryI: ILaunchRepository,
+    private val dispatcherProvider: IDispatcherProvider,
     private val savedStateHandle: SavedStateHandle,
     val settingsViewModel: SettingsViewModel,
 ) : ViewModel() {
@@ -39,6 +43,7 @@ constructor(
             is LaunchListEvent.RefreshLaunches -> {
                 getUpcoming(launches.value.size, LaunchRepositoryUpdatePolicy.NetworkOnly)
             }
+
             is LaunchListEvent.MoreLaunches -> {
                 getMoreLaunches(event.numLaunches, LaunchRepositoryUpdatePolicy.NetworkPrimary)
             }
@@ -46,27 +51,32 @@ constructor(
     }
 
     private fun getUpcoming(limit: Int, updatePolicy: LaunchRepositoryUpdatePolicy) {
-        repositoryI.upcoming(limit, 0, updatePolicy).onEach { dataState ->
-            if (dataState.loading) {
-                loading.value = true
-                refreshing.value = true
-            }
-            dataState.data?.let { upcoming ->
-                launches.value = upcoming
-                loading.value = false
-                refreshing.value = false
-            }
-            dataState.error?.let { error ->
-                Log.e(TAG, "Exception: $error")
-                loading.value = false
-                refreshing.value = false
-            }
+        repositoryI.upcoming(limit, 0, updatePolicy)
+            .flowOn(dispatcherProvider.getIOContext())
+            .onEach { dataState ->
+                Log.d(TAG, "upcoming")
+                if (dataState.loading) {
+                    loading.value = true
+                    refreshing.value = true
+                }
+                dataState.data?.let { upcoming ->
+                    launches.value = upcoming
+                    loading.value = false
+                    refreshing.value = false
+                }
+                dataState.error?.let { error ->
+                    Log.e(TAG, "Exception: $error")
+                    loading.value = false
+                    refreshing.value = false
+                }
 
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 
     private fun getMoreLaunches(numLaunches: Int, updatePolicy: LaunchRepositoryUpdatePolicy) {
-        repositoryI.upcoming(numLaunches, launches.value.size, updatePolicy).onEach { dataState ->
+        repositoryI.upcoming(numLaunches, launches.value.size, updatePolicy)
+            .flowOn(dispatcherProvider.getIOContext())
+            .onEach { dataState ->
             if (dataState.loading) {
                 loading.value = true
             }
