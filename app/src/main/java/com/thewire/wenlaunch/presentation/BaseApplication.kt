@@ -186,11 +186,10 @@ class BaseApplication() : Application(), Configuration.Provider {
         }
     }
 
-    override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
             .setWorkerFactory(notificationWorkerFactory)
             .build()
-    }
 }
 
 fun Context.findActivity(): Activity? = when (this) {
